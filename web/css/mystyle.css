@@ -231,6 +231,7 @@ section.setting {
     font-size: 17px;
     text-align: left;
     width: 1250px;
+    table-layout: fixed;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
     border-collapse: collapse;
     /*box-sizing: border-box;*/
@@ -243,21 +244,22 @@ section.setting {
     color: #ffffff;
 }
 
-.container .middle table thead th, 
-.container .middle table tbody td {
+.container .main-content .middle table thead td, 
+.container .main-content .middle table tbody td {
+    width: 150px;
     padding: 10px;
-    height: 30px;
+    word-wrap: break-word;    
 }
 
-.container .middle table tbody tr {
+.container .main-content .middle table tbody tr {
     border-bottom: 1px solid #dddddd;
 }
 
-.container .middle table tbody tr:nth-of-type(even) {
+.container .main-content .middle table tbody tr:nth-of-type(even) {
     background-color: #f3f3f3;
 }
 
-.container .middle table tbody tr:nth-of-type(even) {
+.container .main-content .middle table tbody tr:nth-of-type(even) {
     background-color: #f3f3f3;
 }
 

@@ -5,8 +5,8 @@
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%@ taglib prefix = "c" uri = "http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix = "fmt" uri = "http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix ="c" uri ="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix ="fmt" uri ="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
 <html>
     <head>
@@ -18,8 +18,54 @@
     </head>
     <style>
 
+        .container .main-content .middle {
+            margin-left: 15px;
+            width: 1220px;
+            height: 450px;
+            overflow: auto;
+        }
+        .container .main-content .middle table {
+            /*margin-top: 15px;*/
+            font-size: 17px;
+            text-align: left;
+            width: 1250px;
+            table-layout: fixed;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+            border-collapse: collapse;
+            /*box-sizing: border-box;*/
+        }
+
+        .container .main-content .middle thead{
+            position: sticky;
+            top:0;
+            background-color: #009879;
+            color: #ffffff;
+        }
+
+        .container .main-content .middle table thead td, 
+        .container .main-content .middle table tbody td {
+            width: 150px;
+            padding: 10px;
+            word-wrap: break-word;    
+        }
+
+        .container .main-content .middle table tbody tr {
+            border-bottom: 1px solid #dddddd;
+        }
+
+        .container .main-content .middle table tbody tr:nth-of-type(even) {
+            background-color: #f3f3f3;
+        }
+
+        .container .main-content .middle table tbody tr:nth-of-type(even) {
+            background-color: #f3f3f3;
+        }
+
+
+
         .modal .import-invoice-insert-modal, 
-        .modal .import-invoice-edit-modal {
+        .modal .import-invoice-edit-modal,
+        .modal .import-invoice-view-modal{
             position: absolute;
             padding: 15px 35px 15px 35px;
             border-radius: 10px;
@@ -27,40 +73,51 @@
             transform: scale(0);
             transition-duration: 0.5s;
             z-index: 99;
-            top: 10.5vh;
-            left: 38.5vh;
-            width: 65vw;
-            height: 75vh;
+            top: 3vh;
+            left: 23vh;
+            width: 75vw;
+            height: 90vh;
         }
-        .modal .import-invoice-insert-modal .modal-content ,
-        .modal .import-invoice-edit-modal .modal-content  {
+        .modal .import-invoice-insert-modal .modal-content,
+        .modal .import-invoice-edit-modal .modal-content,
+        .modal .import-invoice-view-modal .modal-content{
             margin-top: 25px;
         }
         .modal .import-invoice-insert-modal .modal-content .btn-group,
-        .modal .import-invoice-edit-modal .modal-content .btn-group  {
+        .modal .import-invoice-edit-modal .modal-content .btn-group,
+        .modal .import-invoice-view-modal .modal-content .btn-group{
             clear: both;
         }
 
 
         .modal .import-invoice-insert-modal .modal-content .column,
-        .modal .import-invoice-edit-modal .modal-content .column {
+        .modal .import-invoice-edit-modal .modal-content .column,
+        .modal .import-invoice-view-modal .modal-content .column{
             display: inline-block;
             /*border: 1px solid #000;*/
             /*padding: 10px;*/
         }
 
-        .modal .import-invoice-insert-modal .modal-content .column:nth-of-type(2) {
-            width: 700px;
+        .modal .import-invoice-insert-modal .modal-content .column:nth-of-type(2),
+        .modal .import-invoice-view-modal .modal-content .column:nth-of-type(2){
+            width: 850px;
             height: 300px;
             float: right;
         }
-        .modal .import-invoice-insert-modal .modal-content .column:nth-of-type(2) .row label {
+
+        .modal .import-invoice-insert-modal .modal-content {
+            width: 75vw;
+            /*border: 1px solid #000;*/
+        }
+        .modal .import-invoice-insert-modal .modal-content .column:nth-of-type(2) .row label,
+        .modal .import-invoice-view-modal .modal-content .column:nth-of-type(2) .row label {
             text-align: center;
-            width: 700px;
+            width:  850px;
             /*border: 1px solid #000;*/
             display: inline-block;
         }
-        .modal .import-invoice-insert-modal .modal-content .column:nth-of-type(1) {
+        .modal .import-invoice-insert-modal .modal-content .column:nth-of-type(1),
+        .modal .import-invoice-view-modal .modal-content .column:nth-of-type(1) {
             float: left;
         }
 
@@ -71,12 +128,16 @@
             width: 245px;
             height: 35px;
             margin-top: 5px;
-            margin-bottom: 40px;
+            margin-bottom: 15px;
             border: 1px solid #000;
+            padding-left: 8px;
+            box-sizing: border-box;
         }
 
         .modal .import-invoice-insert-modal .modal-content .column .row textarea, 
-        .modal .import-invoice-edit-modal .modal-content .column .row textarea {
+        .modal .import-invoice-edit-modal .modal-content .column .row textarea,
+        .modal .import-invoice-view-modal .modal-content .column .row textarea
+        {
             overflow: scroll;
             resize: none;
             margin-top: 5px;
@@ -85,7 +146,8 @@
         }
 
         span.import-invoice-edit, 
-        span.import-invoice-insert{
+        span.import-invoice-insert
+        {
             display: inline-block;
             width: 254px;
             height: 37px;
@@ -98,34 +160,61 @@
 
         .modal .import-invoice-insert-modal .modal-content .column .row .search-product, 
         .modal .import-invoice-edit-modal .modal-content .column .row .search-product {
-            width: 700px;
+            width: 850px;
             margin-bottom: 0px; 
         }
 
 
 
         .modal .import-invoice-insert-modal .modal-content .column #insert-product-box,
-        .modal .import-invoice-edit-modal .modal-content .column #edit-product-box
+        .modal .import-invoice-edit-modal .modal-content .column #edit-product-box,
+        .modal .import-invoice-view-modal .modal-content .column #view-product-box
+
         {
-            width: 700px;
-            height: 341px;
+            width: 850px;
+            height: 450px;
             overflow: auto;
             border: 1px solid #000;
+            margin-top: 5px;
+        }
 
+        .modal .import-invoice-insert-modal .modal-content .column #insert-product-box,
+        .modal .import-invoice-edit-modal .modal-content .column #edit-product-box {
+            margin-top: 25px;
+        }
+        .modal .import-invoice-insert-modal .modal-content .column .row span,
+        .modal .import-invoice-view-modal .modal-content .column .row span {
+            display: inline-block;
+            width: 247px;
+            height: 38px;
+            padding: 8px;
+            border: 1px solid #000;
+            box-sizing: border-box;
+            cursor: pointer;
+            margin-bottom: 15px;
+            margin-top: 5px;
+            word-wrap: break-word;
+            /*            padding-left: 5px;
+                        box-sizing: border-box;*/
         }
         .modal .import-invoice-insert-modal .modal-content .column  #insert-product-box table, 
-        .modal .import-invoice-edit-modal .modal-content .column #edit-product-box table{
+        .modal .import-invoice-edit-modal .modal-content .column #edit-product-box table,
+        .modal .import-invoice-view-modal .modal-content .column #view-product-box table
+        {
             /*margin-top: 15px;*/
             font-size: 15px;
             text-align: left;
-            width: 750px;
+            width: 850px;
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
             border-collapse: collapse;
             /*border: 1px solid #000;*/
         }
 
         .modal  .import-invoice-insert-modal .modal-content .column #insert-product-box table thead, 
-        .modal .import-invoice-edit-modal .modal-content .column #edit-product-box table thead{
+        .modal .import-invoice-edit-modal .modal-content .column #edit-product-box table thead,
+        .modal .import-invoice-view-modal .modal-content .column #view-product-box table thead
+
+        {
             position: sticky;
             top:0;
             background-color: #009879;
@@ -135,29 +224,46 @@
         .modal .import-invoice-insert-modal .modal-content .column #insert-product-box table th, 
         .modal .import-invoice-insert-modal .modal-content .column #insert-product-box table td, 
         .modal .import-invoice-edit-modal .modal-content .column #edit-product-box table th, 
-        .modal .import-invoice-edit-modal .modal-content .column #edit-product-box table td{
+        .modal .import-invoice-edit-modal .modal-content .column #edit-product-box table td,
+        .modal .import-invoice-view-modal .modal-content .column #view-product-box table td,
+        .modal .import-invoice-view-modal .modal-content .column #view-product-box table th
+
+        {
             padding: 10px;
             height: 25px;
+            word-wrap: break-word;
+            word-wrap: break-word;      /* IE 5.5-7 */
+            white-space: -moz-pre-wrap; /* Firefox 1.0-2.0 */
+            white-space: pre-wrap;      /* current browsers */
         }
 
         .modal .import-invoice-insert-modal .modal-content .column #insert-product-box table tbody tr, 
-        .modal .import-invoice-edit-modal .modal-content .column #edit-product-box table tbody tr{
+        .modal .import-invoice-edit-modal .modal-content .column #edit-product-box table tbody tr,
+        .modal .import-invoice-view-modal .modal-content .column #view-product-box table tbody tr
+
+        {
             border-bottom: 1px solid #dddddd;
         }
 
         .modal .import-invoice-insert-modal .modal-content .column #insert-product-box table tbody tr:nth-of-type(odd), 
-        .modal .import-invoice-edit-modal .modal-content .column #edit-product-box table tbody tr:nth-of-type(odd){
+        .modal .import-invoice-edit-modal .modal-content .column #edit-product-box table tbody tr:nth-of-type(odd),
+        .modal .import-invoice-view-modal .modal-content .column #view-product-box table tbody tr:nth-of-type(odd)       
+
+        {
             background-color: #f3f3f3;
         }
 
         .modal .import-invoice-insert-modal .modal-content .column #insert-product-box table tbody tr:nth-of-type(even), 
-        .modal .import-invoice-edit-modal .modal-content .column #edit-product-box table tbody tr:nth-of-type(even){
+        .modal .import-invoice-edit-modal .modal-content .column #edit-product-box table tbody tr:nth-of-type(even),
+        .modal .import-invoice-view-modal .modal-content .column #view-product-box table tbody tr:nth-of-type(even)
+        {
             background-color: #f3f3f3;
         }
 
 
         #insert-search-box #insert-search-result,
-        #edit-search-box #edit-search-result{
+        #edit-search-box #edit-search-result
+        {
             position: absolute;
             top: 80px;
             left: 20px;
@@ -204,18 +310,7 @@
         }
 
 
-        .modal .import-invoice-insert-modal .modal-content .column  .row .supplier-container #insert-supplier-name,
-        .modal .import-invoice-edit-modal .modal-content .column  .row .supplier-container #edit-supplier-name
-        {
-            display: inline-block;
-            width: 250px;
-            height: 38px;
-            padding: 8px;
-            border: 1px solid #000;
-            box-sizing: border-box;
-            cursor: pointer;
-            margin-bottom: 40px;
-        }
+
         .modal .import-invoice-insert-modal .modal-content .column  .row .supplier-container #insert-supplier-search-box, 
         .modal .import-invoice-edit-modal .modal-content .column  .row .supplier-container #edit-supplier-search-box{
             position: absolute;
@@ -260,9 +355,10 @@
             cursor: pointer;
             display: inline-block;
             width: 245px;
-            height: 20px;
+            height: 30px;
             padding: 5px;
             margin: 0px;
+            border: none;
         }
         .modal .import-invoice-insert-modal .modal-content .column  .row .supplier-container #insert-supplier-box span:hover,
         .modal .import-invoice-edit-modal .modal-content .column  .row .supplier-container #edit-supplier-box span:hover
@@ -335,62 +431,84 @@
         <div class="navigation" >
             <jsp:include page="../../slider.jsp" />
         </div>
-        <div id ="container" class ="container">
-            <div class ="main-content" >
-                <div class ="top" >
-                    <form action="search" method="POST" > 
-                        <div class ="group-search" >
-                            <div class ="horizontal-search" >
-                                <input type="text" placeholder="Theo mã phiếu nhập hàng" value="${requestScope.invoiceID}" name="id">
-                                <button type="button"><i class="fa fa-search"></i></button>         
-                            </div>
-                            <div class ="btn-add" >
-                                <button type="button" onclick="openModal('import-invoice-insert-modal')">Nhập hàng</button>
+        <div class="search-section" >
+            <form id="search-form" action="list" method="POST" >
+                <input type="hidden" id="search-key" name ="searchKey" value="${requestScope.searchKey}" />
+                <input type="hidden" id="from-date"  value="${requestScope.from}" name="from" />
+                <input type="hidden" id="to-date" value="${requestScope.to}" name="to" />
+                <input type="hidden" name="status" value="${requestScope.statuses}" />
+                <input type="hidden" id="page-index" value="${requestScope.pageIndex}"  name="pageIndex" />
+                <input type="hidden" id="page-size" value="${requestScope.selectedPageSize}"  name="pageSize"  />
+            </form>
+        </div>
+        <div id ="container" class="container">
+            <div class="main-content" >
+                <div class="top" >
+                    <div class="group-search" >
+                        <div class="horizontal-search" >
+                            <input id="search-bar" type="text" placeholder="Theo mã phiếu nhập hàng" value="${requestScope.searchKey}" name="id">
+                            <button onclick="setSearchKey('search-key', 'search-bar') type ="button"><i class="fa fa-search"></i></button>  
+                        </div>
+                        <div class="btn-add" >
+                            <button type="button" onclick="openModal('import-invoice-insert-modal')">Nhập hàng</button>
+                        </div>
+                    </div>
+                    <div class="group-search" >
+                        <div class="time-search" >
+                            <span onclick="openBox('time-range')">Thời gian</span>
+                            <div id="time-range">
+                                <table>
+                                    <tr>
+                                        <td>Từ ngày: </td>
+                                        <td> <input id="from" type="date" name="from" value="${requestScope.from}" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Đếm ngày: </td>
+                                        <td><input id="to" type="date" name="to" value="${requestScope.to}" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                        <td><button type="button" onclick="setDate('search-form')" >Tìm kiếm</button></td>
+                                    </tr>
+                                </table>
                             </div>
                         </div>
-                        <div class ="group-search" >
-                            <div class ="time-search" >
-                                <span onclick="openBox('time-range')">Thời gian</span>
-                                <div id="time-range">
-                                    <table>
-                                        <tr>
-                                            <td>Từ ngày: </td>
-                                            <td> <input type="date" name="from" value="${requestScope.from}" /></td>
-                                        </tr>
-                                        <tr>
-                                            <td>Đếm ngày: </td>
-                                            <td><input type="date" name="to" value="${requestScope.to}" /></td>
-                                        </tr>
-                                        <tr>
-                                            <td></td>
-                                            <td><button type="submit" >Tìm kiếm</button></td>
-                                        </tr>
-                                    </table>
-                                </div>
-                            </div>
-                            <div class="status-search" >
-                                <span onclick="openBox('status-box')" >Trạng thái</span>
-                                <div id="status-box" >
-                                    <table>
-                                        <tr>
-                                            <td><input type="checkbox" name="status" value="0" /></td>
-                                            <td>Phiếu tạm</td>
-                                        </tr>
-                                        <tr>
-                                            <td><input type="checkbox" name="status" value="1" /></td>
-                                            <td>    Đã nhập hàng</td>
-                                        </tr>
-                                        <tr>
-                                            <td> <input type="checkbox" name="status" value="2" /></td>
-                                            <td>Đã hủy</td>
-                                        </tr>
-                                    </table>
-                                </div>
+                        <div class="status-search" >
+                            <span onclick="openBox('status-box')" >Trạng thái</span>
+                            <div id="status-box" >
+                                <table>
+                                    <tr>
+                                        <td><input type="checkbox" name="status" value="1" 
+                                                   <c:if test="${requestScope.statuses.contains('1')}" >
+                                                       checked ="checked"
+                                                   </c:if>          
+                                        </td>
+                                        <td>Phiếu tạm</td>
+                                    </tr>
+                                    <tr>
+                                        <td><input type="checkbox" name="status" value="2" 
+                                                   <c:if test="${requestScope.statuses.contains('2')}" >
+                                                       checked ="checked"
+                                                   </c:if>/></td>
+                                        <td>    Đã nhập hàng</td>
+                                    </tr>
+                                    <tr>
+                                        <td> <input type="checkbox" name="status" value="0"
+                                                    <c:if test="${requestScope.statuses.contains('0')}" >
+                                                        checked ="checked"
+                                                    </c:if> /></td>
+                                        <td>Đã hủy</td>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                        <td><button type="button" onclick="setCheckboxes('status', 'search-form')" >Tìm kiếm</button></td>
+                                    </tr>
+                                </table>
                             </div>
                         </div>
-                    </form>
+                    </div>
                 </div>
-                <div class ="middle" >
+                <div class="middle" >
                     <table>
                         <thead>
                             <tr>
@@ -413,22 +531,29 @@
                                     <td>${ii.getTotal()}</td>
                                     <td>${ii.description}</td>
                                     <td>
-                                        <c:if test="${ii.status == -1}"  >
+                                        <c:if test="${ii.status == 0}"  >
                                             Đã hủy
                                         </c:if> 
-                                        <c:if test="${ii.status == 0}"  >
+                                        <c:if test="${ii.status ==1}"  >
                                             Phiếu tạm
                                         </c:if> 
-                                        <c:if test="${ii.status == 1}"  >
+                                        <c:if test="${ii.status ==2}"  >
                                             Đã nhập hàng
                                         </c:if> 
                                     </td>
                                     <td>
-                                        <c:if test="${ii.status == -1}"  >
-
+                                        <c:if test="${ii.status == 0}"  >
+                                            <button onclick="viewInvoice(${ii.importInvoiceID})">
+                                                <i class="fa fa-eye" ></i>
+                                            </button>
                                         </c:if> 
-                                        <c:if test="${ii.status >= 0}"  >
-                                            <button onclick="editInvoice()">Edit</button>
+                                        <c:if test="${ii.status >=1}"  >
+                                            <button onclick="viewInvoice(${ii.importInvoiceID})">
+                                                <i class="fa fa-eye" ></i>
+                                            </button>
+                                            <button onclick="editInvoice(${ii.importInvoiceID})">
+                                                <i class="fa fa-pencil" ></i>
+                                            </button>
                                         </c:if> 
                                     </td>
                                 </tr>
@@ -436,14 +561,14 @@
                         </tbody>
                     </table>
                 </div>
-                <div class ="bottom" >
-                    <div class ="pageSize" >
+                <div class="bottom" >
+                    <div class="pageSize" >
                         Rows per page <select name ="pageSize" id ="pageSize" onchange="submitPageSize('pageSize')">
                             <c:set var="pageSizeOptions" value="${requestScope.pageSizeOptions}" ></c:set>  
                             <c:set var="selectedPageSize" value="${requestScope.selectedPageSize}" ></c:set>
                             <c:forEach var="pageSize" begin="0" end="${pageSizeOptions.size()}" items="${pageSizeOptions}" >
                                 <option value ="${pageSize}" 
-                                        <c:if test="${selectedPageSize == pageSize}" > 
+                                        <c:if test="${selectedPageSize ==pageSize}" > 
                                             selected="selected"
                                         </c:if>> ${pageSize}
                                 </option>
@@ -451,53 +576,62 @@
                         </select>
                     </div>
                     <span>${requestScope.trace}</span>
-                    <div class ="pagger" id ="pagger" > </div>
+                    <div class="pagger" id ="pagger" > </div>
                 </div>
             </div>
         </div>
 
-        <div class ="modal" >
-            <div class ="import-invoice-insert-modal" id ="import-invoice-insert-modal" >
-                <div class ="modal-header" >
-                    <h2 class ="title" >Thêm hóa đơn</h2>
-                    <button class ="btn-close" onclick="closeModal('import-invoice-insert-modal')" >x</button>
+        <div class="modal" >
+            <div class="import-invoice-insert-modal" id ="import-invoice-insert-modal" >
+                <div class="modal-header" >
+                    <h2 class="title" >Thêm phiếu</h2>
+                    <button class="btn-close" onclick="closeModal('import-invoice-insert-modal')" >x</button>
                 </div>
-                <div class ="modal-content" >
-                    <form id="invoice-form" action ="insert" method ="POST" >
+                <div class="modal-content" >
+                    <form id="insert-form" action ="insert" method ="POST" >
                         <div class="column"  > 
                             <div class="row" >
+                                <label>Mã phiếu</label> <br />
+                                <span class="import-invoice-insert">Mã tự động</span>
+                            </div>
+                            <div class="row" >
                                 <label>Ngày nhập</label> <br />
-                                <input type="date" value="${requestScope.today}" name="date" />
+                                <input type="date" value="${requestScope.today}" class="import-invoice-insert" name="date" />
                             </div>
                             <div class="row" >
                                 <label>Nhà cung cấp</label> <br />
-                                <div class ="supplier-container">
-                                    <span onclick="openBox('insert-supplier-search-box')" id="insert-supplier-name" >---Chọn nhà cung cấp---</span>
-                                    <input id ="insert-supplier-id" name ="supplierID" type ="hidden" />
-                                    <div id = "insert-supplier-search-box">
+                                <div class="supplier-container">
+                                    <span class="import-invoice-insert" onclick="openBox('insert-supplier-search-box')" id="insert-supplier-name" >---Chọn nhà cung cấp---</span>
+                                    <input class="import-invoice-insert" id ="insert-supplier-id" name ="supplierID" type ="hidden" />
+                                    <div id ="insert-supplier-search-box">
                                         <input type ="text" onkeyup="searchSupplier('insert', this.value)"  placeholder="Tìm kiếm nhà cung cấp"/>
                                         <div id="insert-supplier-box" >
                                             <table>
                                                 <c:forEach var="c" begin="0" end="${suppliers.size()}" items="${suppliers}" >
                                                     <tr>
-                                                        <td><span onclick="setValue('${c.supplierID}', '${c.supplierName}', 'insert')" class ="supplier-value">${c.supplierName}</span></td>
+                                                        <td><span onclick="setValue('${c.supplierID}', '${c.supplierName}', 'insert')" class="supplier-value">${c.supplierName}</span></td>
 <!--                                                        <td><button class="action" type="button" onclick="edit(${c.supplierID}, 'supplier')" ><i class="fa fa-pencil" ></i></button></td>-->
-                                                        <!--<td><button class="action" type ="button" onclick="deleteEntity(${c.supplierID}, 'supplier')"><i class ="fa fa-trash" ></i> </button></td>-->
+                                                        <!--<td><button class="action" type ="button" onclick="deleteEntity(${c.supplierID}, 'supplier')"><i class="fa fa-trash" ></i> </button></td>-->
                                                     </tr>
                                                 </c:forEach>
                                             </table>
                                         </div>
                                     </div>
-                                    <button type="button" onclick="openModal('supplier-insert-modal')"  class ="btn-add"><i class="fa fa-plus" ></i></button>
+                                    <button type="button" onclick="openModal('supplier-insert-modal')"  class="btn-add"><i class="fa fa-plus" ></i></button>
                                 </div>
                             </div >
                             <div class="row" >
                                 <label>Tổng tiền hàng</label> <br />
-                                <input id="insert-total" type="text" name="totalAmount" />
+                                <input class="import-invoice-insert" id="insert-total" type="text" name="totalAmount" />
                             </div>
                             <div class="row" >
+                                <label>Trạng thái</label> <br />
+                                <span>Phiếu tạm</span>
+                            </div>
+
+                            <div class="row" >
                                 <label>Ghi chú</label><br />
-                                <textarea id="insert-desciption" name="desciption" rows="4" cols="31"></textarea>
+                                <textarea class="import-invoice-insert" id="insert-desciption" name="desciption" rows="4" cols="31"></textarea>
                             </div>
                         </div>
                         <div class="column"  > 
@@ -523,61 +657,73 @@
                                             <th>Thành tiền</th>
                                         </tr>
                                     </thead>
-                                    <tbody id="insert-product-list" >
+                                    <tbody id="insert-product-list" class="import-invoice-insert" >
 
                                     </tbody>
                                 </table>
                             </div>
                         </div>
-                        <div class ="btn-group" >
-                            <input type="submit" value ="Save" />
+                        <div class="btn-group" >
+                            <input id="insert-status" type="hidden" name ="status" />
+                            <input type="submit" onclick="checkInput('insert-form', 'insert-status', '1')" value ="Lưu tạm" />
+                            <input type="submit" onclick="checkInput('insert-form', 'insert-status', '2')" value ="Hoàn thành" />
                         </div>
                     </form>
                 </div>
             </div>
         </div>
-        <div class ="modal" >
-            <div class ="import-invoice-edit-modal" id ="import-invoice-edit-modal" >
-                <div class ="modal-header" >
-                    <h2 class ="title" >Thêm hóa đơn</h2>
-                    <button class ="btn-close" onclick="closeModal('import-invoice-edit-modal')" >x</button>
+        <div class="modal" >
+            <div class="import-invoice-edit-modal" id ="import-invoice-edit-modal" >
+                <div class="modal-header" >
+                    <h2 class="title" >Chỉnh sửa phiếu</h2>
+                    <button class="btn-close" onclick="closeModal('import-invoice-edit-modal')" >x</button>
                 </div>
-                <div class ="modal-content" >
-                    <form id="invoice-edit-form" action ="insert" method ="POST" >
+                <div class="modal-content" >
+                    <form id="edit-form" action ="edit" method ="POST" >
                         <div class="column"  > 
                             <div class="row" >
+                                <label>Mã phiếu</label> <br />
+                                <span class="import-invoice-edit"></span>
+                                <input type="hidden" name ="invoiceID" class="import-invoice-edit" />
+                                <input id="edit-status" type="hidden" name ="status" class="import-invoice-edit" />
+                            </div>
+                            <div class="row" >
                                 <label>Ngày nhập</label> <br />
-                                <input type="date"  name="date" class ="import-invoice-edit" />
+                                <input type="date"  name="date" class="import-invoice-edit" />
                             </div>
                             <div class="row" >
                                 <label>Nhà cung cấp</label> <br />
-                                <div class ="supplier-container">
-                                    <span  id="edit-supplier-name" class ="import-invoice-edit" onclick="openBox('edit-supplier-search-box')"  ></span>
-                                    <input id ="edit-supplier-id" name ="supplierID" type ="hidden" class ="import-invoice-edit" />
-                                    <div id = "edit-supplier-search-box">
+                                <div class="supplier-container">
+                                    <input id ="edit-supplier-id" name ="supplierID" type ="hidden" class="import-invoice-edit" />
+                                    <span  id="edit-supplier-name" class="import-invoice-edit" onclick="openBox('edit-supplier-search-box')"  ></span>
+                                    <div id ="edit-supplier-search-box">
                                         <input type ="text" onkeyup="searchSupplier('edit', this.value)"  placeholder="Tìm kiếm nhà cung cấp"/>
                                         <div id="edit-supplier-box" >
                                             <table>
                                                 <c:forEach var="c" begin="0" end="${suppliers.size()}" items="${suppliers}" >
                                                     <tr>
-                                                        <td><span onclick="setValue('${c.supplierID}', '${c.supplierName}', 'edit')" class ="supplier-value">${c.supplierName}</span></td>
+                                                        <td><span onclick="setValue('${c.supplierID}', '${c.supplierName}', 'edit')" class="supplier-value">${c.supplierName}</span></td>
 <!--                                                        <td><button class="action" type="button" onclick="edit(${c.supplierID}, 'supplier')" ><i class="fa fa-pencil" ></i></button></td>-->
-                                                        <!--<td><button class="action" type ="button" onclick="deleteEntity(${c.supplierID}, 'supplier')"><i class ="fa fa-trash" ></i> </button></td>-->
+                                                        <!--<td><button class="action" type ="button" onclick="deleteEntity(${c.supplierID}, 'supplier')"><i class="fa fa-trash" ></i> </button></td>-->
                                                     </tr>
                                                 </c:forEach>
                                             </table>
                                         </div>
                                     </div>
-                                    <button type="button" onclick="openModal('supplier-insert-modal')"  class ="btn-add"><i class="fa fa-plus" ></i></button>
+                                    <button type="button" onclick="openModal('supplier-insert-modal')"  class="btn-add"><i class="fa fa-plus" ></i></button>
                                 </div>
                             </div >
                             <div class="row" >
                                 <label>Tổng tiền hàng</label> <br />
-                                <input id="edit-total" type="text" name="totalAmount"  class ="import-invoice-edit"/>
+                                <input id="edit-total" type="text" name="totalAmount"  class="import-invoice-edit"/>
+                            </div>
+                            <div class="row" >
+                                <label>Trạng thái</label> <br />
+                                <span class="import-invoice-edit"></span>
                             </div>
                             <div class="row" >
                                 <label>Ghi chú</label><br />
-                                <textarea id="edit-desciption" name="desciption" rows="4" cols="31" class ="import-invoice-edit"  ></textarea>
+                                <textarea id="edit-desciption" name="desciption" rows="4" cols="31" class="import-invoice-edit"  ></textarea>
                             </div>
                         </div>
                         <div class="column"  > 
@@ -603,34 +749,94 @@
                                             <th>Thành tiền</th>
                                         </tr>
                                     </thead>
-                                    <tbody id="edit-product-list" >
+                                    <tbody id="edit-product-list" class="import-invoice-edit" >
 
                                     </tbody>
                                 </table>
                             </div>
                         </div>
-                        <div class ="btn-group" >
-                            <input type="submit" value ="Save" />
+                        <div class="btn-group" id="save-action" class="import-invoice-edit" >
+
                         </div>
                     </form>
                 </div>
             </div>
         </div>
-
-
-        <div class ="modal" > 
-            <div class ="supplier-insert-modal" id ="supplier-insert-modal" >
-                <div class ="modal-header" >
-                    <h2 class ="title" >Thêm nhà cung cấp</h2>
-                    <button class ="btn-close" onclick="closeModal('supplier-insert-modal')" >x</button>
+        <div class="modal" >
+            <div class="import-invoice-view-modal" id ="import-invoice-view-modal" >
+                <div class="modal-header" >
+                    <h2 class="title" >Xem thông tin phiếu</h2>
+                    <button class="btn-close" onclick="closeModal('import-invoice-view-modal')" >x</button>
                 </div>
-                <div class ="modal-content" > 
+                <div class="modal-content" >
+                    <div class="column"  > 
+                        <div class="row" >
+                            <label>Mã phiếu</label> <br />
+                            <span class="import-invoice-view"></span>
+                        </div>
+                        <div class="row" >
+                            <label>Ngày nhập</label> <br />
+                            <span class="import-invoice-view"></span>
+                        </div>
+                        <div class="row" >
+                            <label>Nhà cung cấp</label> <br />
+                            <span class="import-invoice-view"></span>
+                            <button type="button" ><i class="fa fa-eye"></i></button>
+                        </div >
+                        <div class="row" >
+                            <label>Tổng tiền hàng</label> <br />
+                            <span class="import-invoice-view"></span>
+                        </div>
+                        <div class="row" >
+                            <label>Trạng thái</label> <br />
+                            <span class="import-invoice-view"></span>
+                        </div>
+                        <div class="row" >
+                            <label>Ghi chú</label><br />
+                            <textarea class="import-invoice-view" rows="4" cols="31"></textarea>
+                        </div>
+                    </div>
+                    <div class="column"  > 
+                        <div id="view-search-box" class="row" >
+                            <label>Hàng trong phiếu</label> <br />
+                        </div>
+                        <div id ="view-product-box" >
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>STT</th>
+                                        <th>Mã hàng</th>
+                                        <th>Tên hàng</th>
+                                        <td>ĐVT</td>
+                                        <th>Đơn giá</th>
+                                        <th>Số lương</th>
+                                        <th>Thành tiền</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="view-product-list" class="import-invoice-view" >
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="modal" > 
+            <div class="supplier-insert-modal" id ="supplier-insert-modal" >
+                <div class="modal-header" >
+                    <h2 class="title" >Thêm nhà cung cấp</h2>
+                    <button class="btn-close" onclick="closeModal('supplier-insert-modal')" >x</button>
+                </div>
+                <div class="modal-content" > 
                     <form action="" >
                         <!--<span>Brand Name</span>-->
-                        <input type ="text" placeholder="Tên nhà cung cấp hiệu" name ="supplierName" id ="supplier-insert-input"  class ="supplier-insert" /> 
+                        <input type ="text" placeholder="Tên nhà cung cấp hiệu" name ="supplierName" id ="supplier-insert-input"  class="supplier-insert" /> 
                     </form>
                 </div>
-                <div onclick="insert('supplier-insert')" class ="btn-save"> <span>Save</span></div>
+                <div onclick="insert('supplier-insert')" class="btn-save"> <span>Save</span></div>
             </div>
         </div>
     </body>
@@ -640,8 +846,38 @@
         ${requestScope.selectedPageSize},
         ${requestScope.totalPage}, 2);
 
-        var ordinalNumber = 0;
 
+        var ordinalNumber = 0;
+        function setDate(formId) {
+            var from = document.getElementById('from');
+            var to = document.getElementById('to');
+            var fromDate = document.getElementById('from-date');
+            var toDate = document.getElementById('to-date');
+            fromDate.value = from.value;
+            toDate.value = to.value;
+            //            alert(fromDate.value);
+            //            alert(toDate.value);
+            submitForm(formId);
+        }
+
+        function setCheckboxes(name, formId) {
+            var boxes = document.getElementsByName(name);
+            boxes[0].value = "";
+            for (var i = 1, max = 4; i < max; i++) {
+                if (boxes[i].checked) {
+                    boxes[0].value += boxes[i].value;
+                }
+            }
+            //            alert(boxes[0].value);
+            submitForm(formId);
+        }
+
+        function checkInput(formId, statusId, value) {
+            var form = document.getElementById(formId);
+            var status = document.getElementById(statusId);
+            status.value = value;
+            form.submit();
+        }
 
 
         function submitPageSize(id) {
@@ -652,9 +888,12 @@
             var box = document.getElementById(id);
             var modal = document.getElementsByClassName('modal');
             if (id === 'import-invoice-insert-modal') {
+                ordinalNumber = 0;
                 modal[0].style.transform = "scale(1)";
             } else if (id === 'import-invoice-edit-modal') {
                 modal[1].style.transform = "scale(1)";
+            } else if (id === 'import-invoice-view-modal') {
+                modal[2].style.transform = "scale(1)";
             }
             box.style.transform = "scale(1)";
         }
@@ -666,12 +905,27 @@
                 modal[0].style.transform = "scale(0)";
             } else if (id === 'import-invoice-edit-modal') {
                 modal[1].style.transform = "scale(0)";
+            } else if (id === 'import-invoice-view-modal') {
+                modal[2].style.transform = "scale(0)";
             }
             box.style.transform = "scale(0)";
             var input = id.split('-modal')[0];
-            if (id !== 'import-invoice-edit-modal') {
-                clearInputData(input);
+            if(input === "import-invoice-insert") {
+                clearData(input);
             }
+        }
+
+        function clearData(id) {
+//            alert('ok' + id);
+            var input = document.getElementsByClassName(id);
+            input[1].value = "${requestScope.today}";
+            input[2].innerHTML = "--Chọn nhà cung cấp--";
+            input[3].value = "";
+            input[4].value = "";
+            input[5].value = "";
+            input[6].innerHTML = "";
+            ordinalNumber = 0;
+            
         }
 
         function openBox(id) {
@@ -683,7 +937,7 @@
             }
         }
 
-        function clearInputData(type) {
+        function clearSearchBox(type) {
             var list = document.getElementById(type + '-product-list');
             list.innerHTML = "";
             var search = document.getElementById(type + '-search-product');
@@ -700,25 +954,51 @@
             }
         }
 
-        pagger('pagger',${requestScope.pageIndex},
-        ${requestScope.selectedPageSize},
-        ${requestScope.totalPage}, 2);
+        function viewInvoice(id) {
+            var url = "search?id=" + id;
+            var edit = document.getElementsByClassName('import-invoice-view');
+            fetch(url).then(function (response) {
+                return response.text();
+            }).then(function (result) {
+                var arr = result.split('|');
+                for (var i = 0, max = edit.length; i < max; i++) {
+                    edit[i].innerHTML = arr[i];
+                }
+//                alert(arr.length + ", " + edit.length);
+            });
+            openModal('import-invoice-view-modal');
+        }
 
 
-        function edit(id) {
+        function editInvoice(id) {
             var url = "edit?id=" + id;
             var edit = document.getElementsByClassName('import-invoice-edit');
             fetch(url).then(function (response) {
                 return response.text();
             }).then(function (result) {
                 var arr = result.split('|');
-                edit[0].innerHTML = 'II000' + arr[0];
-                for (var i = 1, max = arr.length; i < max; i++) {
-                    edit[i].value = arr[i];
+                //                alert(arr.length + ", " + edit.length);
+                edit[0].innerHTML = 'PN' + arr[0];
+                edit[5].innerHTML = arr[5];
+                edit[7].innerHTML = arr[7];
+                for (var i = 1, max = arr.length - 1; i < max; i++) {
+                    if (i != 5 && i != 7) {
+                        if (i < 9) {
+                            edit[i].value = arr[i];
+                        } else {
+                            //                            alert('ok');
+                            edit[i].innerHTML = arr[i];
+                            ordinalNumber = edit[i].children.length;
+                            //                            alert(ordinalNumber);
+                        }
+                    }
                 }
+                var action = document.getElementById('save-action');
+                action.innerHTML = arr[10];
             });
             openModal('import-invoice-edit-modal');
         }
+
 
         function generateRow(title, value) {
             var str = "";
@@ -752,18 +1032,18 @@
 
         function concatProduct(type, data) {
             var str = "";
-            str += "<tr id = \"" + type + "-" + ordinalNumber + "\" >";
-            str += "<td>" + " <button type =\"button\" onclick=\"deleteFrom('" + type + "','" + type + "-" + ordinalNumber + "')\"><i class =\"fa fa-trash\" ></i></button>" + "</td>";
+            str += "<tr id =\"" + type + "-" + ordinalNumber + "\">";
+            str += "<td>" + " <button type =\"button\" onclick=\"deleteFrom('" + type + "','" + type + "-" + ordinalNumber + "')\"><i class=\"fa fa-trash\" ></i></button>" + "</td>";
             str += "<td>" + ordinalNumber + "</td>";
-            str += "<td>" + data[0] + "<input type=\"hidden\" name = \"id\" value = \""
+            str += "<td>" + data[0] + "<input type=\"hidden\" name =\"id\" value =\""
                     + data[0] + "\"" + "</td>";
             str += "<td>" + data[2] + "</td>";
             str += "<td>" + data[5] + "</td>";
             str += "<td>" + data[6] + "</td>";
-            str += "<td><input onkeyup = \"setAmount('" + type + "',this.value,'" + type + "-" + ordinalNumber + "')\" type=\"text\" name = \"quantity\"  /></td>";
+            str += "<td><input onkeyup =\"setAmount('" + type + "',this.value,'" + type + "-" + ordinalNumber + "')\" type=\"text\" name =\"quantity\"  /></td>";
             str += "<td></td>";
             str += "</tr>";
-//            alert(type + "-" + ordinalNumber);
+            //            alert(type + "-" + ordinalNumber);
             return str;
         }
 
@@ -815,7 +1095,7 @@
 
 
         function productSearch(type, productID) {
-//            alert('dm');
+            //            alert('dm');
             var url = "../../product/search?id=" + productID;
             var searchResult = document.getElementById(type + '-search-result');
             var data;
@@ -832,8 +1112,6 @@
                 }
                 searchResult.innerHTML = str;
             });
-
-
             if (productID !== "") {
                 searchResult.style.display = "block";
             } else {
@@ -863,19 +1141,21 @@
 
         function deleteFrom(type, position) {
             var list = document.getElementById(type + "-product-list");
-            var removeChild = document.getElementById(type + "-" + position);
-            var childs = list.childNodes;
+            var removeChild = document.getElementById(position);
+            var childs = list.children;
             list.removeChild(removeChild);
             for (var i = 0, max = childs.length; i < max; i++) {
                 var childId = childs[i].id;
-                var currentId = parseInt(childId.split("-")[1]);
-                if (currentId > position) {
-                    var ch = childs[i].childNodes;
-                    currentId -= 1;
-                    childs[i].id = currentId;
-                    ch[1].innerHTML = currentId;
+                var otherId = parseInt(childId.split("-")[1]);
+                var currentId = parseInt(position.split("-")[1]);
+                if (otherId > currentId) {
+                    var ch = childs[i].children;
+                    otherId -= 1;
+                    childs[i].id = type + "-" + otherId;
+                    //                    alert(childs[i].id);
+                    ch[1].innerHTML = otherId;
                     var newChild = document.createElement('td');
-                    newChild.innerHTML = "<button type = \"button\" onclick = \"deleteFrom('" + type + "'," + currentId + ")\"><i class=\"fa fa-trash\" ></i></button>";
+                    newChild.innerHTML = "<button type =\"button\" onclick =\"deleteFrom('" + type + "','" + type + "-" + otherId + "')\"><i class=\"fa fa-trash\" ></i></button>";
                     childs[i].replaceChild(newChild, ch[0]);
                 }
             }

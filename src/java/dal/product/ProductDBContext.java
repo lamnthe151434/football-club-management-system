@@ -448,6 +448,34 @@ public class ProductDBContext extends DBContext {
         }
     }
 
+    public void decreaseQuantity(Product product, int quantity) {
+        try {
+            String sql = "UPDATE [dbo].[Product]\n"
+                    + "   SET [Quantity] = [Quantity] - ?\n"
+                    + " WHERE [Product_ID] = ?";
+            PreparedStatement stm = connection.prepareStatement(sql);
+            stm.setInt(1, quantity);
+            stm.setInt(2, product.getProductID());
+            stm.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(ProductDBContext.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public void increaseQuantity(Product product, int quantity) {
+        try {
+            String sql = "UPDATE [dbo].[Product]\n"
+                    + "   SET [Quantity] = [Quantity] + ?\n"
+                    + " WHERE [Product_ID] = ?";
+            PreparedStatement stm = connection.prepareStatement(sql);
+            stm.setInt(1, quantity);
+            stm.setInt(2, product.getProductID());
+            stm.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(ProductDBContext.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
     public void updateProduct(Product product) {
         String sql = "UPDATE [dbo].[Product]\n"
                 + "   SET [Product_Name] = ?\n"
@@ -524,7 +552,7 @@ public class ProductDBContext extends DBContext {
 
     public int getTotalRecord(String searchKey, ArrayList<Integer> criterias) {
         String sql = "SELECT COUNT(*) AS [Total] FROM [Product] WHERE [Category_ID] = ? AND [Brand_ID] = ?\n"
-                + "AND (product_name like '%" + searchKey + "%' or Cast(product_id as NVARCHAR(50)) like '%" + searchKey +  "%') ";
+                + "AND (product_name like '%" + searchKey + "%' or Cast(product_id as NVARCHAR(50)) like '%" + searchKey + "%') ";
         try {
             PreparedStatement stm = connection.prepareStatement(sql);
             stm.setInt(1, criterias.get(0));

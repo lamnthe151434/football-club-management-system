@@ -8,10 +8,15 @@ package controller.import_invoice;
 import dal.transaction.ImportInvoiceDBContext;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.Date;
+import java.util.ArrayList;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import model.product.Product;
+import model.transaction.ImportInvoice;
+import model.transaction.ImportInvoiceDetail;
 
 /**
  *
@@ -57,7 +62,55 @@ public class SearchImportInvoiceController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+
+        response.setContentType("text/html;charset=UTF-8");
+        ImportInvoiceDBContext iidb = new ImportInvoiceDBContext();
+        int id = Integer.parseInt(request.getParameter("id"));
+
+        ImportInvoice importInvoice = iidb.getImportInvoice(id);
+        String description = importInvoice.getDescription();
+        if (description == null) {
+            description = "";
+        }
+        int statusNumber = importInvoice.getStatus();
+
+        String status = "";
+        if (statusNumber == 0) {
+            status = "Đã hủy";
+        }
+        if (statusNumber == 1) {
+            status = "Phiếu tạm";
+        }
+        if (statusNumber == 2) {
+            status = "Đã nhập hàng";
+        }
+        String result = "";
+        PrintWriter writer = response.getWriter();
+        result += importInvoice.getImportInvoiceID() + "|";
+        result += importInvoice.getDate() + "|";
+        result += importInvoice.getSupplier().getSupplierName() + "|";
+        result += importInvoice.getTotal() + "|";
+        result += status + "|";
+        result += description + "|";
+        ArrayList<ImportInvoiceDetail> invoices = importInvoice.getInvoices();
+        for (int i = 0; i < invoices.size(); i++) {
+            ImportInvoiceDetail in = invoices.get(i);
+            Product product = in.getProduct();
+            result += "<tr>";
+            result += "<td>" + (i + 1) + "</td>";
+            result += "<td>" + product.getProductID() + "</td>";
+            result += "<td>" + product.getProductName() + "</td>";
+            result += "<td>" + product.getUnit() + "</td>";
+            result += "<td>" + in.getUnitPrice() + "</td>";
+            result += "<td>" + in.getQuantity() + "</td>";
+            result += "<td>" + in.getTotal() + "</td>";
+            result += "</tr>";
+        }
+        result += "|";
+
+        String[] separeated = result.split("|");
+        writer.println(result);
+
     }
 
     /**
@@ -72,14 +125,26 @@ public class SearchImportInvoiceController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        String rawID = request.getParameter("id");
-        ImportInvoiceDBContext iidb = new ImportInvoiceDBContext();
-        if (rawID != null) {
-            rawID.replace("PN", "");
-            int id = Integer.parseInt(rawID);
-            iidb.getImportInvoice(id);
-        } else {
-            
+        String rawSearchKey = request.getParameter("searchKey");
+
+        if (rawSearchKey == null) {
+            rawSearchKey = "";
+        }
+
+        String rawFrom = request.getParameter("from");
+        String rawTo = request.getParameter("to");
+
+        Date from = Date.valueOf(rawFrom);
+        Date to = Date.valueOf(rawTo);
+
+        String rawStatus = request.getParameter("status");
+
+        if (rawStatus != null) {
+            String[] statusStr = rawStatus.split("|");
+            int[] status = new int[statusStr.length];
+            for (int i = 0; i < statusStr.length; i++) {
+                status[i] = Integer.parseInt(statusStr[i]);
+            }
         }
 
     }

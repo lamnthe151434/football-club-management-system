@@ -26,7 +26,8 @@ import model.transaction.ImportInvoiceDetail;
  */
 public class ImportInvoiceDBContext extends DBContext {
 
-    public ArrayList<ImportInvoice> getImportInvoices(int pageIndex, int pageSize) {
+    public ArrayList<ImportInvoice> getImportInvoices(String[] from, String[] to, int[] status,
+            int pageIndex, int pageSize) {
         ArrayList<ImportInvoice> importInvoices = new ArrayList<>();
         SupplierDBContext sdb = new SupplierDBContext();
         try {
@@ -35,8 +36,23 @@ public class ImportInvoiceDBContext extends DBContext {
                     + "      ,[Supplier_ID]\n"
                     + "      ,[Description]\n"
                     + "      ,[Status] FROM "
-                    + " (SELECT *, ROW_NUMBER() OVER (ORDER BY [Import_Invoice_ID] ASC) as row_index FROM [Import_Invoice]) tb\n"
-                    + "  WHERE row_index >=(?-1)*?+1 AND row_index <= ?*?";
+                    + " (SELECT *, ROW_NUMBER() OVER (ORDER BY [Import_Invoice_ID] ASC) as row_index FROM [Import_Invoice]"
+                    + "  WHERE (YEAR([Date]) BETWEEN " + from[0] + "  AND " + to[0] + " )\n"
+                    + "  AND (MONTH([Date]) BETWEEN " + from[1] + " AND " + to[1] + " )\n"
+                    + "  AND (DAY([Date]) BETWEEN " + from[2] + " AND  " + to[2] + " )";
+            if (status.length != 0) {
+                sql += " AND (";
+                for (int i = 0; i < status.length; i++) {
+                    int s = status[i];
+                    sql += "[Status] = " + s;
+                    if (i != status.length - 1) {
+                        sql += " OR ";
+                    }
+                }
+                sql += ")\n";
+            }
+            sql += ") tb";
+            sql += "  WHERE row_index >=(?-1)*?+1 AND row_index <= ?*?";
             PreparedStatement stm = connection.prepareStatement(sql);
             stm.setInt(1, pageIndex);
             stm.setInt(2, pageSize);
@@ -48,13 +64,14 @@ public class ImportInvoiceDBContext extends DBContext {
                 Date date = rs.getDate("Date");
                 Supplier supplier = sdb.getSupplier(rs.getInt("Supplier_ID"));
                 String description = rs.getString("Description");
-                int status = rs.getInt("Status");
+                int sta = rs.getInt("Status");
                 ArrayList<ImportInvoiceDetail> importInvoiceDetails
                         = getImportInvoiceDetails(rs.getInt("Import_Invoice_ID"));
                 ImportInvoice invoice = new ImportInvoice(importInvoiceID, date,
-                        supplier, importInvoiceDetails, status, description);
+                        supplier, importInvoiceDetails, sta, description);
                 importInvoices.add(invoice);
             }
+            System.out.println(sql);
         } catch (SQLException ex) {
             Logger.getLogger(ImportInvoiceDBContext.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -64,11 +81,13 @@ public class ImportInvoiceDBContext extends DBContext {
     public ImportInvoice getImportInvoice(int importInvoiceID) {
         SupplierDBContext sdb = new SupplierDBContext();
         try {
-            String sql = "SELECT [Date]\n"
+            String sql = "SELECT [Import_Invoice_ID]\n"
+                    + "      ,[Date]\n"
                     + "      ,[Supplier_ID]\n"
+                    + "      ,[Status]\n"
                     + "      ,[Description]\n"
-                    + "      ,[Status] [Import_Invoice]\n"
-                    + "  WHERE ]Import_Invoice_ID] = ?";
+                    + "  FROM [dbo].[Import_Invoice]\n"
+                    + "  WHERE [Import_Invoice_ID] = ?";
             PreparedStatement stm = connection.prepareStatement(sql);
             stm.setInt(1, importInvoiceID);
             ResultSet rs = stm.executeQuery();
@@ -164,6 +183,61 @@ public class ImportInvoiceDBContext extends DBContext {
             Logger.getLogger(ImportInvoiceDBContext.class.getName()).log(Level.SEVERE, null, ex);
         }
 
+    }
+
+    public void updateImportInvoice(ImportInvoice in) {
+        try {
+            String sql = "UPDATE [dbo].[Import_Invoice]\n"
+                    + "   SET [Date] = ?\n"
+                    + "      ,[Supplier_ID] = ?\n"
+                    + "      ,[Status] = ?\n"
+                    + "      ,[Description] = ?\n"
+                    + " WHERE [Import_Invoice_ID] = ?";
+            PreparedStatement stm = connection.prepareStatement(sql);
+            stm.setDate(1, in.getDate());
+            stm.setInt(2, in.getSupplier().getSupplierID());
+            stm.setInt(3, in.getStatus());
+            stm.setString(4, in.getDescription());
+            stm.setInt(5, in.getImportInvoiceID());
+            stm.executeUpdate();
+
+            ArrayList<ImportInvoiceDetail> invoices = in.getInvoices();
+            for (ImportInvoiceDetail invoice : invoices) {
+                insertImportInvoiceDetail(invoice);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ImportInvoiceDBContext.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public void updateImportInvoiceDetail(ImportInvoiceDetail ind) {
+        try {
+            String sql = "UPDATE [dbo].[Import_Invoice_Detail]\n"
+                    + "   SET [Product_ID] = ?\n"
+                    + "      ,[Unit_Price] = ?\n"
+                    + "      ,[Quantity] = ?\n"
+                    + " WHERE [Import_Invoice_ID] = ?";
+            PreparedStatement stm = connection.prepareStatement(sql);
+            stm.setInt(1, ind.getProduct().getProductID());
+            stm.setFloat(2, ind.getUnitPrice());
+            stm.setInt(3, ind.getQuantity());
+            stm.setInt(4, ind.getImportInvoiceID());
+            stm.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(ImportInvoiceDBContext.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public void deleteImportInvoiceDetail(int importInvoiceID) {
+        try {
+            String sql = "DELETE FROM [dbo].[Import_Invoice_Detail]\n"
+                    + "      WHERE [Import_Invoice_ID] = ?";
+            PreparedStatement stm = connection.prepareStatement(sql);
+            stm.setInt(1, importInvoiceID);
+            stm.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(ImportInvoiceDBContext.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     public int getTotalRecord() {

@@ -13,6 +13,7 @@ function setPageIndex(value) {
     pageIndex.value = value;
     submitForm("search-form");
 }
+
 function submitForm(id) {
     var form = document.getElementById(id);
     form.submit();

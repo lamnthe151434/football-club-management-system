@@ -91,7 +91,7 @@ public class InsertImportInvoiceController extends HttpServlet {
 
         String rawDate = request.getParameter("date");
         String rawSupplierID = request.getParameter("supplierID");
-        String rawDescription = request.getParameter("description");
+        String rawDescription = request.getParameter("desciption");
         String rawStatus = request.getParameter("status");
 
         String productIDs[] = request.getParameterValues("id");
@@ -110,20 +110,26 @@ public class InsertImportInvoiceController extends HttpServlet {
         }
         Date date = Date.valueOf(rawDate);
         String description = rawDescription;
-        int status = Integer.parseInt("0");
+        int status = Integer.parseInt(rawStatus);
 
 //        ArrayList<Product> products = new ArrayList<>();
         ImportInvoiceDBContext iidb = new ImportInvoiceDBContext();
+
         ArrayList<ImportInvoiceDetail> importInvoiceDetails = new ArrayList<>();
+
         int importInvoiceID = iidb.getTotalRecord() + 1;
+
         for (int i = 0; i < productIDs.length; i++) {
             int productID = Integer.parseInt(String.valueOf(productIDs[i]));
             int quantity = Integer.parseInt(String.valueOf(quantities[i]));
             Product p = pdb.getProduct(productID);
+            p.setQuantity(p.getQuantity() + quantity);
+            if (status == 2) {
+                pdb.updateProduct(p);
+            }
             ImportInvoiceDetail ii = new ImportInvoiceDetail(importInvoiceID, p, p.getCost(), quantity);
             importInvoiceDetails.add(ii);
             System.out.println(importInvoiceID);
-//            products.add(p);
         }
 
         ImportInvoice invoice = new ImportInvoice(date, supplier, importInvoiceDetails,

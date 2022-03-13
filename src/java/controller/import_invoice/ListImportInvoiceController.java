@@ -37,7 +37,44 @@ public class ListImportInvoiceController extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         ImportInvoiceDBContext idb = new ImportInvoiceDBContext();
         SupplierDBContext sdb = new SupplierDBContext();
-        
+//
+//        String rawSearchKey = request.getParameter("searchKey");
+//
+//        if (rawSearchKey == null) {
+//            rawSearchKey = "";
+//        }
+
+        String rawFrom = request.getParameter("from");
+        String rawTo = request.getParameter("to");
+
+        String from = rawFrom;
+        String to = rawTo;
+
+        if (rawFrom == null || rawFrom.equals("")) {
+            from = "1990-01-01";
+        }
+        if (rawTo == null || rawTo.equals("")) {
+            to = "2030-12-31";
+        }
+
+        String statuses = request.getParameter("status");
+        if (statuses == null) {
+            statuses = "12";
+        }
+
+        System.out.println(from + "->" + to);
+        System.out.println(statuses);
+
+        int[] status = new int[statuses.length()];
+
+        for (int i = 0; i < statuses.length(); i++) {
+            char ch = statuses.charAt(i);
+            status[i] = Integer.parseInt(String.valueOf(ch));
+        }
+
+        String[] separatedFrom = from.split("-");
+        String[] separatedTo = to.split("-");
+
         ArrayList<Supplier> suppliers = sdb.getSuppliers();
 
         String rawPageIndex = request.getParameter("pageIndex");
@@ -83,7 +120,8 @@ public class ListImportInvoiceController extends HttpServlet {
 
         track += " of " + totalRecord;
 
-        ArrayList<ImportInvoice> importInvoices = idb.getImportInvoices(pageIndex, pageSize);
+        ArrayList<ImportInvoice> importInvoices = idb.getImportInvoices(separatedFrom, separatedTo,
+                status, pageIndex, pageSize);
 
         ArrayList<Integer> pageSizeOptions = new ArrayList<>();
         pageSizeOptions.add(10);
@@ -91,18 +129,26 @@ public class ListImportInvoiceController extends HttpServlet {
         pageSizeOptions.add(30);
         pageSizeOptions.add(40);
         pageSizeOptions.add(50);
-        
+
         Date todayDate = idb.today();
         String today = String.valueOf(todayDate);
-        System.out.println(today);
 
         request.setAttribute("pageSizeOptions", pageSizeOptions);
         request.setAttribute("importInvoices", importInvoices);
         request.setAttribute("selectedPageSize", pageSize);
         request.setAttribute("pageIndex", pageIndex);
         request.setAttribute("totalPage", totalPage);
+        request.setAttribute("statuses", statuses);
+
         request.setAttribute("today", today);
         request.setAttribute("track", track);
+
+        if (rawFrom != null && !rawFrom.equals("")) {
+            request.setAttribute("from", from);
+        }
+        if (rawTo != null && !rawTo.equals("")) {
+            request.setAttribute("to", to);
+        }
         request.setAttribute("suppliers", suppliers);
 
         request.getRequestDispatcher("../../view/transaction/import/list.jsp").forward(request, response);

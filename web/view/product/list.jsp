@@ -16,6 +16,53 @@
         <script src="../js/code.js" type="text/javascript"></script>
     </head>
     <style>
+
+
+        .container .main-content .middle {
+            margin-left: 15px;
+            width: 1220px;
+            height: 450px;
+            overflow: auto;
+        }
+        .container .main-content .middle table {
+            /*margin-top: 15px;*/
+            font-size: 17px;
+            text-align: left;
+            width: 1250px;
+            table-layout: fixed;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+            border-collapse: collapse;
+            /*box-sizing: border-box;*/
+        }
+
+        .container .main-content .middle thead{
+            position: sticky;
+            top:0;
+            background-color: #009879;
+            color: #ffffff;
+        }
+
+        .container .main-content .middle table thead td, 
+        .container .main-content .middle table tbody td {
+            width: 100px;
+            padding: 10px;
+            word-wrap: break-word;    
+        }
+
+        .container .main-content .middle table tbody tr {
+            border-bottom: 1px solid #dddddd;
+        }
+
+        .container .main-content .middle table tbody tr:nth-of-type(even) {
+            background-color: #f3f3f3;
+        }
+
+        .container .main-content .middle table tbody tr:nth-of-type(even) {
+            background-color: #f3f3f3;
+        }
+
+
+
         .container .top .group-search .category, 
         .container .top .group-search .brand{
             /*display: inline-block;*/
@@ -517,16 +564,16 @@
                     <table>
                         <thead>
                             <tr>
-                                <th>Mã hàng</th>
-                                <th>Mã vạch</th>
-                                <th>Tên hàng hóa</th>
-                                <th>Nhóm hàng</th>
-                                <th>Thương hiệu</th>
-                                <th>Đơn vị</th>
-                                <th>Giá vốn</th>
-                                <th>Giá bán</th>
-                                <th>Số lượng</th>
-                                <th>Hành động</th>
+                                <td>Mã hàng</td>
+                                <td>Mã vạch</td>
+                                <td>Tên hàng hóa</td>
+                                <td>Nhóm hàng</td>
+                                <td>Thương hiệu</td>
+                                <td>Đơn vị</td>
+                                <td>Giá vốn</td>
+                                <td>Giá bán</td>
+                                <td>Số lượng</td>
+                                <td>Hành động</td>
                             </tr>
                         </thead>
                         <tbody id="product-list">
