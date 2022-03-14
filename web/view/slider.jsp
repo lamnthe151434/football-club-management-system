@@ -33,7 +33,7 @@
                     <li class="links-group-title">Giao dịch</li>
                     <li class="slider-item"><i class="fa fa-shopping-cart"></i>Hóa đơn</li>
                     <li onclick="changePage('http://localhost:8080/IEPM/invoice/import/list')" class="slider-item"><i class="fa fa-dashboard"></i>Nhập hàng</li>
-                    <li onclick="changePage('http://localhost:8080/IEPM/invoice/return/list')" class="slider-item"><i class="fa fa-dashboard"></i>Trả hàng</li>
+                    <li onclick="changePage('http://localhost:8080/IEPM/invoice/return/list')" class="slider-item"><i class="fa fa-dashboard"></i>Trả hàng nhập</li>
                 </section>
                 <section>
                     <li class="links-group-title">Đối tác</li>
@@ -47,6 +47,10 @@
                     <li onclick="" class="slider-item"><i class="fa fa-dashboard"></i>Khách hàng</li>
                     <li onclick="" class="slider-item"><i class="fa fa-group"></i>Nhà cung cấp</li>
                     <li onclick="" class="slider-item"><i class="fa fa-dashboard"></i>Tài chính</li>
+                </section>
+                <section>
+                    <li class="links-group-title">Bán hàng</li>
+                    <li onclick="changePage('http://localhost:8080/IEPM/sell')" class="slider-item"><i class="fa fa-pie-chart"></i>Bán hàng</li>
                 </section>
             </ul>
         </div>

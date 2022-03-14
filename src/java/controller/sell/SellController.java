@@ -3,11 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package controller.dashboard;
+package controller.sell;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -17,7 +16,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author ADMIN
  */
-public class DashboardController extends HttpServlet {
+public class SellController extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -31,7 +30,7 @@ public class DashboardController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        request.getRequestDispatcher("view/dashboard.jsp").forward(request, response);
+        request.getRequestDispatcher("view/sell.jsp").forward(request, response);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -46,45 +45,7 @@ public class DashboardController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        ArrayList<String> periods = new ArrayList<>();
-        periods.add("Hôm nay");
-        periods.add("Hôm qua");
-        periods.add("7 ngày trước");
-        periods.add("Tháng này");
-        periods.add("Tháng trước");
-        periods.add("Năm nay");
-        request.setAttribute("periods", periods);
-        request.setAttribute("selectedPeriod", "Hôm qua");
-        ArrayList<String> baseOn = new ArrayList<>();
-        baseOn.add("Theo số lượng");
-        baseOn.add("Theo doanh thu");
-
-        String selectedPeriod1 = request.getParameter("period1");
-        String selectedPeriod2 = request.getParameter("period2");
-        String selectedBaseOn = request.getParameter("baseOn");
-
-        if (selectedPeriod1 == null) {
-            selectedPeriod1 = "Hôm nay";
-        }
-
-        if (selectedPeriod2 == null) {
-            selectedPeriod2 = "Hôm nay";
-        }
-        if (selectedBaseOn == null) {
-            selectedBaseOn = "Theo doanh thu";
-        }
-
-        String xValues = "1, 2, 3, 4, 5, 6, 7, 8, 9, 10";
-        String yValues = "100, 200, 300, 400, 10, 600, 70, 800, 90, 10000";
-
-        request.setAttribute("periods", periods);
-        request.setAttribute("baseOn", baseOn);
-        request.setAttribute("selectedPeriod", "Hôm qua");
-        request.setAttribute("xValues", xValues);
-        request.setAttribute("yValues", yValues);
-        request.setAttribute("selectedBaseOn", "Số lượng");
-        request.getRequestDispatcher("view/dashboard.jsp").forward(request, response);
-
+        processRequest(request, response);
     }
 
     /**

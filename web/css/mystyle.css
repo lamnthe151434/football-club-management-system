@@ -226,7 +226,8 @@ section.setting {
     height: 475px;
     overflow: auto;
 }
-.container .main-content .middle table {
+.container .main-content .middle table
+ {
     /*margin-top: 15px;*/
     font-size: 17px;
     text-align: left;
