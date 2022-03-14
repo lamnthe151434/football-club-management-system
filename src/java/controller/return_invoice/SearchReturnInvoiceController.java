@@ -3,10 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package controller.import_invoice;
+package controller.return_invoice;
 
 import dal.partner.SupplierDBContext;
-import dal.transaction.ImportInvoiceDBContext;
+import dal.transaction.ReturnInvoiceDBContext;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Date;
@@ -17,14 +17,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import model.partner.Supplier;
 import model.product.Product;
-import model.transaction.ImportInvoice;
-import model.transaction.ImportInvoiceDetail;
+import model.transaction.ReturnInvoice;
+import model.transaction.ReturnInvoiceDetail;
 
 /**
  *
  * @author ADMIN
  */
-public class SearchImportInvoiceController extends HttpServlet {
+public class SearchReturnInvoiceController extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -43,10 +43,10 @@ public class SearchImportInvoiceController extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet SearchImportInvoiceController</title>");
+            out.println("<title>Servlet SearchReturnInvoiceController</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet SearchImportInvoiceController at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet SearchReturnInvoiceController at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -66,10 +66,10 @@ public class SearchImportInvoiceController extends HttpServlet {
             throws ServletException, IOException {
 
         response.setContentType("text/html;charset=UTF-8");
-        ImportInvoiceDBContext iidb = new ImportInvoiceDBContext();
+        ReturnInvoiceDBContext rdb = new ReturnInvoiceDBContext();
         int id = Integer.parseInt(request.getParameter("id"));
 
-        ImportInvoice importInvoice = iidb.getImportInvoice(id);
+        ReturnInvoice importInvoice = rdb.getReturnInvoice(id);
         String description = importInvoice.getDescription();
         if (description == null) {
             description = "";
@@ -84,19 +84,19 @@ public class SearchImportInvoiceController extends HttpServlet {
             status = "Phiếu tạm";
         }
         if (statusNumber == 2) {
-            status = "Đã nhập hàng";
+            status = "Đã trả hàng nhập";
         }
         String result = "";
         PrintWriter writer = response.getWriter();
-        result += importInvoice.getImportInvoiceID() + "|";
+        result += importInvoice.getReturnInvoiceID() + "|";
         result += importInvoice.getDate() + "|";
         result += importInvoice.getSupplier().getSupplierName() + "|";
         result += importInvoice.getTotal() + "|";
         result += status + "|";
         result += description + "|";
-        ArrayList<ImportInvoiceDetail> invoices = importInvoice.getInvoices();
+        ArrayList<ReturnInvoiceDetail> invoices = importInvoice.getInvoices();
         for (int i = 0; i < invoices.size(); i++) {
-            ImportInvoiceDetail in = invoices.get(i);
+            ReturnInvoiceDetail in = invoices.get(i);
             Product product = in.getProduct();
             result += "<tr>";
             result += "<td>" + (i + 1) + "</td>";
@@ -128,24 +128,24 @@ public class SearchImportInvoiceController extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         String searchKey = request.getParameter("searchKey");
-        ArrayList<ImportInvoice> invoices = new ArrayList<>();
+        ArrayList<ReturnInvoice> invoices = new ArrayList<>();
 
         if (searchKey != null || !searchKey.equals("")) {
             int importInvoiceID = Integer.parseInt(searchKey);
 
-            ImportInvoiceDBContext idb = new ImportInvoiceDBContext();
+            ReturnInvoiceDBContext idb = new ReturnInvoiceDBContext();
 
-            ImportInvoice importInvoice = idb.getImportInvoice(importInvoiceID);
+            ReturnInvoice importInvoice = idb.getReturnInvoice(importInvoiceID);
             invoices.add(importInvoice);
         }
         SupplierDBContext sdb = new SupplierDBContext();
         ArrayList<Supplier> suppliers = sdb.getSuppliers();
 
-        request.setAttribute("importInvoices", invoices);
+        request.setAttribute("returnInvoices", invoices);
         request.setAttribute("searchKey", searchKey);
         request.setAttribute("suppliers", suppliers);
 
-        request.getRequestDispatcher("../../view/transaction/import/list.jsp").forward(request, response);
+        request.getRequestDispatcher("../../view/transaction/return/list.jsp").forward(request, response);
 
     }
 

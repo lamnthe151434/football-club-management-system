@@ -3,27 +3,25 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package controller.product;
+package controller.return_invoice;
 
-import dal.product.BrandDBContext;
-import dal.product.CategoryDBContext;
-import dal.product.ProductDBContext;
+import dal.partner.SupplierDBContext;
+import dal.transaction.ReturnInvoiceDBContext;
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.sql.Date;
 import java.util.ArrayList;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import model.product.Brand;
-import model.product.Category;
-import model.product.Product;
+import model.partner.Supplier;
+import model.transaction.ReturnInvoice;
 
 /**
  *
  * @author ADMIN
  */
-public class ListProductController extends HttpServlet {
+public class ListReturnInvoiceController extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -37,51 +35,42 @@ public class ListProductController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        BrandDBContext bdb = new BrandDBContext();
-        CategoryDBContext cdb = new CategoryDBContext();
+        ReturnInvoiceDBContext idb = new ReturnInvoiceDBContext();
+        SupplierDBContext sdb = new SupplierDBContext();
 
-        String rawBrandID = request.getParameter("brandID");
-        String rawCategoryID = request.getParameter("categoryID");
         String searchKey = request.getParameter("searchKey");
-        if (searchKey == null) {
-            searchKey = "";
+        ArrayList<ReturnInvoice> returnInvoices = null;
+
+        String rawFrom = request.getParameter("from");
+        String rawTo = request.getParameter("to");
+
+        String from = rawFrom;
+        String to = rawTo;
+
+        if (rawFrom == null || rawFrom.equals("")) {
+            from = "1990-01-01";
         }
-        String brandName = "";
-        String categoryName = "";
-
-        if (rawCategoryID == null) {
-            rawCategoryID = "-1";
-        }
-        if (rawBrandID == null) {
-            rawBrandID = "-1";
+        if (rawTo == null || rawTo.equals("")) {
+            to = "2030-12-31";
         }
 
-        int categoryID = Integer.parseInt(rawCategoryID);
-        int brandID = Integer.parseInt(rawBrandID);
-
-        Brand b = bdb.getBrand(brandID);
-        Category c = cdb.getCategory(categoryID);
-
-        if (categoryID == -1) {
-            categoryName = "Tất cả";
-        } else {
-            categoryName = c.getCategoryName();
+        String statuses = request.getParameter("status");
+        if (statuses == null) {
+            statuses = "12";
         }
-        if (brandID == -1) {
-            brandName = "Tất cả";
-        } else {
-            brandName = b.getBrandName();
+
+        System.out.println(from + "->" + to);
+        System.out.println(statuses);
+
+        int[] status = new int[statuses.length()];
+
+        for (int i = 0; i < statuses.length(); i++) {
+            char ch = statuses.charAt(i);
+            status[i] = Integer.parseInt(String.valueOf(ch));
         }
-        Category category = new Category(categoryID, categoryName);
-        Brand brand = new Brand(brandID, brandName);
 
-        ProductDBContext pdb = new ProductDBContext();
-        ArrayList<Integer> criterias = new ArrayList<>();
-        criterias.add(categoryID);
-        criterias.add(brandID);
-
-        ArrayList<Category> categories = cdb.getCategories();
-        ArrayList<Brand> brands = bdb.getBrands();
+        String[] separatedFrom = from.split("-");
+        String[] separatedTo = to.split("-");
 
         String rawPageIndex = request.getParameter("pageIndex");
         if (rawPageIndex == null) {
@@ -95,26 +84,12 @@ public class ListProductController extends HttpServlet {
         int pageIndex = Integer.parseInt(rawPageIndex);
         int pageSize = Integer.parseInt(rawPageSize);
 
-        int totalRecord = 0;
+        int totalRecord = idb.getTotalRecord(separatedFrom, separatedTo, status);
 
-        if (brandID == -1 && categoryID == -1) {
-            totalRecord = pdb.getTotalRecord(searchKey);
-        } else {
-            if (brandID == -1) {
-                totalRecord = pdb.getTotalRecordByCategory(searchKey, categoryID);
-            }
-            if (categoryID == -1) {
-                totalRecord = pdb.getTotalRecordByBrand(searchKey, brandID);
-            }
-            if (categoryID != -1 && brandID != -1) {
-                totalRecord = pdb.getTotalRecord(searchKey, criterias);
-            }
-        }
         int totalPage = totalRecord / pageSize;
         if (totalRecord % pageSize != 0) {
             totalPage += 1;
         }
-        System.out.println("IM HERE");
 
         String track = "Hiển thị ";
 
@@ -138,24 +113,28 @@ public class ListProductController extends HttpServlet {
             track += String.valueOf(end);
         }
 
-        track += " / Tổng số " + totalRecord + " hàng hóa";
+        track += " / Tổng số " + totalRecord + " phiếu";
 
-        ArrayList<Product> products = new ArrayList<>();
-
-        if (brandID == -1 && categoryID == -1) {
-            products = pdb.getProducts(searchKey, pageIndex, pageSize);
+        String key = "";
+        if (searchKey == null) {
+            key = "";
+            searchKey = "";
         } else {
-            if (brandID == -1) {
-                products = pdb.getProductsByCategory(searchKey, categoryID, pageIndex, pageSize);
-            }
-            if (categoryID == -1) {
-                products = pdb.getProductsByBrand(searchKey, brandID, pageIndex, pageSize);
-            }
-            if (categoryID != -1 && brandID != -1) {
-                products = pdb.getProducts(searchKey, criterias, pageIndex, pageSize);
-            }
+            key = searchKey.replaceAll("\\s+", "");
         }
 
+        if (!key.equals("")) {
+            returnInvoices = new ArrayList<>();
+            int returnInvoiceID = Integer.parseInt(key);
+            ReturnInvoice returnInvoice = idb.getReturnInvoice(returnInvoiceID);
+            if (returnInvoice != null) {
+                returnInvoices.add(returnInvoice);
+            }
+        } else {
+            returnInvoices = idb.getReturnInvoices(separatedFrom, separatedTo,
+                    status, pageIndex, pageSize);
+        }
+        ArrayList<Supplier> suppliers = sdb.getSuppliers();
         ArrayList<Integer> pageSizeOptions = new ArrayList<>();
         pageSizeOptions.add(10);
         pageSizeOptions.add(20);
@@ -163,20 +142,28 @@ public class ListProductController extends HttpServlet {
         pageSizeOptions.add(40);
         pageSizeOptions.add(50);
 
-        request.setAttribute("products", products);
-        request.setAttribute("categories", categories);
-        request.setAttribute("brands", brands);
+        Date todayDate = idb.today();
+        String today = String.valueOf(todayDate);
+
         request.setAttribute("pageSizeOptions", pageSizeOptions);
         request.setAttribute("selectedPageSize", pageSize);
         request.setAttribute("pageIndex", pageIndex);
         request.setAttribute("totalPage", totalPage);
+        request.setAttribute("statuses", statuses);
+
+        request.setAttribute("today", today);
         request.setAttribute("track", track);
-
-        request.setAttribute("category", category);
-        request.setAttribute("brand", brand);
+        if (rawFrom != null && !rawFrom.equals("")) {
+            request.setAttribute("from", from);
+        }
+        if (rawTo != null && !rawTo.equals("")) {
+            request.setAttribute("to", to);
+        }
+        request.setAttribute("returnInvoices", returnInvoices);
         request.setAttribute("searchKey", searchKey);
+        request.setAttribute("suppliers", suppliers);
 
-        request.getRequestDispatcher("../view/product/list.jsp").forward(request, response);
+        request.getRequestDispatcher("../../view/transaction/return/list.jsp").forward(request, response);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

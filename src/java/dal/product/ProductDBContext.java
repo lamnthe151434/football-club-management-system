@@ -162,6 +162,56 @@ public class ProductDBContext extends DBContext {
         return products;
     }
 
+    public ArrayList<Product> getProductsByCategory(int categoryID, int pageIndex, int pageSize) {
+        CategoryDBContext cdb = new CategoryDBContext();
+        BrandDBContext bdb = new BrandDBContext();
+        ArrayList<Product> products = new ArrayList<>();
+        try {
+            String sql = "SELECT [Product_ID]\n"
+                    + "      ,[Barcode]\n"
+                    + "      ,[Product_Name]\n"
+                    + "      ,[Brand_ID]\n"
+                    + "      ,[Category_ID]\n"
+                    + "      ,[Cost]\n"
+                    + "      ,[Price]\n"
+                    + "      ,[Unit]\n"
+                    + "      ,[Quantity]\n"
+                    + "      ,[Status]\n"
+                    + "      ,[Description] FROM \n"
+                    + "(SELECT *, ROW_NUMBER() OVER (ORDER BY [Product_ID] ASC) as row_index FROM [Product] "
+                    + " WHERE [Category_ID] = ?) tb\n"
+                    + "WHERE row_index >=(?-1)*?+1 AND row_index <= ?*?";
+            PreparedStatement stm = connection.prepareStatement(sql);
+            stm.setInt(1, categoryID);
+            stm.setInt(2, pageIndex);
+            stm.setInt(3, pageSize);
+            stm.setInt(4, pageIndex);
+            stm.setInt(5, pageSize);
+            ResultSet rs = stm.executeQuery();
+            while (rs.next()) {
+                int productID = Integer.parseInt(rs.getString("Product_ID"));
+                int barcode = rs.getInt("Barcode");
+                String unit = rs.getString("Unit");
+                String productName = rs.getString("Product_Name");
+                int brandID = Integer.parseInt(rs.getString("Brand_ID"));
+                Category category = cdb.getCategory(categoryID);
+                Brand brand = bdb.getBrand(brandID);
+                float cost = rs.getFloat("Cost");
+                float price = rs.getFloat("Price");
+                int quantity = Integer.parseInt(rs.getString("Quantity"));
+                int status = rs.getInt("Status");
+                String description = rs.getString("Description");
+                Product p = new Product(productID, barcode, productName,
+                        category, brand, unit, cost, price, quantity,
+                        status, description);
+                products.add(p);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ProductDBContext.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return products;
+    }
+
     public ArrayList<Product> getProductsByBrand(String searchKey, int brandID, int pageIndex, int pageSize) {
         CategoryDBContext cdb = new CategoryDBContext();
         BrandDBContext bdb = new BrandDBContext();
@@ -180,6 +230,56 @@ public class ProductDBContext extends DBContext {
                     + "      ,[Description] FROM \n"
                     + "(SELECT *, ROW_NUMBER() OVER (ORDER BY [Product_ID] ASC) as row_index FROM [Product]"
                     + "WHERE  [Brand_ID] = ? AND (product_name like '%" + searchKey + "%' or Cast(product_id as NVARCHAR(50)) like '%" + searchKey + "%')) tb\n"
+                    + "WHERE row_index >=(?-1)*?+1 AND row_index <= ?*? ";
+            PreparedStatement stm = connection.prepareStatement(sql);
+            stm.setInt(1, brandID);
+            stm.setInt(2, pageIndex);
+            stm.setInt(3, pageSize);
+            stm.setInt(4, pageIndex);
+            stm.setInt(5, pageSize);
+            ResultSet rs = stm.executeQuery();
+            while (rs.next()) {
+                int productID = Integer.parseInt(rs.getString("Product_ID"));
+                int barcode = rs.getInt("Barcode");
+                String unit = rs.getString("Unit");
+                String productName = rs.getString("Product_Name");
+                int categoryID = Integer.parseInt(rs.getString("Category_ID"));
+                Category category = cdb.getCategory(categoryID);
+                Brand brand = bdb.getBrand(brandID);
+                float cost = rs.getFloat("Cost");
+                float price = rs.getFloat("Price");
+                int quantity = Integer.parseInt(rs.getString("Quantity"));
+                int status = rs.getInt("Status");
+                String description = rs.getString("Description");
+                Product p = new Product(productID, barcode, productName,
+                        category, brand, unit, cost, price, quantity,
+                        status, description);
+                products.add(p);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ProductDBContext.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return products;
+    }
+
+    public ArrayList<Product> getProductsByBrand(int brandID, int pageIndex, int pageSize) {
+        CategoryDBContext cdb = new CategoryDBContext();
+        BrandDBContext bdb = new BrandDBContext();
+        ArrayList<Product> products = new ArrayList<>();
+        try {
+            String sql = "SELECT [Product_ID]\n"
+                    + "      ,[Barcode]\n"
+                    + "      ,[Product_Name]\n"
+                    + "      ,[Brand_ID]\n"
+                    + "      ,[Category_ID]\n"
+                    + "      ,[Cost]\n"
+                    + "      ,[Price]\n"
+                    + "      ,[Unit]\n"
+                    + "      ,[Quantity]\n"
+                    + "      ,[Status] \n"
+                    + "      ,[Description] FROM \n"
+                    + "(SELECT *, ROW_NUMBER() OVER (ORDER BY [Product_ID] ASC) as row_index FROM [Product]"
+                    + "WHERE  [Brand_ID] = ?) tb\n"
                     + "WHERE row_index >=(?-1)*?+1 AND row_index <= ?*? ";
             PreparedStatement stm = connection.prepareStatement(sql);
             stm.setInt(1, brandID);
@@ -262,6 +362,55 @@ public class ProductDBContext extends DBContext {
         return products;
     }
 
+    public ArrayList<Product> getProducts(int pageIndex, int pageSize) {
+        ArrayList<Product> products = new ArrayList<>();
+        CategoryDBContext cdb = new CategoryDBContext();
+        BrandDBContext bdb = new BrandDBContext();
+        try {
+            String sql = "SELECT [Product_ID]\n"
+                    + "      ,[Barcode]\n"
+                    + "      ,[Product_Name]\n"
+                    + "      ,[Brand_ID]\n"
+                    + "      ,[Category_ID]\n"
+                    + "      ,[Cost]\n"
+                    + "      ,[Price]\n"
+                    + "      ,[Unit]\n"
+                    + "      ,[Quantity]\n"
+                    + "      ,[Status]\n"
+                    + "      ,[Description] FROM \n"
+                    + "(SELECT *, ROW_NUMBER() OVER (ORDER BY [Product_ID] ASC) as row_index FROM [Product]) tb\n"
+                    + "WHERE row_index >=(?-1)*?+1 AND row_index <= ?*?";
+            PreparedStatement stm = connection.prepareStatement(sql);
+            stm.setInt(1, pageIndex);
+            stm.setInt(2, pageSize);
+            stm.setInt(3, pageIndex);
+            stm.setInt(4, pageSize);
+            ResultSet rs = stm.executeQuery();
+            while (rs.next()) {
+                int productID = Integer.parseInt(rs.getString("Product_ID"));
+                int barcode = rs.getInt("Barcode");
+                String unit = rs.getString("Unit");
+                String productName = rs.getString("Product_Name");
+                int categoryID = Integer.parseInt(rs.getString("Category_ID"));
+                int brandID = Integer.parseInt(rs.getString("Brand_ID"));
+                Category category = cdb.getCategory(categoryID);
+                Brand brand = bdb.getBrand(brandID);
+                float cost = rs.getFloat("Cost");
+                float price = rs.getFloat("Price");
+                int quantity = Integer.parseInt(rs.getString("Quantity"));
+                int status = rs.getInt("Status");
+                String description = rs.getString("Description");
+                Product p = new Product(productID, barcode, productName,
+                        category, brand, unit, cost, price, quantity,
+                        status, description);
+                products.add(p);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ProductDBContext.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return products;
+    }
+
     public ArrayList<Product> getProducts(String searchKey, ArrayList<Integer> criterias, int pageIndex, int pageSize) {
         ArrayList<Product> products = new ArrayList<>();
         CategoryDBContext cdb = new CategoryDBContext();
@@ -282,6 +431,59 @@ public class ProductDBContext extends DBContext {
                     + "  (SELECT *, ROW_NUMBER() OVER (ORDER BY [Product_ID] ASC) as row_index FROM [Product]\n"
                     + "                    WHERE [Category_ID] = ? AND [Brand_ID] = ? AND (product_name like '%" + searchKey + "%' or Cast(product_id as NVARCHAR(50)) like '%" + searchKey + "%')) tb\n"
                     + "                    WHERE row_index >=(?-1)*?+1 AND row_index <= ?*?";
+            PreparedStatement stm = connection.prepareStatement(sql);
+            stm.setInt(1, criterias.get(0));
+            stm.setInt(2, criterias.get(1));
+            stm.setInt(3, pageIndex);
+            stm.setInt(4, pageSize);
+            stm.setInt(5, pageIndex);
+            stm.setInt(6, pageSize);
+            ResultSet rs = stm.executeQuery();
+            while (rs.next()) {
+                int productID = Integer.parseInt(rs.getString("Product_ID"));
+                int barcode = rs.getInt("Barcode");
+                String unit = rs.getString("Unit");
+                String productName = rs.getString("Product_Name");
+                int categoryID = Integer.parseInt(rs.getString("Category_ID"));
+                int brandID = Integer.parseInt(rs.getString("Brand_ID"));
+                Category category = cdb.getCategory(categoryID);
+                Brand brand = bdb.getBrand(brandID);
+                float cost = rs.getFloat("Cost");
+                float price = rs.getFloat("Price");
+                int quantity = Integer.parseInt(rs.getString("Quantity"));
+                int status = rs.getInt("Status");
+                String description = rs.getString("Description");
+                Product p = new Product(productID, barcode, productName,
+                        category, brand, unit, cost, price, quantity,
+                        status, description);
+                products.add(p);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ProductDBContext.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return products;
+    }
+
+    public ArrayList<Product> getProducts(ArrayList<Integer> criterias, int pageIndex, int pageSize) {
+        ArrayList<Product> products = new ArrayList<>();
+        CategoryDBContext cdb = new CategoryDBContext();
+        BrandDBContext bdb = new BrandDBContext();
+        try {
+            String sql = "SELECT [Product_ID]\n"
+                    + "      ,[Barcode]\n"
+                    + "      ,[Product_Name]\n"
+                    + "      ,[Brand_ID]\n"
+                    + "      ,[Category_ID]\n"
+                    + "      ,[Cost]\n"
+                    + "      ,[Price]\n"
+                    + "      ,[Unit]\n"
+                    + "      ,[Quantity]\n"
+                    + "      ,[Status]\n"
+                    + "      ,[Description]\n"
+                    + "  FROM \n"
+                    + " (SELECT *, ROW_NUMBER() OVER (ORDER BY [Product_ID] ASC) as row_index FROM [Product]\n"
+                    + "  WHERE [Category_ID] = ? AND [Brand_ID] = ? ) tb\n"
+                    + "  WHERE row_index >=(?-1)*?+1 AND row_index <= ?*?";
             PreparedStatement stm = connection.prepareStatement(sql);
             stm.setInt(1, criterias.get(0));
             stm.setInt(2, criterias.get(1));
@@ -550,9 +752,39 @@ public class ProductDBContext extends DBContext {
         return -1;
     }
 
+    public int getTotalRecord() {
+        String sql = "SELECT COUNT(*) AS [Total] FROM [Product]";
+        try {
+            PreparedStatement stm = connection.prepareStatement(sql);
+            ResultSet rs = stm.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("Total");
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ProductDBContext.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return -1;
+    }
+
     public int getTotalRecord(String searchKey, ArrayList<Integer> criterias) {
         String sql = "SELECT COUNT(*) AS [Total] FROM [Product] WHERE [Category_ID] = ? AND [Brand_ID] = ?\n"
                 + "AND (product_name like '%" + searchKey + "%' or Cast(product_id as NVARCHAR(50)) like '%" + searchKey + "%') ";
+        try {
+            PreparedStatement stm = connection.prepareStatement(sql);
+            stm.setInt(1, criterias.get(0));
+            stm.setInt(2, criterias.get(1));
+            ResultSet rs = stm.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("Total");
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ProductDBContext.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return -1;
+    }
+
+    public int getTotalRecord(ArrayList<Integer> criterias) {
+        String sql = "SELECT COUNT(*) AS [Total] FROM [Product] WHERE [Category_ID] = ? AND [Brand_ID] = ?\n";
         try {
             PreparedStatement stm = connection.prepareStatement(sql);
             stm.setInt(1, criterias.get(0));
@@ -573,6 +805,36 @@ public class ProductDBContext extends DBContext {
         try {
             PreparedStatement stm = connection.prepareStatement(sql);
             stm.setInt(1, categoryID);
+            ResultSet rs = stm.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("Total");
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ProductDBContext.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return -1;
+    }
+
+    public int getTotalRecordByCategory(int categoryID) {
+        String sql = "SELECT COUNT(*) AS [Total] FROM [Product] WHERE [Category_ID] = ?\n";
+        try {
+            PreparedStatement stm = connection.prepareStatement(sql);
+            stm.setInt(1, categoryID);
+            ResultSet rs = stm.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("Total");
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ProductDBContext.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return -1;
+    }
+
+    public int getTotalRecordByBrand(int brandID) {
+        String sql = "SELECT COUNT(*) AS [Total] FROM [Product] WHERE [Brand_ID] = ? \n";
+        try {
+            PreparedStatement stm = connection.prepareStatement(sql);
+            stm.setInt(1, brandID);
             ResultSet rs = stm.executeQuery();
             if (rs.next()) {
                 return rs.getInt("Total");

@@ -37,12 +37,9 @@ public class ListImportInvoiceController extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         ImportInvoiceDBContext idb = new ImportInvoiceDBContext();
         SupplierDBContext sdb = new SupplierDBContext();
-//
-//        String rawSearchKey = request.getParameter("searchKey");
-//
-//        if (rawSearchKey == null) {
-//            rawSearchKey = "";
-//        }
+
+        String searchKey = request.getParameter("searchKey");
+        ArrayList<ImportInvoice> importInvoices = null;
 
         String rawFrom = request.getParameter("from");
         String rawTo = request.getParameter("to");
@@ -75,8 +72,6 @@ public class ListImportInvoiceController extends HttpServlet {
         String[] separatedFrom = from.split("-");
         String[] separatedTo = to.split("-");
 
-        ArrayList<Supplier> suppliers = sdb.getSuppliers();
-
         String rawPageIndex = request.getParameter("pageIndex");
         if (rawPageIndex == null) {
             rawPageIndex = "1";
@@ -89,15 +84,14 @@ public class ListImportInvoiceController extends HttpServlet {
         int pageIndex = Integer.parseInt(rawPageIndex);
         int pageSize = Integer.parseInt(rawPageSize);
 
-        int totalRecord = idb.getTotalRecord();
+        int totalRecord = idb.getTotalRecord(separatedFrom, separatedTo, status);
 
         int totalPage = totalRecord / pageSize;
         if (totalRecord % pageSize != 0) {
             totalPage += 1;
         }
 
-        String track = "";
-
+        String track = "Hiển thị ";
         int begin = ((pageIndex - 1) * pageSize) + 1;
         int end = 0;
 
@@ -118,11 +112,28 @@ public class ListImportInvoiceController extends HttpServlet {
             track += String.valueOf(end);
         }
 
-        track += " of " + totalRecord;
+        track += " / Tổng số " + totalRecord + " phiếu";
 
-        ArrayList<ImportInvoice> importInvoices = idb.getImportInvoices(separatedFrom, separatedTo,
-                status, pageIndex, pageSize);
+        String key = "";
+        if (searchKey == null) {
+            key = "";
+            searchKey = "";
+        } else {
+            key = searchKey.replaceAll("\\s+", "");
+        }
 
+        if (!key.equals("")) {
+            importInvoices = new ArrayList<>();
+            int importInvoiceID = Integer.parseInt(key);
+            ImportInvoice importInvoice = idb.getImportInvoice(importInvoiceID);
+            if (importInvoice != null) {
+                importInvoices.add(importInvoice);
+            }
+        } else {
+            importInvoices = idb.getImportInvoices(separatedFrom, separatedTo,
+                    status, pageIndex, pageSize);
+        }
+        ArrayList<Supplier> suppliers = sdb.getSuppliers();
         ArrayList<Integer> pageSizeOptions = new ArrayList<>();
         pageSizeOptions.add(10);
         pageSizeOptions.add(20);
@@ -134,7 +145,6 @@ public class ListImportInvoiceController extends HttpServlet {
         String today = String.valueOf(todayDate);
 
         request.setAttribute("pageSizeOptions", pageSizeOptions);
-        request.setAttribute("importInvoices", importInvoices);
         request.setAttribute("selectedPageSize", pageSize);
         request.setAttribute("pageIndex", pageIndex);
         request.setAttribute("totalPage", totalPage);
@@ -142,13 +152,14 @@ public class ListImportInvoiceController extends HttpServlet {
 
         request.setAttribute("today", today);
         request.setAttribute("track", track);
-
         if (rawFrom != null && !rawFrom.equals("")) {
             request.setAttribute("from", from);
         }
         if (rawTo != null && !rawTo.equals("")) {
             request.setAttribute("to", to);
         }
+        request.setAttribute("importInvoices", importInvoices);
+        request.setAttribute("searchKey", searchKey);
         request.setAttribute("suppliers", suppliers);
 
         request.getRequestDispatcher("../../view/transaction/import/list.jsp").forward(request, response);

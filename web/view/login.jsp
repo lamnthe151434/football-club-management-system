@@ -124,18 +124,18 @@
         <div class ="container" >
             <form class ="form_horizontal" action="login" method="POST" >
                 <div>
-                    <h3 class ="form_title" >WELCOME!</h3>
+                    <h3 class ="form_title" >Xin chào!</h3>
                 </div>
                 <div class ="form_group" >
-                    <input class ="input_field" type="text" name ="username" placeholder="username" /> <br/>
-                    <input class ="input_field" type="password" name ="password" placeholder="password" />
-                    <button class ="btn_login">LOG IN</button>
+                    <input class ="input_field" type="text" name ="username" placeholder="Tên đăng nhập" /> <br/>
+                    <input class ="input_field" type="password" name ="password" placeholder="Mật khẩu" />
+                    <button class ="btn_login">Đăng nhập</button>
                 </div>
                 <div class ="form_note" >
                     <span>${message}</span>
                 </div>
                 <ul class ="form_options" >
-                    <li><a href ="#" >Forgotten Username/Password?</li>
+                    <li><a href ="#" >Quên tài khoản/mật khẩu?</li>
                 </ul>
             </form>
         </div>

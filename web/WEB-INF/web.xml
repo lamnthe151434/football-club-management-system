@@ -134,7 +134,27 @@
     </servlet>
     <servlet>
         <servlet-name>EditImportInvoiceController</servlet-name>
-        <servlet-class>controller.import_invoice.EditImportInvoiceController</servlet-class>
+        <servlet-class>controller.return_invoice.EditImportInvoiceController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>InsertReturnInvoiceController</servlet-name>
+        <servlet-class>controller.return_invoice.InsertReturnInvoiceController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ListReturnInvoiceController</servlet-name>
+        <servlet-class>controller.return_invoice.ListReturnInvoiceController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>SearchReturnInvoiceController</servlet-name>
+        <servlet-class>controller.return_invoice.SearchReturnInvoiceController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>EditReturnInvoiceController</servlet-name>
+        <servlet-class>controller.return_invoice.EditReturnInvoiceController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>PriceController</servlet-name>
+        <servlet-class>controller.product.PriceController</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>LoginController</servlet-name>
@@ -271,6 +291,26 @@
     <servlet-mapping>
         <servlet-name>EditImportInvoiceController</servlet-name>
         <url-pattern>/invoice/import/edit</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>InsertReturnInvoiceController</servlet-name>
+        <url-pattern>/invoice/return/insert</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ListReturnInvoiceController</servlet-name>
+        <url-pattern>/invoice/return/list</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>SearchReturnInvoiceController</servlet-name>
+        <url-pattern>/invoice/return/search</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>EditReturnInvoiceController</servlet-name>
+        <url-pattern>/invoice/return/edit</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>PriceController</servlet-name>
+        <url-pattern>/product/edit/price</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

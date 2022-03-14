@@ -20,9 +20,11 @@ function submitForm(id) {
 }
 
 function setSearchKey(searchKey, searchBar) {
+//    alert("ok");
     var key = document.getElementById(searchKey);
     var search = document.getElementById(searchBar);
     key.value = search.value;
+
     submitForm("search-form");
 }
 
@@ -35,9 +37,9 @@ function pagger(id, pageIndex, pageSize, totalPage, gap)
     // First
 
     if (pageIndex != 1) {
-        result += "<input type=\"button\" value=\"&Lt;\" />";
-    } else {
         result += "<input type=\"button\" value=\"&Lt;\" onclick=\"setPageIndex('1')\" />";
+    } else {
+        result += "<input type=\"button\" value=\"&Lt;\" />";
     }
     // Previous
     if (pageIndex > 1) {
@@ -84,9 +86,9 @@ function pagger(id, pageIndex, pageSize, totalPage, gap)
     }
 
     if (pageIndex != totalPage) {
-        result += "<input type=\"button\" value=\"&Gt;\" />";
-    } else {
         result += "<input type=\"button\" value=\"&Gt;\" onclick=\"setPageIndex('" + totalPage + "')\" />";
+    } else {
+        result += "<input type=\"button\" value=\"&Gt;\" />";
     }
     container.innerHTML = result;
 }

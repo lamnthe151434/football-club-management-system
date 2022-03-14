@@ -18,9 +18,10 @@
     </head>
     <style>
 
+
         .container .main-content .middle {
             margin-left: 15px;
-            width: 1220px;
+            width: 1200px;
             height: 450px;
             overflow: auto;
         }
@@ -28,7 +29,7 @@
             /*margin-top: 15px;*/
             font-size: 17px;
             text-align: left;
-            width: 1250px;
+            width: 1200px;
             table-layout: fixed;
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
             border-collapse: collapse;
@@ -82,6 +83,7 @@
         .modal .import-invoice-edit-modal .modal-content,
         .modal .import-invoice-view-modal .modal-content{
             margin-top: 25px;
+
         }
         .modal .import-invoice-insert-modal .modal-content .btn-group,
         .modal .import-invoice-edit-modal .modal-content .btn-group,
@@ -99,6 +101,7 @@
         }
 
         .modal .import-invoice-insert-modal .modal-content .column:nth-of-type(2),
+        .modal .import-invoice-edit-modal .modal-content .column:nth-of-type(2),
         .modal .import-invoice-view-modal .modal-content .column:nth-of-type(2){
             width: 850px;
             height: 300px;
@@ -110,6 +113,7 @@
             /*border: 1px solid #000;*/
         }
         .modal .import-invoice-insert-modal .modal-content .column:nth-of-type(2) .row label,
+        .modal .import-invoice-edit-modal .modal-content .column:nth-of-type(2) .row label,
         .modal .import-invoice-view-modal .modal-content .column:nth-of-type(2) .row label {
             text-align: center;
             width:  850px;
@@ -178,14 +182,26 @@
             margin-top: 5px;
         }
 
+        .modal .import-invoice-insert-modal .modal-content .column #insert-product-box {
+            height: 390px;
+        }
+        .modal .import-invoice-edit-modal .modal-content .column #edit-product-box {
+            height: 380px;
+        }
+
+        .modal .import-invoice-view-modal .modal-content .column #view-product-box {
+            height: 460px;
+        }
+
         .modal .import-invoice-insert-modal .modal-content .column #insert-product-box,
         .modal .import-invoice-edit-modal .modal-content .column #edit-product-box {
-            margin-top: 25px;
+            margin-top: 39px;
         }
         .modal .import-invoice-insert-modal .modal-content .column .row span,
+        .modal .import-invoice-edit-modal .modal-content .column .row span,
         .modal .import-invoice-view-modal .modal-content .column .row span {
             display: inline-block;
-            width: 247px;
+            width: 245px;
             height: 38px;
             padding: 8px;
             border: 1px solid #000;
@@ -447,7 +463,7 @@
                     <div class="group-search" >
                         <div class="horizontal-search" >
                             <input id="search-bar" type="text" placeholder="Theo mã phiếu nhập hàng" value="${requestScope.searchKey}" name="id">
-                            <button onclick="setSearchKey('search-key', 'search-bar') type ="button"><i class="fa fa-search"></i></button>  
+                            <button onclick="setSearchKey('search-key', 'search-bar')"><i class="fa fa-search"></i></button>         
                         </div>
                         <div class="btn-add" >
                             <button type="button" onclick="openModal('import-invoice-insert-modal')">Nhập hàng</button>
@@ -509,75 +525,82 @@
                     </div>
                 </div>
                 <div class="middle" >
-                    <table>
-                        <thead>
-                            <tr>
-                                <td>Mã nhập hàng</td>
-                                <td>Thời gian</td>
-                                <td>Nhà cung cấp</td>
-                                <td>Tổng tiền hàng</td>
-                                <td>Ghi chú</td>
-                                <td>Trạng thái</td>
-                                <td>Hàng động</td>
-                            </tr>
-                        </thead>
-                        <tbody id="import-invoice-list">
-                            <c:set var="import-invoices" value="${requestScope.importInvoices}" ></c:set>
-                            <c:forEach begin="0" end="${importInvoices.size()}" items="${importInvoices}" var="ii" >
+                    <c:if test="${requestScope.importInvoices.size() > 0}" >
+                        <table>
+                            <thead>
                                 <tr>
-                                    <td>${ii.importInvoiceID}</td>
-                                    <td>${ii.date}</td>
-                                    <td>${ii.supplier.supplierName}</td>
-                                    <td>${ii.getTotal()}</td>
-                                    <td>${ii.description}</td>
-                                    <td>
-                                        <c:if test="${ii.status == 0}"  >
-                                            Đã hủy
-                                        </c:if> 
-                                        <c:if test="${ii.status ==1}"  >
-                                            Phiếu tạm
-                                        </c:if> 
-                                        <c:if test="${ii.status ==2}"  >
-                                            Đã nhập hàng
-                                        </c:if> 
-                                    </td>
-                                    <td>
-                                        <c:if test="${ii.status == 0}"  >
-                                            <button onclick="viewInvoice(${ii.importInvoiceID})">
-                                                <i class="fa fa-eye" ></i>
-                                            </button>
-                                        </c:if> 
-                                        <c:if test="${ii.status >=1}"  >
-                                            <button onclick="viewInvoice(${ii.importInvoiceID})">
-                                                <i class="fa fa-eye" ></i>
-                                            </button>
-                                            <button onclick="editInvoice(${ii.importInvoiceID})">
-                                                <i class="fa fa-pencil" ></i>
-                                            </button>
-                                        </c:if> 
-                                    </td>
+                                    <td>Mã nhập hàng</td>
+                                    <td>Thời gian</td>
+                                    <td>Nhà cung cấp</td>
+                                    <td>Tổng tiền hàng</td>
+                                    <td>Ghi chú</td>
+                                    <td>Trạng thái</td>
+                                    <td>Hàng động</td>
                                 </tr>
-                            </c:forEach>
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody id="import-invoice-list">
+                                <c:set var="import-invoices" value="${requestScope.importInvoices}" ></c:set>
+                                <c:forEach begin="0" end="${importInvoices.size()}" items="${importInvoices}" var="ii" >
+                                    <tr>
+                                        <td>PN0${ii.importInvoiceID}</td>
+                                        <td>${ii.date}</td>
+                                        <td>${ii.supplier.supplierName}</td>
+                                        <td>${ii.getTotal()}</td>
+                                        <td>${ii.description}</td>
+                                        <td>
+                                            <c:if test="${ii.status == 0}"  >
+                                                Đã hủy
+                                            </c:if> 
+                                            <c:if test="${ii.status ==1}"  >
+                                                Phiếu tạm
+                                            </c:if> 
+                                            <c:if test="${ii.status ==2}"  >
+                                                Đã nhập hàng
+                                            </c:if> 
+                                        </td>
+                                        <td>
+                                            <c:if test="${ii.status == 0}"  >
+                                                <button onclick="viewInvoice(${ii.importInvoiceID})">
+                                                    <i class="fa fa-eye" ></i>
+                                                </button>
+                                            </c:if> 
+                                            <c:if test="${ii.status >=1}"  >
+                                                <button onclick="viewInvoice(${ii.importInvoiceID})">
+                                                    <i class="fa fa-eye" ></i>
+                                                </button>
+                                                <button onclick="editInvoice(${ii.importInvoiceID})">
+                                                    <i class="fa fa-pencil" ></i>
+                                                </button>
+                                            </c:if> 
+                                        </td>
+                                    </tr>
+                                </c:forEach>
+                            </tbody>
+                        </table>
+                    </c:if>
+                    <c:if test="${requestScope.importInvoices.size() == 0}" >
+                        <p>Không tìm thấy kết quả</p>
+                    </c:if>
                 </div>
-                <div class="bottom" >
-                    <div class="pageSize" >
-                        Rows per page <select name ="pageSize" id ="pageSize" onchange="submitPageSize('pageSize')">
-                            <c:set var="pageSizeOptions" value="${requestScope.pageSizeOptions}" ></c:set>  
-                            <c:set var="selectedPageSize" value="${requestScope.selectedPageSize}" ></c:set>
-                            <c:forEach var="pageSize" begin="0" end="${pageSizeOptions.size()}" items="${pageSizeOptions}" >
-                                <option value ="${pageSize}" 
-                                        <c:if test="${selectedPageSize ==pageSize}" > 
-                                            selected="selected"
-                                        </c:if>> ${pageSize}
-                                </option>
-                            </c:forEach>
-                        </select>
+                <c:if test="${requestScope.importInvoices.size() >= 10 || requestScope.pageIndex >= 2}" >
+                    <div class="bottom" >
+                        <div class="pageSize" >
+                            Số bản ghi <select id="pageSize" name ="pageSize" id ="pageSize" onchange="setPageSize('pageSize')">
+                                <c:set var="pageSizeOptions" value="${requestScope.pageSizeOptions}" ></c:set>  
+                                <c:set var="selectedPageSize" value="${requestScope.selectedPageSize}" ></c:set>
+                                <c:forEach var="pageSize" begin="0" end="${pageSizeOptions.size()}" items="${pageSizeOptions}" >
+                                    <option value ="${pageSize}" 
+                                            <c:if test="${selectedPageSize ==pageSize}" > 
+                                                selected="selected"
+                                            </c:if>> ${pageSize}
+                                    </option>
+                                </c:forEach>
+                            </select>
+                        </div>
+                        <span>${requestScope.track}</span>
+                        <div class="pagger" id ="pagger" > </div>
                     </div>
-                    <span>${requestScope.trace}</span>
-                    <div class="pagger" id ="pagger" > </div>
-                </div>
+                </c:if>
             </div>
         </div>
 
@@ -639,7 +662,7 @@
                                 <label>Thêm hàng vào hóa đơn</label> <br />
                                 <input onkeyup ="productSearch('insert', this.value)" type="text" 
                                        name="searchProduct" class="search-product" 
-                                       placeholder="Tìm kiếm hàng hóa bằng mã hàng hoặc tên hàng"/>
+                                       placeholder="Tìm kiếm hàng hóa theo mã hàng"/>
                                 <div class="search-result" id="insert-search-result"  >
                                 </div>
                             </div>
@@ -728,10 +751,10 @@
                         </div>
                         <div class="column"  > 
                             <div id="edit-search-box" class="row" >
-                                <label>Thêm hàng vào hóa đơn</label> <br />
+                                <label>Chỉnh sửa hàng trong hóa đơn</label> <br />
                                 <input onkeyup ="productSearch('edit', this.value)" type="text" 
                                        name="searchProduct" class="search-product" 
-                                       placeholder="Tìm kiếm hàng hóa bằng mã hàng hoặc tên hàng"/>
+                                       placeholder="Tìm kiếm hàng hóa theo mã hàng"/>
                                 <div class="search-result" id="edit-search-result"  >
                                 </div>
                             </div>
@@ -841,12 +864,11 @@
         </div>
     </body>
     <script>
-
+        <c:if test="${requestScope.importInvoices.size() >= 10 || requestScope.pageIndex >= 2}" >
         pagger('pagger',${requestScope.pageIndex},
-        ${requestScope.selectedPageSize},
-        ${requestScope.totalPage}, 2);
-
-
+            ${requestScope.selectedPageSize},
+            ${requestScope.totalPage}, 2);
+        </c:if>
         var ordinalNumber = 0;
         function setDate(formId) {
             var from = document.getElementById('from');
@@ -880,10 +902,6 @@
         }
 
 
-        function submitPageSize(id) {
-            var size = document.getElementById(id).value;
-            window.location.href = "?pageIndex=1&pageSize=" + size;
-        }
         function openModal(id) {
             var box = document.getElementById(id);
             var modal = document.getElementsByClassName('modal');
@@ -910,7 +928,7 @@
             }
             box.style.transform = "scale(0)";
             var input = id.split('-modal')[0];
-            if(input === "import-invoice-insert") {
+            if (input === "import-invoice-insert") {
                 clearData(input);
             }
         }
@@ -925,7 +943,7 @@
             input[5].value = "";
             input[6].innerHTML = "";
             ordinalNumber = 0;
-            
+
         }
 
         function openBox(id) {

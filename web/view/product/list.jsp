@@ -17,6 +17,16 @@
     </head>
     <style>
 
+        .container .main-content .middle table {
+            /*margin-top: 15px;*/
+            font-size: 17px;
+            text-align: left;
+            width: 1220px;
+            table-layout: fixed;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+            border-collapse: collapse;
+            /*box-sizing: border-box;*/
+        }
 
         .container .main-content .middle {
             margin-left: 15px;
@@ -468,6 +478,11 @@
             text-align: center;
         }
 
+        .container .bottom span {
+            position: absolute;
+            left: 35vw;
+        }
+
 
     </style>
     <body>
@@ -495,7 +510,7 @@
                     <div class ="group-search" >
                         <div class ="horizontal-search" >
                             <input id="search-bar" value="${requestScope.searchKey}" type="text" placeholder="Tìm kiếm theo tên hoặc mã hàng" name="search">
-                            <button onclick="setSearchKey('search-key', 'search-bar')"><i class="fa fa-search"></i></button>         
+                            <button type="button" onclick="setSearchKey('search-key', 'search-bar')"><i class="fa fa-search"></i></button>         
                         </div>
                         <div class ="btn-add" >
                             <button onclick="openModal('product-insert-modal')">Thêm mới hàng hóa</button>
@@ -561,64 +576,71 @@
                     </div>
                 </div>
                 <div class ="middle" >
-                    <table>
-                        <thead>
-                            <tr>
-                                <td>Mã hàng</td>
-                                <td>Mã vạch</td>
-                                <td>Tên hàng hóa</td>
-                                <td>Nhóm hàng</td>
-                                <td>Thương hiệu</td>
-                                <td>Đơn vị</td>
-                                <td>Giá vốn</td>
-                                <td>Giá bán</td>
-                                <td>Số lượng</td>
-                                <td>Hành động</td>
-                            </tr>
-                        </thead>
-                        <tbody id="product-list">
-                            <c:set var="products" value="${requestScope.products}"  ></c:set>
-                            <c:forEach var="p" begin="0" end="${products.size()}" items="${products}" >
+                    <c:if test="${requestScope.products.size() > 0}" >
+                        <table>
+                            <thead>
                                 <tr>
-                                    <!--<td><input type ="checkbox" /></td>-->
-                                    <td>${p.productID}</td>
-                                    <td>${p.barcode}</td>
-                                    <td>${p.productName}</td>
-                                    <td>${p.category.categoryName}</td>
-                                    <td>${p.brand.brandName}</td>
-                                    <td>${p.unit}</td>
-                                    <td>${p.cost}</td>
-                                    <td>${p.price}</td>
-                                    <td>${p.quantity}</td>
-                                    <td>
-                                        <button class="action" type="button" onclick="edit(${p.productID}, 'product')"><i class="fa fa-pencil" ></i></button>
-                                        <button class="action" type="button" onclick="deleteEntity(${p.productID}, 'product')"><i class ="fa fa-trash" ></i></button>
-                                    </td>
+                                    <td>Mã hàng</td>
+                                    <td>Mã vạch</td>
+                                    <td>Tên hàng hóa</td>
+                                    <td>Nhóm hàng</td>
+                                    <td>Thương hiệu</td>
+                                    <td>Đơn vị</td>
+                                    <td>Giá vốn</td>
+                                    <td>Giá bán</td>
+                                    <td>Số lượng</td>
+                                    <td>Hành động</td>
                                 </tr>
-                            </c:forEach>
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody id="product-list">
+                                <c:set var="products" value="${requestScope.products}"  ></c:set>
+                                <c:forEach var="p" begin="0" end="${products.size()}" items="${products}" >
+                                    <tr>
+                                        <!--<td><input type ="checkbox" /></td>-->
+                                        <td>${p.productID}</td>
+                                        <td>${p.barcode}</td>
+                                        <td>${p.productName}</td>
+                                        <td>${p.category.categoryName}</td>
+                                        <td>${p.brand.brandName}</td>
+                                        <td>${p.unit}</td>
+                                        <td>${p.cost}</td>
+                                        <td>${p.price}</td>
+                                        <td>${p.quantity}</td>
+                                        <td>
+                                            <button class="action" type="button" onclick="edit(${p.productID}, 'product')"><i class="fa fa-pencil" ></i></button>
+                                            <button class="action" type="button" onclick="deleteEntity(${p.productID}, 'product')"><i class ="fa fa-trash" ></i></button>
+                                        </td>
+                                    </tr>
+                                </c:forEach>
+                            </tbody>
+                        </table>
+                    </c:if>
+                    <c:if test="${requestScope.products.size() ==0}" >
+                        <p>Không tìm thấy hàng hóa</p>
+                    </c:if>
                 </div>
-                <div class ="bottom" >
-                    <div class ="pageSize" >
-                        Rows per page <select name ="pageSize" id ="pageSize" onchange="setPageSize('pageSize')">
-                            <c:set var="pageSizeOptions" value="${requestScope.pageSizeOptions}" ></c:set>  
-                            <c:set var="selectedPageSize" value="${requestScope.selectedPageSize}" ></c:set>
-                            <c:forEach var="pageSize" begin="0" end="${pageSizeOptions.size()}" items="${pageSizeOptions}" >
-                                <option value ="${pageSize}" 
-                                        <c:if test="${selectedPageSize == pageSize}" > 
-                                            selected="selected"
-                                        </c:if>> ${pageSize}
-                                </option>
-                            </c:forEach>
-                        </select>
-                    </div>
-                    <span>${requestScope.track}</span>
-                    <div class ="pagger" id ="pagger" > 
+                <c:if test="${requestScope.products.size() >= 10 || requestScope.pageIndex >= 2}" >
+                    <div class ="bottom" >
+                        <div class ="pageSize" >
+                            Số bản ghi <select name ="pageSize" id ="pageSize" onchange="setPageSize('pageSize')">
+                                <c:set var="pageSizeOptions" value="${requestScope.pageSizeOptions}" ></c:set>  
+                                <c:set var="selectedPageSize" value="${requestScope.selectedPageSize}" ></c:set>
+                                <c:forEach var="pageSize" begin="0" end="${pageSizeOptions.size()}" items="${pageSizeOptions}" >
+                                    <option value ="${pageSize}" 
+                                            <c:if test="${selectedPageSize == pageSize}" > 
+                                                selected="selected"
+                                            </c:if>> ${pageSize}
+                                    </option>
+                                </c:forEach>
+                            </select>
+                        </div>
+                        <span>${requestScope.track}</span>
+                        <div class ="pagger" id ="pagger" > 
 
 
+                        </div>
                     </div>
-                </div>
+                </c:if>
             </div>
         </div>
         <div class ="modal" >
@@ -627,97 +649,99 @@
                     <h2 class ="title" >Thêm hàng hóa</h2>
                     <button class ="btn-close" onclick="closeModal('product-insert-modal')" >x</button>
                 </div>
-                <div class ="modal-content" >
-                    <div class ="row" >
-                        <div class ="column" > 
-                            <span>Mã hàng</span> <br/>
-                            <input type ="text" name ="productID" class ="product-insert"  />
-                        </div>
-                        <div class ="column"  > 
-                            <span>Nhóm hàng</span> <br/>
-                            <div class ="category-container" >
-                                <span id ="category-insert-name"  onclick="openBox('category-insert-search-box')" >---Chọn nhóm hàng---</span>
-                                <input id ="category-insert-id" class ="product-insert" type ="hidden" name ="category" >
-                                <div id="category-insert-search-box">
-                                    <input class ="product-insert" type ="text" onkeyup="search(this.value, 'category-insert')" placeholder="Tìm kiếm nhóm hàng" />
-                                    <div id = "category-insert-box" >
-                                        <table>
-                                            <c:forEach var="c" begin="0" end="${categories.size()}" items="${categories}" >
-                                                <tr>
-                                                    <td><span onclick="setValue('${c.categoryID}', '${c.categoryName}', 'category-insert')" class ="category-value">${c.categoryName}</span></td>
-                                                </tr>
-                                            </c:forEach>
-                                        </table>
+                <form action="insert" method="POST" >
+                    <div class ="modal-content" >
+                        <div class ="row" >
+                            <div class ="column" > 
+                                <span>Mã hàng</span> <br/>
+                                <input type ="text" name ="productID" class ="product-insert"  />
+                            </div>
+                            <div class ="column"  > 
+                                <span>Nhóm hàng</span> <br/>
+                                <div class ="category-container" >
+                                    <span id ="category-insert-name"  onclick="openBox('category-insert-search-box')" >---Chọn nhóm hàng---</span>
+                                    <input id ="category-insert-id" class ="product-insert" type ="hidden" name ="category" >
+                                    <div id="category-insert-search-box">
+                                        <input class ="product-insert" type ="text" onkeyup="search(this.value, 'category-insert')" placeholder="Tìm kiếm nhóm hàng" />
+                                        <div id = "category-insert-box" >
+                                            <table>
+                                                <c:forEach var="c" begin="0" end="${categories.size()}" items="${categories}" >
+                                                    <tr>
+                                                        <td><span onclick="setValue('${c.categoryID}', '${c.categoryName}', 'category-insert')" class ="category-value">${c.categoryName}</span></td>
+                                                    </tr>
+                                                </c:forEach>
+                                            </table>
+                                        </div>
                                     </div>
                                 </div>
+                                <span onclick="openModal('category-insert-modal')" class ="btn-add" ><i class="fa fa-plus" ></i></span>
                             </div>
-                            <span onclick="openModal('category-insert-modal')" class ="btn-add" ><i class="fa fa-plus" ></i></span>
-                        </div>
-                        <div class ="column" > 
-                            <span>Số lượng</span> <br/>
-                            <input type ="text" name ="quantity" class ="product-insert"  />
-                        </div>
+                            <div class ="column" > 
+                                <span>Số lượng</span> <br/>
+                                <input type ="text" name ="quantity" class ="product-insert"  />
+                            </div>
 
-                    </div>
-                    <div class ="row" >
-                        <div class ="column" > 
-                            <span>Mã vạch</span> <br/>
-                            <input type ="text" name ="barcode" class ="product-insert"  />
                         </div>
-                        <div class ="column" > 
-                            <span>Thương hiệu</span> <br/>
-                            <div class ="brand-container" >
-                                <span  onclick="openBox('brand-insert-search-box')"  id ="brand-insert-name" >---Chọn thương hiệu---</span>
-                                <input id ="brand-insert-id" class ="product-insert" type ="hidden" name ="brand"  >
-                                <div id="brand-insert-search-box">
-                                    <input  class ="product-insert"
-                                            type ="text" onkeyup="search(this.value, 'brand-insert')" placeholder="Tìm kiếm thương hiệu"/>
-                                    <div id = "brand-insert-box" >
-                                        <table>
-                                            <c:forEach var="b" begin="0" end="${brands.size()}" items="${brands}" >
-                                                <tr>
-                                                    <td class="first-td" ><span onclick="setValue('${b.brandID}', '${b.brandName}', 'brand-insert')" class ="brand-value">${b.brandName}</span></td>
-                                                </tr>
-                                            </c:forEach>
-                                        </table>
+                        <div class ="row" >
+                            <div class ="column" > 
+                                <span>Mã vạch</span> <br/>
+                                <input type ="text" name ="barcode" class ="product-insert"  />
+                            </div>
+                            <div class ="column" > 
+                                <span>Thương hiệu</span> <br/>
+                                <div class ="brand-container" >
+                                    <span  onclick="openBox('brand-insert-search-box')"  id ="brand-insert-name" >---Chọn thương hiệu---</span>
+                                    <input id ="brand-insert-id" class ="product-insert" type ="hidden" name ="brand"  >
+                                    <div id="brand-insert-search-box">
+                                        <input  class ="product-insert"
+                                                type ="text" onkeyup="search(this.value, 'brand-insert')" placeholder="Tìm kiếm thương hiệu"/>
+                                        <div id = "brand-insert-box" >
+                                            <table>
+                                                <c:forEach var="b" begin="0" end="${brands.size()}" items="${brands}" >
+                                                    <tr>
+                                                        <td class="first-td" ><span onclick="setValue('${b.brandID}', '${b.brandName}', 'brand-insert')" class ="brand-value">${b.brandName}</span></td>
+                                                    </tr>
+                                                </c:forEach>
+                                            </table>
+                                        </div>
                                     </div>
                                 </div>
+                                <span onclick="openModal('brand-insert-modal')" class ="btn-add" ><i class="fa fa-plus" ></i></span>
+                            </div> 
+                            <div class ="column" > 
+                                <span>Giá vốn</span> <br/>
+                                <input type ="text" name ="cost" class ="product-insert"  />
                             </div>
-                            <span onclick="openModal('brand-insert-modal')" class ="btn-add" ><i class="fa fa-plus" ></i></span>
-                        </div> 
-                        <div class ="column" > 
-                            <span>Giá vốn</span> <br/>
-                            <input type ="text" name ="cost" class ="product-insert"  />
                         </div>
-                    </div>
-                    <div class ="row" >
-                        <div class ="column" > 
-                            <span>Tên hàng hóa</span> <br/>
-                            <input type ="text" name ="productName" class ="product-insert"  />
-                        </div>
-                        <div class ="column"> 
-                            <span>Đơn vị</span> <br/>
-                            <input type ="text" name ="unit" class ="product-insert" />
-                        </div>
-                        <div class ="column"> 
-                            <span>Giá bán</span> <br/>
-                            <input type ="text" name ="price" class ="product-insert" />
-                        </div>
+                        <div class ="row" >
+                            <div class ="column" > 
+                                <span>Tên hàng hóa</span> <br/>
+                                <input type ="text" name ="productName" class ="product-insert"  />
+                            </div>
+                            <div class ="column"> 
+                                <span>Đơn vị</span> <br/>
+                                <input type ="text" name ="unit" class ="product-insert" />
+                            </div>
+                            <div class ="column"> 
+                                <span>Giá bán</span> <br/>
+                                <input type ="text" name ="price" class ="product-insert" />
+                            </div>
 
-                    </div>
-                    <div class ="row" >
-                        <div class ="column" > 
-                            <span>Mô tả</span> <br/>
-                            <input type ="text" name ="description" class ="product-insert"  />
                         </div>
+                        <div class ="row" >
+                            <div class ="column" > 
+                                <span>Mô tả</span> <br/>
+                                <input type ="text" name ="description" class ="product-insert"  />
+                            </div>
 
-                        <input type="checkbox" value="1" name="status" />
-                        <label>Bán trực tiếp</label>
+                            <input type="checkbox" value="1" name="status" />
+                            <label>Bán trực tiếp</label>
+                        </div>
+                        <div class ="btn-group" >
+                            <input type="submit" value ="Save" class ="product-input" />
+                        </div>
                     </div>
-                    <div class ="btn-group" >
-                        <input type="submit" value ="Save" class ="product-input" />
-                    </div>
-                </div>
+                </form>
             </div>
         </div>
         <div class ="modal" >
@@ -864,9 +888,11 @@
             </div>
         </div>
         <script>
+            <c:if test="${requestScope.products.size() >= 10 || requestScope.pageIndex >= 2}" >
             pagger('pagger',${requestScope.pageIndex},
-            ${requestScope.selectedPageSize},
-            ${requestScope.totalPage}, 2);
+                ${requestScope.selectedPageSize},
+                ${requestScope.totalPage}, 2);
+            </c:if>
 
             function openModal(id) {
                 var box = document.getElementById(id);

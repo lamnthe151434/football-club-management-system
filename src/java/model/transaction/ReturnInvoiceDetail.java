@@ -13,7 +13,7 @@ import model.product.Product;
  */
 public class ReturnInvoiceDetail {
 
-    private int returnInvoiceDetailID;
+    private int getReturnInvoiceID;
     private Product product;
     private float unitPrice;
     private int quantity;
@@ -31,8 +31,8 @@ public class ReturnInvoiceDetail {
         this.unitPrice = unitPrice;
     }
 
-    public ReturnInvoiceDetail(int returnInvoiceDetailID, Product product, float unitPrice, int quantity) {
-        this.returnInvoiceDetailID = returnInvoiceDetailID;
+    public ReturnInvoiceDetail(int getReturnInvoiceID, Product product, float unitPrice, int quantity) {
+        this.getReturnInvoiceID = getReturnInvoiceID;
         this.product = product;
         this.unitPrice = unitPrice;
         this.quantity = quantity;
@@ -46,12 +46,12 @@ public class ReturnInvoiceDetail {
         this.unitPrice = unitPrice;
     }
 
-    public int getReturnInvoiceDetailID() {
-        return returnInvoiceDetailID;
+    public int getReturnInvoiceID() {
+        return getReturnInvoiceID;
     }
 
-    public void setReturnInvoiceDetailID(int returnInvoiceDetailID) {
-        this.returnInvoiceDetailID = returnInvoiceDetailID;
+    public void setReturnInvoiceID(int getReturnInvoiceID) {
+        this.getReturnInvoiceID = getReturnInvoiceID;
     }
 
     public Product getProduct() {

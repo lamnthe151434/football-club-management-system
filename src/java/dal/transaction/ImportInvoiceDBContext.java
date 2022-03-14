@@ -240,6 +240,35 @@ public class ImportInvoiceDBContext extends DBContext {
         }
     }
 
+    public int getTotalRecord(String[] from, String[] to, int[] status) {
+        String sql = "SELECT COUNT(*) AS [Total] FROM [Import_Invoice]"
+                + "WHERE (YEAR([Date]) BETWEEN " + from[0] + "  AND " + to[0] + " )\n"
+                + "  AND (MONTH([Date]) BETWEEN " + from[1] + " AND " + to[1] + " )\n"
+                + "  AND (DAY([Date]) BETWEEN " + from[2] + " AND  " + to[2] + ")";
+        if (status.length != 0) {
+            sql += " AND (";
+            for (int i = 0; i < status.length; i++) {
+                int s = status[i];
+                sql += "[Status] = " + s;
+                if (i != status.length - 1) {
+                    sql += " OR ";
+                }
+            }
+            sql += ")\n";
+        }
+        try {
+            PreparedStatement stm = connection.prepareStatement(sql);
+            ResultSet rs = stm.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("Total");
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ImportInvoiceDBContext.class
+                    .getName()).log(Level.SEVERE, null, ex);
+        }
+        return -1;
+    }
+
     public int getTotalRecord() {
         String sql = "SELECT COUNT(*) AS [Total] FROM [Import_Invoice]";
         try {
@@ -247,7 +276,6 @@ public class ImportInvoiceDBContext extends DBContext {
             ResultSet rs = stm.executeQuery();
             if (rs.next()) {
                 return rs.getInt("Total");
-
             }
         } catch (SQLException ex) {
             Logger.getLogger(ImportInvoiceDBContext.class
