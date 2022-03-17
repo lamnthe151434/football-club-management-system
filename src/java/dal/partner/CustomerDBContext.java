@@ -6,6 +6,7 @@
 package dal.partner;
 
 import dal.DBContext;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -27,7 +28,9 @@ public class CustomerDBContext extends DBContext {
                     + "      ,[Customer_Name]\n"
                     + "      ,[Address]\n"
                     + "      ,[Phone]\n"
-                    + "      ,[Email]\n"
+                    + "      ,[DOB]\n"
+                    + "      ,[Gender]\n"
+                    + "      ,[Description]\n"
                     + "  FROM [dbo].[Customer]";
             PreparedStatement stm = connection.prepareStatement(sql);
             ResultSet rs = stm.executeQuery();
@@ -36,8 +39,11 @@ public class CustomerDBContext extends DBContext {
                 String customerName = rs.getString("Customer_Name");
                 String address = rs.getString("Address");
                 String phone = rs.getString("Phone");
-                String email = rs.getString("Email");
-                Customer c = new Customer(customerID, customerName, address, phone, email);
+                Date dob = rs.getDate("DOB");
+                boolean gender = rs.getBoolean("Gender");
+                String description = rs.getString("Description");
+                Customer c = new Customer(customerID, customerName, gender, dob,
+                        phone, address, description);
                 customers.add(c);
             }
         } catch (SQLException ex) {
@@ -53,7 +59,9 @@ public class CustomerDBContext extends DBContext {
                     + "      ,[Customer_Name]\n"
                     + "      ,[Address]\n"
                     + "      ,[Phone]\n"
-                    + "      ,[Email] FROM\n"
+                    + "      ,[DOB]\n"
+                    + "      ,[Gender]\n"
+                    + "      ,[Description] FROM\n"
                     + " (SELECT *, ROW_NUMBER() OVER (ORDER BY [Customer_ID] ASC) as row_index FROM [Customer]) tb\n"
                     + "  WHERE row_index >=(?-1)*?+1 AND row_index <= ?*?";
             PreparedStatement stm = connection.prepareStatement(sql);
@@ -67,12 +75,11 @@ public class CustomerDBContext extends DBContext {
                 String customerName = rs.getString("Customer_Name");
                 String address = rs.getString("Address");
                 String phone = rs.getString("Phone");
-                String email = rs.getString("Email");
-                
-                if(address == null) address = "";
-                if(phone == null) phone = "";
-                if(email == null) email = "";
-                Customer c = new Customer(customerID, customerName, address, phone, email);
+                Date dob = rs.getDate("DOB");
+                boolean gender = rs.getBoolean("Gender");
+                String description = rs.getString("Description");
+                Customer c = new Customer(customerID, customerName, gender, dob,
+                        phone, address, description);
                 customers.add(c);
             }
         } catch (SQLException ex) {
@@ -84,10 +91,13 @@ public class CustomerDBContext extends DBContext {
 
     public Customer getCustomer(int customerID) {
         try {
-            String sql = "SELECT [Customer_Name]\n"
+            String sql = "SELECT [Customer_ID]\n"
+                    + "      ,[Customer_Name]\n"
                     + "      ,[Address]\n"
                     + "      ,[Phone]\n"
-                    + "      ,[Email]\n"
+                    + "      ,[DOB]\n"
+                    + "      ,[Gender]\n"
+                    + "      ,[Description]\n"
                     + "  FROM [dbo].[Customer] WHERE [Customer_ID] = ?";
             PreparedStatement stm = connection.prepareStatement(sql);
             stm.setInt(1, customerID);
@@ -96,8 +106,11 @@ public class CustomerDBContext extends DBContext {
                 String customerName = rs.getString("Customer_Name");
                 String address = rs.getString("Address");
                 String phone = rs.getString("Phone");
-                String email = rs.getString("Email");
-                Customer customer = new Customer(customerID, customerName, address, phone, email);
+                Date dob = rs.getDate("DOB");
+                boolean gender = rs.getBoolean("Gender");
+                String description = rs.getString("Description");
+                Customer customer = new Customer(customerID, customerName, gender,
+                        dob, phone, address, description);
                 return customer;
             }
         } catch (SQLException ex) {
@@ -113,15 +126,19 @@ public class CustomerDBContext extends DBContext {
                     + "           ([Customer_Name]\n"
                     + "           ,[Address]\n"
                     + "           ,[Phone]\n"
-                    + "           ,[Email])\n"
+                    + "           ,[DOB]\n"
+                    + "           ,[Gender]\n"
+                    + "           ,[Description])\n"
                     + "     VALUES\n"
-                    + "           (?,?,?,?)";
+                    + "           (?,?,?,?,?,?)";
             connection.setAutoCommit(false);
             stm = connection.prepareStatement(sql);
             stm.setString(1, customer.getCustomerName());
             stm.setString(2, customer.getAddress());
             stm.setString(3, customer.getPhone());
-            stm.setString(4, customer.getEmail());
+            stm.setDate(4, customer.getDob());
+            stm.setBoolean(5, customer.isGender());
+            stm.setString(6, customer.getDescription());
             stm.executeUpdate();
         } catch (SQLException ex) {
             Logger.getLogger(CustomerDBContext.class.getName()).log(Level.SEVERE, null, ex);
@@ -160,15 +177,18 @@ public class CustomerDBContext extends DBContext {
                     + "   SET [Customer_Name] = ?\n"
                     + "      ,[Address] = ?\n"
                     + "      ,[Phone] = ?\n"
-                    + "      ,[Email] = ?\n"
+                    + "      ,[DOB] = ?\n"
+                    + "      ,[Gender] = ?\n"
+                    + "      ,[Description] = ?\n"
                     + " WHERE [Customer_ID] = ?";
             connection.setAutoCommit(false);
             stm = connection.prepareStatement(sql);
             stm.setString(1, customer.getCustomerName());
             stm.setString(2, customer.getAddress());
             stm.setString(3, customer.getPhone());
-            stm.setString(4, customer.getEmail());
-            stm.setInt(5, customer.getCustomerID());
+            stm.setDate(4, customer.getDob());
+            stm.setBoolean(5, customer.isGender());
+            stm.setString(6, customer.getDescription());
             stm.executeUpdate();
         } catch (SQLException ex) {
             Logger.getLogger(CustomerDBContext.class.getName()).log(Level.SEVERE, null, ex);

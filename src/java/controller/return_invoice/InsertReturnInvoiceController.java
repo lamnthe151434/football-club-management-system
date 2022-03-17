@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package controller.return_invoice;
+package controller.import_invoice;
 
 import dal.partner.SupplierDBContext;
 import dal.product.ProductDBContext;
@@ -33,6 +33,32 @@ public class InsertReturnInvoiceController extends HttpServlet {
 
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
+    /**
+     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
+     * methods.
+     *
+     * @param request servlet request
+     * @param response servlet response
+     * @throws ServletException if a servlet-specific error occurs
+     * @throws IOException if an I/O error occurs
+     */
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        response.setContentType("text/html;charset=UTF-8");
+        try (PrintWriter out = response.getWriter()) {
+            /* TODO output your page here. You may use following sample code. */
+            out.println("<!DOCTYPE html>");
+            out.println("<html>");
+            out.println("<head>");
+            out.println("<title>Servlet InsertReturnInvoiceController</title>");
+            out.println("</head>");
+            out.println("<body>");
+            out.println("<h1>Servlet InsertReturnInvoiceController at " + request.getContextPath() + "</h1>");
+            out.println("</body>");
+            out.println("</html>");
+        }
+    }
+
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
@@ -45,6 +71,7 @@ public class InsertReturnInvoiceController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        processRequest(request, response);
     }
 
     /**
@@ -64,8 +91,21 @@ public class InsertReturnInvoiceController extends HttpServlet {
 
         String rawDate = request.getParameter("date");
         String rawSupplierID = request.getParameter("supplierID");
+        String rawDiscount = request.getParameter("discount");
+        String rawPaid = request.getParameter("paid");
+        String rawDiscountType = request.getParameter("discountType");
         String rawDescription = request.getParameter("desciption");
         String rawStatus = request.getParameter("status");
+
+        float discount = Float.parseFloat(rawDiscount);
+        float paid = Float.parseFloat(rawPaid);
+
+        boolean discountType = true;
+        if (rawDiscountType.equals("1")) {
+            discountType = true;
+        } else {
+            discountType = false;
+        }
 
         String productIDs[] = request.getParameterValues("id");
         String quantities[] = request.getParameterValues("quantity");
@@ -85,9 +125,12 @@ public class InsertReturnInvoiceController extends HttpServlet {
         String description = rawDescription;
         int status = Integer.parseInt(rawStatus);
 
+//        ArrayList<Product> products = new ArrayList<>();
+        ReturnInvoiceDBContext irdb = new ReturnInvoiceDBContext();
+
         ArrayList<ReturnInvoiceDetail> returnInvoiceDetails = new ArrayList<>();
 
-        int returnInvoiceID = rdb.getTotalRecord() + 1;
+        int returnInvoiceID = irdb.getTotalRecord() + 1;
 
         for (int i = 0; i < productIDs.length; i++) {
             int productID = Integer.parseInt(String.valueOf(productIDs[i]));
@@ -102,9 +145,9 @@ public class InsertReturnInvoiceController extends HttpServlet {
             System.out.println(returnInvoiceID);
         }
 
-        ReturnInvoice invoice = new ReturnInvoice(date, supplier, returnInvoiceDetails,
-                status, description);
-        rdb.insertReturnInvoice(invoice);
+        ReturnInvoice invoice = new ReturnInvoice(returnInvoiceID, date, supplier,
+                discount, discountType, paid, returnInvoiceDetails, status, description);
+        irdb.insertReturnInvoice(invoice);
 
         response.sendRedirect("list");
     }

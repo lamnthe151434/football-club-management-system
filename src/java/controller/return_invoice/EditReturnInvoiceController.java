@@ -119,14 +119,27 @@ public class EditReturnInvoiceController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        SupplierDBContext sdb = new SupplierDBContext();
+          SupplierDBContext sdb = new SupplierDBContext();
         ProductDBContext pdb = new ProductDBContext();
 
-        int returnInvoicesID = Integer.parseInt(request.getParameter("invoiceID"));
+        int returnInvoiceID = Integer.parseInt(request.getParameter("invoiceID"));
         String rawDate = request.getParameter("date");
         String rawSupplierID = request.getParameter("supplierID");
+        String rawDiscount = request.getParameter("discount");
+        String rawPaid = request.getParameter("paid");
+        String rawDiscountType = request.getParameter("discountType");
         String rawDescription = request.getParameter("desciption");
         String rawStatus = request.getParameter("status");
+
+        float discount = Float.parseFloat(rawDiscount);
+        float paid = Float.parseFloat(rawPaid);
+
+        boolean discountType = true;
+        if (rawDiscountType.equals("1")) {
+            discountType = true;
+        } else {
+            discountType = false;
+        }
 
         String productIDs[] = request.getParameterValues("id");
         String quantities[] = request.getParameterValues("quantity");
@@ -145,11 +158,11 @@ public class EditReturnInvoiceController extends HttpServlet {
         Date date = Date.valueOf(rawDate);
         String description = rawDescription;
 
-        ReturnInvoiceDBContext rdb = new ReturnInvoiceDBContext();
-        ReturnInvoice returnInvoices = rdb.getReturnInvoice(returnInvoicesID);
+        ReturnInvoiceDBContext iidb = new ReturnInvoiceDBContext();
+        ReturnInvoice returnInvoice = iidb.getReturnInvoice(returnInvoiceID);
 
         int newStatus = Integer.parseInt(rawStatus);
-        int oldStatus = returnInvoices.getStatus();
+        int oldStatus = returnInvoice.getStatus();
 
         System.out.println(newStatus + ", " + oldStatus);
 
@@ -163,33 +176,33 @@ public class EditReturnInvoiceController extends HttpServlet {
         }
         // đã nhập hàng -> hủy phiếu
         if (newStatus == (oldStatus - 2)) {
-            ArrayList<ReturnInvoiceDetail> invoices = rdb.getReturnInvoiceDetails(returnInvoicesID);
+            ArrayList<ReturnInvoiceDetail> invoices = iidb.getReturnInvoiceDetails(returnInvoiceID);
             for (int i = 0; i < invoices.size(); i++) {
                 ReturnInvoiceDetail iid = invoices.get(i);
                 int oldQuantity = iid.getQuantity();
                 Product p = iid.getProduct();
-                pdb.increaseQuantity(p, oldQuantity);
+                pdb.decreaseQuantity(p, oldQuantity);
             }
         }
 
-        rdb.deleteReturnInvoiceDetail(returnInvoicesID);
+        iidb.deleteReturnInvoiceDetail(returnInvoiceID);
 
-        ArrayList<ReturnInvoiceDetail> returnInvoicesDetails = new ArrayList<>();
+        ArrayList<ReturnInvoiceDetail> returnInvoiceDetails = new ArrayList<>();
 
         for (int i = 0; i < productIDs.length; i++) {
             int productID = Integer.parseInt(String.valueOf(productIDs[i]));
             int quantity = Integer.parseInt(String.valueOf(quantities[i]));
             Product p = pdb.getProduct(productID);
             if (newStatus == (oldStatus + 1)) {
-                pdb.decreaseQuantity(p, quantity);
+                pdb.increaseQuantity(p, quantity);
             }
-            ReturnInvoiceDetail ii = new ReturnInvoiceDetail(returnInvoicesID, p, p.getCost(), quantity);
-            returnInvoicesDetails.add(ii);
+            ReturnInvoiceDetail ii = new ReturnInvoiceDetail(returnInvoiceID, p, p.getCost(), quantity);
+            returnInvoiceDetails.add(ii);
         }
 
-        ReturnInvoice invoice = new ReturnInvoice(returnInvoicesID, date, supplier,
-                returnInvoicesDetails, newStatus, description);
-        rdb.updateReturnInvoice(invoice);
+        ReturnInvoice invoice = new ReturnInvoice(returnInvoiceID, date, supplier,
+                discount, discountType, paid, returnInvoiceDetails, oldStatus, description);
+        iidb.updateReturnInvoice(invoice);
 
         response.sendRedirect("list");
     }

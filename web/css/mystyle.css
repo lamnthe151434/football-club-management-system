@@ -154,6 +154,7 @@ section.setting {
 
 .container .top .horizontal-search input:focus {
     box-shadow: 0px 0px 2px 2px #ccc;
+    border: 0.5px solid blue;
 }
 
 .container .top .horizontal-search button {

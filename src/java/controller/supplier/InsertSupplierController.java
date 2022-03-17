@@ -8,6 +8,7 @@ package controller.supplier;
 import dal.partner.SupplierDBContext;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.Date;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -32,20 +33,44 @@ public class InsertSupplierController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
+//        String rawSupplierID = request.getParameter("supplierID");
         String rawSupplierName = request.getParameter("supplierName");
         String rawAddress = request.getParameter("address");
         String rawPhone = request.getParameter("phone");
-        String rawEmail = request.getParameter("email");
+        String rawDob = request.getParameter("dob");
+        String rawGender = request.getParameter("gender");
+        String rawDescription = request.getParameter("description");
 
+        if (rawAddress == null) {
+            rawAddress = "";
+        }
+        if (rawPhone == null) {
+            rawPhone = "";
+        }
+        if (rawDob == null) {
+            rawDob = "0001-01-01";
+        }
+        rawGender = "1";
+
+//        int supplierID = Integer.parseInt(rawSupplierID);
         String supplierName = rawSupplierName;
         String address = rawAddress;
         String phone = rawPhone;
-        String email = rawEmail;
-        
-        Supplier supplier = new Supplier(supplierName, address, phone, email);
-        SupplierDBContext sdb = new SupplierDBContext();
-        sdb.insertSupplier(supplier);
-        
+        Date dob = Date.valueOf(rawDob);
+        String description = rawDescription;
+        int genderInt = Integer.parseInt(rawGender);
+        boolean gender = true;
+        if (genderInt == 1) {
+            gender = true;
+        } else {
+            gender = false;
+        }
+
+        Supplier supplier = new Supplier(supplierName, gender, dob,
+                phone, address, description);
+        SupplierDBContext cdb = new SupplierDBContext();
+        cdb.insertSupplier(supplier);
+
         response.sendRedirect("list");
     }
 

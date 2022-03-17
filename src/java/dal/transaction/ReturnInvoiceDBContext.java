@@ -34,8 +34,12 @@ public class ReturnInvoiceDBContext extends DBContext {
             String sql = "SELECT [Return_Invoice_ID]\n"
                     + "      ,[Date]\n"
                     + "      ,[Supplier_ID]\n"
+                    + "      ,[Discount]\n"
+                    + "      ,[Discount_Type]\n"
+                    + "      ,[Pay]\n"
+                    + "      ,[Status]\n"
                     + "      ,[Description]\n"
-                    + "      ,[Status] FROM "
+                    + "  FROM "
                     + " (SELECT *, ROW_NUMBER() OVER (ORDER BY [Return_Invoice_ID] ASC) as row_index FROM [Return_Invoice]"
                     + "  WHERE (YEAR([Date]) BETWEEN " + from[0] + "  AND " + to[0] + " )\n"
                     + "  AND (MONTH([Date]) BETWEEN " + from[1] + " AND " + to[1] + " )\n"
@@ -63,12 +67,16 @@ public class ReturnInvoiceDBContext extends DBContext {
                 int returnInvoiceID = rs.getInt("Return_Invoice_ID");
                 Date date = rs.getDate("Date");
                 Supplier supplier = sdb.getSupplier(rs.getInt("Supplier_ID"));
+                float discount = rs.getFloat("Discount");
+                float paid = rs.getFloat("Pay");
+                boolean discountType = rs.getBoolean("Discount_Type");
                 String description = rs.getString("Description");
                 int sta = rs.getInt("Status");
                 ArrayList<ReturnInvoiceDetail> returnInvoiceDetails
                         = getReturnInvoiceDetails(rs.getInt("Return_Invoice_ID"));
                 ReturnInvoice invoice = new ReturnInvoice(returnInvoiceID, date,
-                        supplier, returnInvoiceDetails, sta, description);
+                        supplier, discount, discountType, paid, returnInvoiceDetails,
+                        sta, description);
                 returnInvoices.add(invoice);
             }
             System.out.println(sql);
@@ -84,6 +92,9 @@ public class ReturnInvoiceDBContext extends DBContext {
             String sql = "SELECT [Return_Invoice_ID]\n"
                     + "      ,[Date]\n"
                     + "      ,[Supplier_ID]\n"
+                    + "      ,[Discount]\n"
+                    + "      ,[Discount_Type]\n"
+                    + "      ,[Pay]\n"
                     + "      ,[Status]\n"
                     + "      ,[Description]\n"
                     + "  FROM [dbo].[Return_Invoice]\n"
@@ -94,12 +105,16 @@ public class ReturnInvoiceDBContext extends DBContext {
             while (rs.next()) {
                 Date date = rs.getDate("Date");
                 Supplier supplier = sdb.getSupplier(rs.getInt("Supplier_ID"));
+                float discount = rs.getFloat("Discount");
+                float paid = rs.getFloat("Pay");
+                boolean discountType = rs.getBoolean("Discount_Type");
                 String description = rs.getString("Description");
-                int status = rs.getInt("Status");
+                int sta = rs.getInt("Status");
                 ArrayList<ReturnInvoiceDetail> returnInvoiceDetails
-                        = getReturnInvoiceDetails(returnInvoiceID);
+                        = getReturnInvoiceDetails(rs.getInt("Return_Invoice_ID"));
                 ReturnInvoice invoice = new ReturnInvoice(returnInvoiceID, date,
-                        supplier, returnInvoiceDetails, status, description);
+                        supplier, discount, discountType, paid, returnInvoiceDetails,
+                        sta, description);
                 return invoice;
             }
         } catch (SQLException ex) {
@@ -139,18 +154,23 @@ public class ReturnInvoiceDBContext extends DBContext {
             String sql = "INSERT INTO [dbo].[Return_Invoice]\n"
                     + "           ([Date]\n"
                     + "           ,[Supplier_ID]\n"
-                    + "           ,[Description]\n"
-                    + "           ,[Status])\n"
+                    + "           ,[Discount]\n"
+                    + "           ,[Discount_Type]\n"
+                    + "           ,[Pay]\n"
+                    + "           ,[Status]\n"
+                    + "           ,[Description])\n"
                     + "     VALUES\n"
-                    + "           (?, ?, ?, ?)";
+                    + "           (?, ?, ?, ?, ?, ?, ?)";
             PreparedStatement stmOne = connection.prepareStatement(sql);
-            stmOne.setDate(1, (Date) invoice.getDate());
+            stmOne.setDate(1, invoice.getDate());
             stmOne.setInt(2, invoice.getSupplier().getSupplierID());
-            stmOne.setString(3, invoice.getDescription());
-            stmOne.setInt(4, invoice.getStatus());
+            stmOne.setFloat(3, invoice.getDiscount());
+            stmOne.setBoolean(4, invoice.isDiscountType());
+            stmOne.setFloat(5, invoice.getPaid());
+            stmOne.setInt(6, invoice.getStatus());
+            stmOne.setString(7, invoice.getDescription());
             stmOne.executeUpdate();
             ArrayList<ReturnInvoiceDetail> list = invoice.getInvoices();
-
             for (ReturnInvoiceDetail returnInvoiceDetail : list) {
                 insertReturnInvoiceDetail(returnInvoiceDetail);
             }
@@ -190,15 +210,20 @@ public class ReturnInvoiceDBContext extends DBContext {
             String sql = "UPDATE [dbo].[Return_Invoice]\n"
                     + "   SET [Date] = ?\n"
                     + "      ,[Supplier_ID] = ?\n"
+                    + "      ,[Discount] = ?\n"
+                    + "      ,[Discount_Type] = ?\n"
+                    + "      ,[Pay] = ?\n"
                     + "      ,[Status] = ?\n"
                     + "      ,[Description] = ?\n"
                     + " WHERE [Return_Invoice_ID] = ?";
             PreparedStatement stm = connection.prepareStatement(sql);
             stm.setDate(1, in.getDate());
             stm.setInt(2, in.getSupplier().getSupplierID());
-            stm.setInt(3, in.getStatus());
-            stm.setString(4, in.getDescription());
-            stm.setInt(5, in.getReturnInvoiceID());
+            stm.setFloat(3, in.getDiscount());
+            stm.setBoolean(4, in.isDiscountType());
+            stm.setFloat(5, in.getPaid());
+            stm.setInt(6, in.getStatus());
+            stm.setString(7, in.getDescription());
             stm.executeUpdate();
 
             ArrayList<ReturnInvoiceDetail> invoices = in.getInvoices();

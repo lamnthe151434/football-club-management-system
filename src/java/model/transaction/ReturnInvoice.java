@@ -18,9 +18,29 @@ public class ReturnInvoice {
     private int returnInvoiceID;
     private Date date;
     private Supplier supplier;
+    private float discount;
+    private boolean discountType;
+    private float paid;
     private ArrayList<ReturnInvoiceDetail> invoices;
     private int status;
     private String description;
+
+    public float getMustPay() {
+        float sum = 0;
+        for (ReturnInvoiceDetail invoice : invoices) {
+            sum += invoice.getTotal();
+        }
+        if (discountType) {
+            sum -= discount;
+        } else {
+            sum -= (sum * (discount / 100));
+        }
+        return sum;
+    }
+
+    public float getReturnMoney() {
+        return paid - getMustPay();
+    }
 
     public float getTotal() {
         float sum = 0;
@@ -34,18 +54,24 @@ public class ReturnInvoice {
         invoices = new ArrayList<>();
     }
 
-    public ReturnInvoice(Date date, Supplier supplier, ArrayList<ReturnInvoiceDetail> invoices, int status, String description) {
+    public ReturnInvoice(int returnInvoiceID, Date date, Supplier supplier, float discount, boolean discountType, float paid, ArrayList<ReturnInvoiceDetail> invoices, int status, String description) {
+        this.returnInvoiceID = returnInvoiceID;
         this.date = date;
         this.supplier = supplier;
+        this.discount = discount;
+        this.discountType = discountType;
+        this.paid = paid;
         this.invoices = invoices;
         this.status = status;
         this.description = description;
     }
 
-    public ReturnInvoice(int returnInvoiceID, Date date, Supplier supplier, ArrayList<ReturnInvoiceDetail> invoices, int status, String description) {
-        this.returnInvoiceID = returnInvoiceID;
+    public ReturnInvoice(Date date, Supplier supplier, float discount, boolean discountType, float paid, ArrayList<ReturnInvoiceDetail> invoices, int status, String description) {
         this.date = date;
         this.supplier = supplier;
+        this.discount = discount;
+        this.discountType = discountType;
+        this.paid = paid;
         this.invoices = invoices;
         this.status = status;
         this.description = description;
@@ -73,6 +99,30 @@ public class ReturnInvoice {
 
     public void setSupplier(Supplier supplier) {
         this.supplier = supplier;
+    }
+
+    public float getDiscount() {
+        return discount;
+    }
+
+    public void setDiscount(float discount) {
+        this.discount = discount;
+    }
+
+    public boolean isDiscountType() {
+        return discountType;
+    }
+
+    public void setDiscountType(boolean discountType) {
+        this.discountType = discountType;
+    }
+
+    public float getPaid() {
+        return paid;
+    }
+
+    public void setPaid(float paid) {
+        this.paid = paid;
     }
 
     public ArrayList<ReturnInvoiceDetail> getInvoices() {

@@ -361,6 +361,50 @@ public class ProductDBContext extends DBContext {
         }
         return products;
     }
+    public ArrayList<Product> getProducts(String searchKey) {
+        ArrayList<Product> products = new ArrayList<>();
+        CategoryDBContext cdb = new CategoryDBContext();
+        BrandDBContext bdb = new BrandDBContext();
+        try {
+            String sql = "SELECT [Product_ID]\n"
+                    + "      ,[Barcode]\n"
+                    + "      ,[Product_Name]\n"
+                    + "      ,[Brand_ID]\n"
+                    + "      ,[Category_ID]\n"
+                    + "      ,[Cost]\n"
+                    + "      ,[Price]\n"
+                    + "      ,[Unit]\n"
+                    + "      ,[Quantity]\n"
+                    + "      ,[Status]\n"
+                    + "      ,[Description] FROM [Product]\n"
+                    + "WHERE product_name like '%" + searchKey + "%' "
+                    + "OR Cast(product_id as NVARCHAR(50)) like '%" + searchKey + "%'\n";
+            PreparedStatement stm = connection.prepareStatement(sql);
+            ResultSet rs = stm.executeQuery();
+            while (rs.next()) {
+                int productID = Integer.parseInt(rs.getString("Product_ID"));
+                int barcode = rs.getInt("Barcode");
+                String unit = rs.getString("Unit");
+                String productName = rs.getString("Product_Name");
+                int categoryID = Integer.parseInt(rs.getString("Category_ID"));
+                int brandID = Integer.parseInt(rs.getString("Brand_ID"));
+                Category category = cdb.getCategory(categoryID);
+                Brand brand = bdb.getBrand(brandID);
+                float cost = rs.getFloat("Cost");
+                float price = rs.getFloat("Price");
+                int quantity = Integer.parseInt(rs.getString("Quantity"));
+                int status = rs.getInt("Status");
+                String description = rs.getString("Description");
+                Product p = new Product(productID, barcode, productName,
+                        category, brand, unit, cost, price, quantity,
+                        status, description);
+                products.add(p);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ProductDBContext.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return products;
+    }
 
     public ArrayList<Product> getProducts(int pageIndex, int pageSize) {
         ArrayList<Product> products = new ArrayList<>();
@@ -517,49 +561,49 @@ public class ProductDBContext extends DBContext {
         return products;
     }
 
-    public ArrayList<Product> getProducts(String productName) {
-        ArrayList<Product> products = new ArrayList<>();
-        CategoryDBContext cdb = new CategoryDBContext();
-        BrandDBContext bdb = new BrandDBContext();
-        try {
-            String sql = "SELECT SELECT [Product_ID]\n"
-                    + "      ,[Barcode]\n"
-                    + "      ,[Product_Name]\n"
-                    + "      ,[Brand_ID]\n"
-                    + "      ,[Category_ID]\n"
-                    + "      ,[Cost]\n"
-                    + "      ,[Price]\n"
-                    + "      ,[Unit]\n"
-                    + "      ,[Quantity]\n"
-                    + "      ,[Status]\n"
-                    + "      ,[Description]\n"
-                    + " FROM [dbo].[Product] WHERE [Product_Name] = ?";
-            PreparedStatement stm = connection.prepareStatement(sql);
-            stm.setString(1, productName);
-            ResultSet rs = stm.executeQuery();
-            while (rs.next()) {
-                int productID = Integer.parseInt(rs.getString("Product_ID"));
-                int barcode = rs.getInt("Barcode");
-                String unit = rs.getString("Unit");
-                int categoryID = Integer.parseInt(rs.getString("Category_ID"));
-                int brandID = Integer.parseInt(rs.getString("Brand_ID"));
-                Category category = cdb.getCategory(categoryID);
-                Brand brand = bdb.getBrand(brandID);
-                float cost = rs.getFloat("Cost");
-                float price = rs.getFloat("Price");
-                int quantity = Integer.parseInt(rs.getString("Quantity"));
-                int status = rs.getInt("Status");
-                String description = rs.getString("Description");
-                Product p = new Product(productID, barcode, productName,
-                        category, brand, unit, cost, price, quantity,
-                        status, description);
-                products.add(p);
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(ProductDBContext.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return products;
-    }
+//    public ArrayList<Product> getProducts(String productName) {
+//        ArrayList<Product> products = new ArrayList<>();
+//        CategoryDBContext cdb = new CategoryDBContext();
+//        BrandDBContext bdb = new BrandDBContext();
+//        try {
+//            String sql = "SELECT SELECT [Product_ID]\n"
+//                    + "      ,[Barcode]\n"
+//                    + "      ,[Product_Name]\n"
+//                    + "      ,[Brand_ID]\n"
+//                    + "      ,[Category_ID]\n"
+//                    + "      ,[Cost]\n"
+//                    + "      ,[Price]\n"
+//                    + "      ,[Unit]\n"
+//                    + "      ,[Quantity]\n"
+//                    + "      ,[Status]\n"
+//                    + "      ,[Description]\n"
+//                    + " FROM [dbo].[Product] WHERE [Product_Name] = ?";
+//            PreparedStatement stm = connection.prepareStatement(sql);
+//            stm.setString(1, productName);
+//            ResultSet rs = stm.executeQuery();
+//            while (rs.next()) {
+//                int productID = Integer.parseInt(rs.getString("Product_ID"));
+//                int barcode = rs.getInt("Barcode");
+//                String unit = rs.getString("Unit");
+//                int categoryID = Integer.parseInt(rs.getString("Category_ID"));
+//                int brandID = Integer.parseInt(rs.getString("Brand_ID"));
+//                Category category = cdb.getCategory(categoryID);
+//                Brand brand = bdb.getBrand(brandID);
+//                float cost = rs.getFloat("Cost");
+//                float price = rs.getFloat("Price");
+//                int quantity = Integer.parseInt(rs.getString("Quantity"));
+//                int status = rs.getInt("Status");
+//                String description = rs.getString("Description");
+//                Product p = new Product(productID, barcode, productName,
+//                        category, brand, unit, cost, price, quantity,
+//                        status, description);
+//                products.add(p);
+//            }
+//        } catch (SQLException ex) {
+//            Logger.getLogger(ProductDBContext.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//        return products;
+//    }
 
     public Product getProduct(int productID) {
         CategoryDBContext cdb = new CategoryDBContext();

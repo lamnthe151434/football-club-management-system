@@ -6,6 +6,7 @@
 package dal.partner;
 
 import dal.DBContext;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -21,39 +22,46 @@ import model.partner.Supplier;
 public class SupplierDBContext extends DBContext {
 
     public ArrayList<Supplier> getSuppliers() {
-        ArrayList<Supplier> customers = new ArrayList<>();
+        ArrayList<Supplier> suppliers = new ArrayList<>();
         try {
             String sql = "SELECT [Supplier_ID]\n"
                     + "      ,[Supplier_Name]\n"
                     + "      ,[Address]\n"
                     + "      ,[Phone]\n"
-                    + "      ,[Email]\n"
+                    + "      ,[DOB]\n"
+                    + "      ,[Gender]\n"
+                    + "      ,[Description]\n"
                     + "  FROM [dbo].[Supplier]";
             PreparedStatement stm = connection.prepareStatement(sql);
             ResultSet rs = stm.executeQuery();
             while (rs.next()) {
                 int supplierID = rs.getInt("Supplier_ID");
-                String customerName = rs.getString("Supplier_Name");
+                String supplierName = rs.getString("Supplier_Name");
                 String address = rs.getString("Address");
                 String phone = rs.getString("Phone");
-                String email = rs.getString("Email");
-                Supplier c = new Supplier(supplierID, customerName, address, phone, email);
-                customers.add(c);
+                Date dob = rs.getDate("DOB");
+                boolean gender = rs.getBoolean("Gender");
+                String description = rs.getString("Description");
+                Supplier c = new Supplier(supplierID, supplierName, gender, dob,
+                        phone, address, description);
+                suppliers.add(c);
             }
         } catch (SQLException ex) {
             Logger.getLogger(SupplierDBContext.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return customers;
+        return suppliers;
     }
 
     public ArrayList<Supplier> getSuppliers(int pageIndex, int pageSize) {
-        ArrayList<Supplier> customers = new ArrayList<>();
+        ArrayList<Supplier> suppliers = new ArrayList<>();
         try {
             String sql = "SELECT [Supplier_ID]\n"
                     + "      ,[Supplier_Name]\n"
                     + "      ,[Address]\n"
                     + "      ,[Phone]\n"
-                    + "      ,[Email] FROM\n"
+                    + "      ,[DOB]\n"
+                    + "      ,[Gender]\n"
+                    + "      ,[Description] FROM\n"
                     + " (SELECT *, ROW_NUMBER() OVER (ORDER BY [Supplier_ID] ASC) as row_index FROM [Supplier]) tb\n"
                     + "  WHERE row_index >=(?-1)*?+1 AND row_index <= ?*?";
             PreparedStatement stm = connection.prepareStatement(sql);
@@ -64,41 +72,46 @@ public class SupplierDBContext extends DBContext {
             ResultSet rs = stm.executeQuery();
             while (rs.next()) {
                 int supplierID = rs.getInt("Supplier_ID");
-                String customerName = rs.getString("Supplier_Name");
+                String supplierName = rs.getString("Supplier_Name");
                 String address = rs.getString("Address");
                 String phone = rs.getString("Phone");
-                String email = rs.getString("Email");
-                
-                if(address == null) address = "";
-                if(phone == null) phone = "";
-                if(email == null) email = "";
-                Supplier c = new Supplier(supplierID, customerName, address, phone, email);
-                customers.add(c);
+                Date dob = rs.getDate("DOB");
+                boolean gender = rs.getBoolean("Gender");
+                String description = rs.getString("Description");
+                Supplier c = new Supplier(supplierID, supplierName, gender, dob,
+                        phone, address, description);
+                suppliers.add(c);
             }
         } catch (SQLException ex) {
             Logger.getLogger(SupplierDBContext.class.getName()).log(Level.SEVERE, null, ex);
         }
-        System.out.println(customers.size());
-        return customers;
+        System.out.println(suppliers.size());
+        return suppliers;
     }
 
     public Supplier getSupplier(int supplierID) {
         try {
-            String sql = "SELECT [Supplier_Name]\n"
+            String sql = "SELECT [Supplier_ID]\n"
+                    + "      ,[Supplier_Name]\n"
                     + "      ,[Address]\n"
                     + "      ,[Phone]\n"
-                    + "      ,[Email]\n"
+                    + "      ,[DOB]\n"
+                    + "      ,[Gender]\n"
+                    + "      ,[Description]\n"
                     + "  FROM [dbo].[Supplier] WHERE [Supplier_ID] = ?";
             PreparedStatement stm = connection.prepareStatement(sql);
             stm.setInt(1, supplierID);
             ResultSet rs = stm.executeQuery();
             if (rs.next()) {
-                String customerName = rs.getString("Supplier_Name");
+                String supplierName = rs.getString("Supplier_Name");
                 String address = rs.getString("Address");
                 String phone = rs.getString("Phone");
-                String email = rs.getString("Email");
-                Supplier customer = new Supplier(supplierID, customerName, address, phone, email);
-                return customer;
+                Date dob = rs.getDate("DOB");
+                boolean gender = rs.getBoolean("Gender");
+                String description = rs.getString("Description");
+                Supplier supplier = new Supplier(supplierID, supplierName, gender,
+                        dob, phone, address, description);
+                return supplier;
             }
         } catch (SQLException ex) {
             Logger.getLogger(SupplierDBContext.class.getName()).log(Level.SEVERE, null, ex);
@@ -106,22 +119,26 @@ public class SupplierDBContext extends DBContext {
         return null;
     }
 
-    public void insertSupplier(Supplier customer) {
+    public void insertSupplier(Supplier supplier) {
         PreparedStatement stm = null;
         try {
             String sql = "INSERT INTO [dbo].[Supplier]\n"
                     + "           ([Supplier_Name]\n"
                     + "           ,[Address]\n"
                     + "           ,[Phone]\n"
-                    + "           ,[Email])\n"
+                    + "           ,[DOB]\n"
+                    + "           ,[Gender]\n"
+                    + "           ,[Description])\n"
                     + "     VALUES\n"
-                    + "           (?,?,?,?)";
+                    + "           (?,?,?,?,?,?)";
             connection.setAutoCommit(false);
             stm = connection.prepareStatement(sql);
-            stm.setString(1, customer.getSupplierName());
-            stm.setString(2, customer.getAddress());
-            stm.setString(3, customer.getPhone());
-            stm.setString(4, customer.getEmail());
+            stm.setString(1, supplier.getSupplierName());
+            stm.setString(2, supplier.getAddress());
+            stm.setString(3, supplier.getPhone());
+            stm.setDate(4, supplier.getDob());
+            stm.setBoolean(5, supplier.isGender());
+            stm.setString(6, supplier.getDescription());
             stm.executeUpdate();
         } catch (SQLException ex) {
             Logger.getLogger(SupplierDBContext.class.getName()).log(Level.SEVERE, null, ex);
@@ -153,22 +170,25 @@ public class SupplierDBContext extends DBContext {
         }
     }
 
-    public void updateSupplier(Supplier customer) {
+    public void updateSupplier(Supplier supplier) {
         PreparedStatement stm = null;
         try {
             String sql = "UPDATE [dbo].[Supplier]\n"
                     + "   SET [Supplier_Name] = ?\n"
                     + "      ,[Address] = ?\n"
                     + "      ,[Phone] = ?\n"
-                    + "      ,[Email] = ?\n"
+                    + "      ,[DOB] = ?\n"
+                    + "      ,[Gender] = ?\n"
+                    + "      ,[Description] = ?\n"
                     + " WHERE [Supplier_ID] = ?";
             connection.setAutoCommit(false);
             stm = connection.prepareStatement(sql);
-            stm.setString(1, customer.getSupplierName());
-            stm.setString(2, customer.getAddress());
-            stm.setString(3, customer.getPhone());
-            stm.setString(4, customer.getEmail());
-            stm.setInt(5, customer.getSupplierID());
+            stm.setString(1, supplier.getSupplierName());
+            stm.setString(2, supplier.getAddress());
+            stm.setString(3, supplier.getPhone());
+            stm.setDate(4, supplier.getDob());
+            stm.setBoolean(5, supplier.isGender());
+            stm.setString(6, supplier.getDescription());
             stm.executeUpdate();
         } catch (SQLException ex) {
             Logger.getLogger(SupplierDBContext.class.getName()).log(Level.SEVERE, null, ex);

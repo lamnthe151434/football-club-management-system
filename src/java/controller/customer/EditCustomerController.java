@@ -8,6 +8,7 @@ package controller.customer;
 import dal.partner.CustomerDBContext;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.Date;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -36,18 +37,19 @@ public class EditCustomerController extends HttpServlet {
         CustomerDBContext cdb = new CustomerDBContext();
         Customer customer = cdb.getCustomer(customerID);
 
-        
-        if(customer.getAddress() == null) customer.setAddress("");
-        if(customer.getPhone()== null) customer.setPhone("");
-        if(customer.getEmail() == null) customer.setEmail("");
-        
+        if (customer.getAddress() == null) {
+            customer.setAddress("");
+        }
+        if (customer.getPhone() == null) {
+            customer.setPhone("");
+        }
+
         String result = "";
         result += customer.getCustomerID() + "|";
         result += customer.getCustomerID() + "|";
         result += customer.getAddress() + "|";
         result += customer.getPhone() + "|";
         result += customer.getCustomerName() + "|";
-        result += customer.getEmail();
 
         PrintWriter writer = response.getWriter();
         writer.println(result);
@@ -68,19 +70,36 @@ public class EditCustomerController extends HttpServlet {
         String rawCustomerName = request.getParameter("customerName");
         String rawAddress = request.getParameter("address");
         String rawPhone = request.getParameter("phone");
-        String rawEmail = request.getParameter("email");
+        String rawDob = request.getParameter("dob");
+        String rawGender = request.getParameter("gender");
+        String rawDescription = request.getParameter("description");
 
-        if(rawAddress == null) rawAddress = "";
-        if(rawPhone == null) rawPhone = "";
-        if(rawEmail == null) rawEmail = "";
-        
+        if (rawAddress == null) {
+            rawAddress = "";
+        }
+        if (rawPhone == null) {
+            rawPhone = "";
+        }
+        if (rawDob == null) {
+            rawDob = "0001-01-01";
+        }
+
         int customerID = Integer.parseInt(rawCustomerID);
         String customerName = rawCustomerName;
         String address = rawAddress;
         String phone = rawPhone;
-        String email = rawEmail;
+        Date dob = Date.valueOf(rawDob);
+        String description = rawDescription;
+        int genderInt = Integer.parseInt(rawGender);
+        boolean gender = true;
+        if (genderInt == 1) {
+            gender = true;
+        } else {
+            gender = false;
+        }
 
-        Customer customer = new Customer(customerID, customerName, address, phone, email);
+        Customer customer = new Customer(customerID, customerName, gender, dob,
+                phone, address, description);
         CustomerDBContext cdb = new CustomerDBContext();
         cdb.updateCustomer(customer);
 

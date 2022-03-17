@@ -18,34 +18,60 @@ public class Order {
     private int orderID;
     private Date date;
     private Customer customer;
+    private float discount;
+    private boolean discountType;
+    private float paid;
     private ArrayList<OrderDetail> invoices;
     private int status;
     private String description;
 
     public float getTotal() {
         float sum = 0;
-        for (OrderDetail order : invoices) {
-            sum += order.getTotal();
+        for (OrderDetail invoice : invoices) {
+            sum += invoice.getTotal();
         }
         return sum;
+    }
+
+    public float getMustPay() {
+        float sum = 0;
+        for (OrderDetail invoice : invoices) {
+            sum += invoice.getTotal();
+        }
+        if (discountType) {
+            sum -= discount;
+        } else {
+            sum -= (sum * (discount / 100));
+        }
+        return sum;
+    }
+
+    public float getReturnMoney() {
+        return paid - getMustPay();
     }
 
     public Order() {
         invoices = new ArrayList<>();
     }
 
-    public Order(int orderID, Date date, Customer customer, ArrayList<OrderDetail> invoices, int status, String description) {
+    public Order(int orderID, Date date, Customer customer, float discount, boolean discountType, float paid, ArrayList<OrderDetail> invoices, int status, String description) {
         this.orderID = orderID;
         this.date = date;
         this.customer = customer;
+        this.discount = discount;
+        this.discountType = discountType;
+        this.paid = paid;
         this.invoices = invoices;
         this.status = status;
         this.description = description;
     }
 
-    public Order(Date date, Customer customer, ArrayList<OrderDetail> invoices, int status, String description) {
+    public Order(Date date, Customer customer, float discount, boolean discountType, float paid, ArrayList<OrderDetail> invoices, int status, String description) {
         this.date = date;
         this.customer = customer;
+        this.discount = discount;
+        this.discountType = discountType;
+        this.paid = paid;
         this.invoices = invoices;
         this.status = status;
         this.description = description;
@@ -75,6 +101,30 @@ public class Order {
         this.customer = customer;
     }
 
+    public float getDiscount() {
+        return discount;
+    }
+
+    public void setDiscount(float discount) {
+        this.discount = discount;
+    }
+
+    public boolean isDiscountType() {
+        return discountType;
+    }
+
+    public void setDiscountType(boolean discountType) {
+        this.discountType = discountType;
+    }
+
+    public float getPaid() {
+        return paid;
+    }
+
+    public void setPaid(float paid) {
+        this.paid = paid;
+    }
+
     public ArrayList<OrderDetail> getInvoices() {
         return invoices;
     }
@@ -98,5 +148,7 @@ public class Order {
     public void setDescription(String description) {
         this.description = description;
     }
+
+    
 
 }

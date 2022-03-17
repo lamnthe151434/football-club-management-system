@@ -86,21 +86,39 @@ public class SearchImportInvoiceController extends HttpServlet {
         if (statusNumber == 2) {
             status = "Đã nhập hàng";
         }
-        String result = "";
         PrintWriter writer = response.getWriter();
+
+        int discountType = 1;
+        String discountUnit = "";
+        if (importInvoice.isDiscountType()) {
+            discountType = 1;
+            discountUnit = "VND";
+        } else {
+            discountType = 0;
+            discountUnit = "%";
+        }
+
+        String result = "";
         result += importInvoice.getImportInvoiceID() + "|";
+        result += status + "|";
         result += importInvoice.getDate() + "|";
         result += importInvoice.getSupplier().getSupplierName() + "|";
+        result += importInvoice.getSupplier().getSupplierID() + "|";
         result += importInvoice.getTotal() + "|";
-        result += status + "|";
+        result += importInvoice.getDiscount() + " " + discountUnit + "|";
+        result += importInvoice.getMustPay() + "|";
+        result += importInvoice.getPaid() + "|";
+        result += importInvoice.getReturnMoney() + "|";
         result += description + "|";
+        result += discountType + "|";
+
         ArrayList<ImportInvoiceDetail> invoices = importInvoice.getInvoices();
         for (int i = 0; i < invoices.size(); i++) {
             ImportInvoiceDetail in = invoices.get(i);
             Product product = in.getProduct();
             result += "<tr>";
             result += "<td>" + (i + 1) + "</td>";
-            result += "<td>" + product.getProductID() + "</td>";
+            result += "<td>" + formatProductId(product.getProductID()) + "</td>";
             result += "<td>" + product.getProductName() + "</td>";
             result += "<td>" + product.getUnit() + "</td>";
             result += "<td>" + in.getUnitPrice() + "</td>";
@@ -108,10 +126,26 @@ public class SearchImportInvoiceController extends HttpServlet {
             result += "<td>" + in.getTotal() + "</td>";
             result += "</tr>";
         }
-        result += "|";
 
-        String[] separeated = result.split("|");
         writer.println(result);
+
+    }
+
+    public String formatProductId(int id) {
+        String idStr = String.valueOf(id);
+        int len = idStr.length();
+        switch (len) {
+            case 1:
+                return "P0000" + id;
+            case 2:
+                return "P000" + id;
+            case 3:
+                return "P00" + id;
+            case 4:
+                return "P0" + id;
+            default:
+                return "P0000" + id;
+        }
 
     }
 

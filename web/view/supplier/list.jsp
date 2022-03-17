@@ -111,25 +111,27 @@
                     <table>
                         <thead>
                             <tr>
-                                <th><input type ="checkbox" /></th>
-                                <th>Supplier ID</th>
-                                <th>Supplier Name</th>
-                                <th>Address</th>
-                                <th>Phone</th>
-                                <th>Email</th>
-                                <th>Action</th>
+                                <th>Mã nhà cung cấp</th>
+                                <th>Tên nhà cung cấp</th>
+                                <th>Ngày sinh</th>
+                                <th>Giới tính</th>
+                                <th>Số điện thoại</th>
+                                <th>Dịa chỉ</th>
+                                <th>Ghi chú</th>
+                                <th>Hành động</th>
                             </tr>
                         </thead>
                         <tbody id="supplier-list">
                             <c:set var="suppliers" value="${requestScope.suppliers}" ></c:set>
                             <c:forEach begin="0" end="${suppliers.size()}" items="${suppliers}" var="c" >
                                 <tr>
-                                    <td><input type ="checkbox" /></td>
                                     <td>KH000${c.supplierID}</td>
                                     <td>${c.supplierName}</td>
-                                    <td>${c.address}</td>
+                                    <td>${c.dob}</td>
+                                    <td>${c.gender}</td>
                                     <td>${c.phone}</td>
-                                    <td>${c.email}</td>
+                                    <td>${c.address}</td>
+                                    <td>${c.description}</td>
                                     <td>
                                         <button onclick="edit(${c.supplierID})">Edit</button>
                                         <button onclick="deleteEntity(${c.supplierID})">Delete</button>

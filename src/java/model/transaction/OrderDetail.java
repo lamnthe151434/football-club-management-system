@@ -13,7 +13,7 @@ import model.product.Product;
  */
 public class OrderDetail {
 
-    private int orderDetailID;
+    private int orderID;
     private Product product;
     private float unitPrice;
     private int quantity;
@@ -25,35 +25,25 @@ public class OrderDetail {
     public OrderDetail() {
     }
 
-    public OrderDetail(Product product, float unitPrice,  int quantity) {
+    public OrderDetail(int orderID, Product product, float unitPrice, int quantity) {
+        this.orderID = orderID;
         this.product = product;
         this.unitPrice = unitPrice;
         this.quantity = quantity;
     }
 
-    public OrderDetail(int orderDetailID, Product product, float unitPrice, int quantity) {
-        this.orderDetailID = orderDetailID;
+    public OrderDetail(Product product, float unitPrice, int quantity) {
         this.product = product;
         this.unitPrice = unitPrice;
         this.quantity = quantity;
     }
 
-    public float getUnitPrice() {
-        return unitPrice;
+    public int getOrderID() {
+        return orderID;
     }
 
-    public void setUnitPrice(float unitPrice) {
-        this.unitPrice = unitPrice;
-    }
-
-   
-
-    public int getOrderDetailID() {
-        return orderDetailID;
-    }
-
-    public void setOrderDetailID(int orderDetailID) {
-        this.orderDetailID = orderDetailID;
+    public void setOrderID(int orderID) {
+        this.orderID = orderID;
     }
 
     public Product getProduct() {
@@ -64,6 +54,14 @@ public class OrderDetail {
         this.product = product;
     }
 
+    public float getUnitPrice() {
+        return unitPrice;
+    }
+
+    public void setUnitPrice(float unitPrice) {
+        this.unitPrice = unitPrice;
+    }
+
     public int getQuantity() {
         return quantity;
     }
@@ -72,4 +70,6 @@ public class OrderDetail {
         this.quantity = quantity;
     }
 
+  
+   
 }

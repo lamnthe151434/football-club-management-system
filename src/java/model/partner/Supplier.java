@@ -5,6 +5,8 @@
  */
 package model.partner;
 
+import java.sql.Date;
+
 /**
  *
  * @author ADMIN
@@ -13,26 +15,32 @@ public class Supplier {
 
     private int supplierID;
     private String supplierName;
-    private String address;
+    private boolean gender;
+    private Date dob;
     private String phone;
-    private String email;
+    private String address;
+    private String description;
 
     public Supplier() {
     }
 
-    public Supplier(int supplierID, String supplierName, String address, String phone, String email) {
-        this.supplierID = supplierID;
+    public Supplier(String supplierName, boolean gender, Date dob, String phone, String address, String description) {
         this.supplierName = supplierName;
-        this.address = address;
+        this.gender = gender;
+        this.dob = dob;
         this.phone = phone;
-        this.email = email;
+        this.address = address;
+        this.description = description;
     }
 
-    public Supplier(String supplierName, String address, String phone, String email) {
+    public Supplier(int supplierID, String supplierName, boolean gender, Date dob, String phone, String address, String description) {
+        this.supplierID = supplierID;
         this.supplierName = supplierName;
-        this.address = address;
+        this.gender = gender;
+        this.dob = dob;
         this.phone = phone;
-        this.email = email;
+        this.address = address;
+        this.description = description;
     }
 
     public int getSupplierID() {
@@ -51,12 +59,20 @@ public class Supplier {
         this.supplierName = supplierName;
     }
 
-    public String getAddress() {
-        return address;
+    public Date getDob() {
+        return dob;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setDob(Date dob) {
+        this.dob = dob;
+    }
+
+    public boolean isGender() {
+        return gender;
+    }
+
+    public void setGender(boolean gender) {
+        this.gender = gender;
     }
 
     public String getPhone() {
@@ -67,12 +83,20 @@ public class Supplier {
         this.phone = phone;
     }
 
-    public String getEmail() {
-        return email;
+    public String getAddress() {
+        return address;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
 }

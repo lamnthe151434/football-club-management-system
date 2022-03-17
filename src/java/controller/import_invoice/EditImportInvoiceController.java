@@ -62,49 +62,91 @@ public class EditImportInvoiceController extends HttpServlet {
             status = "Đã nhập hàng";
         }
 
+        int discountType = 1;
+        if (importInvoice.isDiscountType()) {
+            discountType = 1;
+        } else {
+            discountType = 0;
+        }
+
         String result = "";
         PrintWriter writer = response.getWriter();
         result += importInvoice.getImportInvoiceID() + "|";
         result += importInvoice.getImportInvoiceID() + "|";
-        result += importInvoice.getStatus() + "|";
-        result += importInvoice.getDate() + "|";
-        result += importInvoice.getSupplier().getSupplierID() + "|";
-        result += importInvoice.getSupplier().getSupplierName() + "|";
-        result += importInvoice.getTotal() + "|";
         result += status + "|";
+        result += importInvoice.getDate() + "|";
+        result += importInvoice.getSupplier().getSupplierName() + "|";
+        result += importInvoice.getSupplier().getSupplierID() + "|";
+        result += importInvoice.getTotal() + "|";
+        result += importInvoice.getTotal() + "|";
+        result += importInvoice.getDiscount() + "|";
+        result += importInvoice.getMustPay() + "|";
+        result += importInvoice.getMustPay() + "|";
+        result += importInvoice.getPaid() + "|";
+        result += importInvoice.getReturnMoney() + "|";
         result += description + "|";
+        if (importInvoice.getStatus() == 1) {
+            result += "<input id=\"edit-status\" type=\"hidden\" name =\"status\" />\n";
+            result += "<button type=\"submit\" onclick=\"checkInput('edit-form', 'edit-status', '1')\">LƯU</button>\n";
+            result += "<button type=\"submit\" onclick=\"checkInput('edit-form', 'edit-status', '2')\">HOÀN THÀNH</button>\n";
+            result += "<button type=\"submit\" onclick=\"checkInput('edit-form', 'edit-status', '0')\">HỦY PHIẾU</button>";
+        }
+        if (importInvoice.getStatus() == 2) {
+            result += "<input id=\"edit-status\" type=\"hidden\" name =\"status\" />\n";
+            result += "<button type=\"submit\" onclick=\"checkInput('edit-form', 'edit-status', '2')\">LƯU</button>\n";
+            result += "<button type=\"submit\" onclick=\"checkInput('edit-form', 'edit-status', '0')\">HỦY PHIẾU</button>";
+        }
+        result += "|";
+
+        result += importInvoice.getDiscount() + "|";
+        result += discountType + "|";
+
         ArrayList<ImportInvoiceDetail> invoices = importInvoice.getInvoices();
         for (int i = 0; i < invoices.size(); i++) {
             ImportInvoiceDetail in = invoices.get(i);
             Product product = in.getProduct();
             result += "<tr id =\"edit-" + (i + 1) + "\">";
-            result += "<td><button type =\"button\" onclick=\"deleteFrom('edit','edit-" + (i + 1)
-                    + "')\"><i class =\"fa fa-trash\" ></i></button></td>";
+            result += "<td><button type =\"button\" onclick=\"deleteFrom('edit'," + (i + 1)
+                    + ")\"><i class =\"fa fa-trash\" ></i></button></td>";
             result += "<td>" + (i + 1) + "</td>";
-            result += "<td>" + product.getProductID() + "<input type=\"hidden\" name = \"id\" value = \""
+            result += "<td>" + formatProductId(product.getProductID()) + "</td>";
+            result += "<td>" + product.getProductName() + "<input type=\"hidden\" name =\"id\" value =\""
                     + product.getProductID() + "\"" + "</td>";
-            result += "<td>" + product.getProductName() + "</td>";
             result += "<td>" + product.getUnit() + "</td>";
             result += "<td>" + in.getUnitPrice() + "</td>";
-            result += "<td><input onkeyup = \"setAmount('edit',this.value,'edit-"
-                    + (i + 1) + "')\" type=\"text\" name = \"quantity\"  value = \"" + in.getQuantity() + "\" /></td>";
+            result += "<td>";
+            result += "<button type=\"button\" onclick=\"increaseQuantity('edit'," + (i + 1)
+                    + ")\"><i class=\"fa fa-arrow-up\"></i></button>";
+            result += "<input maxlength =\"12\" onkeyup =\"setAmount('edit',this.value," + (i + 1)
+                    + ")\"type=\"text\" name =\"quantity\" value=\"" + in.getQuantity() + "\" />";
+            result += "<button type=\"button\" onclick=\"decreaseQuantity('edit'," + (i + 1)
+                    + ")\"><i class=\"fa fa-arrow-down\"></i></button>";
+            result += "</td>";
             result += "<td>" + in.getTotal() + "</td>";
-            result += "</tr>";
-        }
-        result += "|";
-        if (importInvoice.getStatus() == 1) {
-            result += "<input type=\"submit\" onclick=\"checkInput('edit-form', 'edit-status', '1')\" value =\"Lưu\" />\n";
-            result += "<input type=\"submit\" onclick=\"checkInput('edit-form', 'edit-status', '2')\" value =\"Hoàn thành\" />\n";
-            result += "<input type=\"submit\" onclick=\"checkInput('edit-form', 'edit-status', '0')\" value =\"Hủy phiếu\" />";
-        }
-        if (importInvoice.getStatus() == 2) {
-            result += "<input type=\"submit\" onclick=\"checkInput('edit-form', 'edit-status', '2')\" value =\"Lưu\" />\n";
-            result += "<input type=\"submit\" onclick=\"checkInput('edit-form', 'edit-status', '0')\" value =\"Hủy phiếu\" />";
+            result += "</tr>" + "@";
         }
 
         String[] separeated = result.split("|");
         System.out.println("leng " + separeated.length);
         writer.println(result);
+
+    }
+
+    public String formatProductId(int id) {
+        String idStr = String.valueOf(id);
+        int len = idStr.length();
+        switch (len) {
+            case 1:
+                return "P0000" + id;
+            case 2:
+                return "P000" + id;
+            case 3:
+                return "P00" + id;
+            case 4:
+                return "P0" + id;
+            default:
+                return "P0000" + id;
+        }
 
     }
 
@@ -121,12 +163,26 @@ public class EditImportInvoiceController extends HttpServlet {
             throws ServletException, IOException {
         SupplierDBContext sdb = new SupplierDBContext();
         ProductDBContext pdb = new ProductDBContext();
-
         int importInvoiceID = Integer.parseInt(request.getParameter("invoiceID"));
         String rawDate = request.getParameter("date");
         String rawSupplierID = request.getParameter("supplierID");
+        String rawDiscount = request.getParameter("discount");
+        String rawMustPay = request.getParameter("mustPay");
+        String rawPaid = request.getParameter("paid");
+        String rawDiscountType = request.getParameter("discountType");
         String rawDescription = request.getParameter("desciption");
         String rawStatus = request.getParameter("status");
+
+        float mustPay = Float.parseFloat(rawMustPay);
+        float discount = Float.parseFloat(rawDiscount);
+        float paid = Float.parseFloat(rawPaid);
+
+        boolean discountType = true;
+        if (rawDiscountType.equals("1")) {
+            discountType = true;
+        } else {
+            discountType = false;
+        }
 
         String productIDs[] = request.getParameterValues("id");
         String quantities[] = request.getParameterValues("quantity");
@@ -188,7 +244,7 @@ public class EditImportInvoiceController extends HttpServlet {
         }
 
         ImportInvoice invoice = new ImportInvoice(importInvoiceID, date, supplier,
-                importInvoiceDetails, newStatus, description);
+                discount, discountType, paid, importInvoiceDetails, oldStatus, description);
         iidb.updateImportInvoice(invoice);
 
         response.sendRedirect("list");

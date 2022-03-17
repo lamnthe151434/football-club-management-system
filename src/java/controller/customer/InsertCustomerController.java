@@ -8,6 +8,7 @@ package controller.customer;
 import dal.partner.CustomerDBContext;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.Date;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -32,20 +33,43 @@ public class InsertCustomerController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
+        String rawCustomerID = request.getParameter("customerID");
         String rawCustomerName = request.getParameter("customerName");
         String rawAddress = request.getParameter("address");
         String rawPhone = request.getParameter("phone");
-        String rawEmail = request.getParameter("email");
+        String rawDob = request.getParameter("dob");
+        String rawGender = request.getParameter("gender");
+        String rawDescription = request.getParameter("description");
 
+        if (rawAddress == null) {
+            rawAddress = "";
+        }
+        if (rawPhone == null) {
+            rawPhone = "";
+        }
+        if (rawDob == null) {
+            rawDob = "0001-01-01";
+        }
+
+        int customerID = Integer.parseInt(rawCustomerID);
         String customerName = rawCustomerName;
         String address = rawAddress;
         String phone = rawPhone;
-        String email = rawEmail;
-        
-        Customer customer = new Customer(customerName, address, phone, email);
+        Date dob = Date.valueOf(rawDob);
+        String description = rawDescription;
+        int genderInt = Integer.parseInt(rawGender);
+        boolean gender = true;
+        if (genderInt == 1) {
+            gender = true;
+        } else {
+            gender = false;
+        }
+
+        Customer customer = new Customer(customerID, customerName, gender, dob,
+                phone, address, description);
         CustomerDBContext cdb = new CustomerDBContext();
         cdb.insertCustomer(customer);
-        
+
         response.sendRedirect("list");
     }
 

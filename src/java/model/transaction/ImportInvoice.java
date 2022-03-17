@@ -18,9 +18,25 @@ public class ImportInvoice {
     private int importInvoiceID;
     private Date date;
     private Supplier supplier;
+    private float discount;
+    private boolean discountType;
+    private float paid;
     private ArrayList<ImportInvoiceDetail> invoices;
     private int status;
     private String description;
+
+    public float getMustPay() {
+        float sum = 0;
+        for (ImportInvoiceDetail invoice : invoices) {
+            sum += invoice.getTotal();
+        }
+        if (discountType) {
+            sum -= discount;
+        } else {
+            sum -= (sum * (discount / 100));
+        }
+        return sum;
+    }
 
     public float getTotal() {
         float sum = 0;
@@ -30,21 +46,31 @@ public class ImportInvoice {
         return sum;
     }
 
+    public float getReturnMoney() {
+        return paid - getMustPay();
+    }
+
     public ImportInvoice() {
     }
 
-    public ImportInvoice(Date date, Supplier supplier, ArrayList<ImportInvoiceDetail> invoices, int status, String description) {
+    public ImportInvoice(Date date, Supplier supplier, float discount, boolean discountType, float paid, ArrayList<ImportInvoiceDetail> invoices, int status, String description) {
         this.date = date;
         this.supplier = supplier;
+        this.discount = discount;
+        this.discountType = discountType;
+        this.paid = paid;
         this.invoices = invoices;
         this.status = status;
         this.description = description;
     }
 
-    public ImportInvoice(int importInvoiceID, Date date, Supplier supplier, ArrayList<ImportInvoiceDetail> invoices, int status, String description) {
+    public ImportInvoice(int importInvoiceID, Date date, Supplier supplier, float discount, boolean discountType, float paid, ArrayList<ImportInvoiceDetail> invoices, int status, String description) {
         this.importInvoiceID = importInvoiceID;
         this.date = date;
         this.supplier = supplier;
+        this.discount = discount;
+        this.discountType = discountType;
+        this.paid = paid;
         this.invoices = invoices;
         this.status = status;
         this.description = description;
@@ -74,6 +100,30 @@ public class ImportInvoice {
         this.supplier = supplier;
     }
 
+    public float getDiscount() {
+        return discount;
+    }
+
+    public void setDiscount(float discount) {
+        this.discount = discount;
+    }
+
+    public boolean isDiscountType() {
+        return discountType;
+    }
+
+    public void setDiscountType(boolean discountType) {
+        this.discountType = discountType;
+    }
+
+    public float getPaid() {
+        return paid;
+    }
+
+    public void setPaid(float paid) {
+        this.paid = paid;
+    }
+
     public ArrayList<ImportInvoiceDetail> getInvoices() {
         return invoices;
     }
@@ -81,8 +131,6 @@ public class ImportInvoice {
     public void setInvoices(ArrayList<ImportInvoiceDetail> invoices) {
         this.invoices = invoices;
     }
-
-    
 
     public int getStatus() {
         return status;

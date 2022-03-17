@@ -134,7 +134,7 @@
     </servlet>
     <servlet>
         <servlet-name>EditImportInvoiceController</servlet-name>
-        <servlet-class>controller.return_invoice.EditImportInvoiceController</servlet-class>
+        <servlet-class>controller.import_invoice.EditImportInvoiceController</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>InsertReturnInvoiceController</servlet-name>
