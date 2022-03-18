@@ -79,6 +79,10 @@
             width: 75vw;
             height: 90vh;
         }
+        .modal .return-invoice-view-modal {
+            height: 85vh;
+        }
+
         .modal .return-invoice-insert-modal .modal-content,
         .modal .return-invoice-edit-modal .modal-content,
         .modal .return-invoice-view-modal .modal-content{
@@ -688,8 +692,8 @@
                         </div>
                         <div class="btn-group" >
                             <input id="insert-status" type="hidden" name ="status" />
-                            <input type="submit" onclick="checkInput('insert-form', 'insert-status', '1')" value ="Lưu tạm" />
-                            <input type="submit" onclick="checkInput('insert-form', 'insert-status', '2')" value ="Hoàn thành" />
+                            <button type="button" onclick="checkInput('insert', 'insert-form', 'insert-status', '1')" >Lưu tạm</button>
+                            <button type="button" onclick="checkInput('insert', 'insert-form', 'insert-status', '2')">Hoàn thành</button>
                         </div>
                     </form>
                 </div>
@@ -894,11 +898,20 @@
             submitForm(formId);
         }
 
-        function checkInput(formId, statusId, value) {
+        function checkInput(type, formId, statusId, value) {
             var form = document.getElementById(formId);
-            var status = document.getElementById(statusId);
-            status.value = value;
-            form.submit();
+            var productList = document.getElementById(type + '-product-list');
+            alert(productList.innerHTML);
+            if (productList.innerHTML === "") {
+
+                generateWarning("Phiếu hàng đang trống");
+            } else {
+                var status = document.getElementById(statusId);
+                status.value = value;
+                form.submit();
+            }
+
+
         }
 
 

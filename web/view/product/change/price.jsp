@@ -464,13 +464,9 @@
         function fadeOutMessage() {
             var warningBox = document.getElementById("warning");
             var messageBox = warningBox.children;
-//
             for (var i = messageBox.length - 1, max = 0; i >= max; i--) {
                 warningBox.removeChild(messageBox[i]);
             }
-//            for (var i = messageBox.length - 1, max = 0; i >= max; i--) {
-//                messageBox[i].style.animationName = "fadeOut";
-//            }
 
         }
 

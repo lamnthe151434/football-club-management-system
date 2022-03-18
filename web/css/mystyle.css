@@ -86,7 +86,7 @@ section.setting {
 
 .header .title {
     padding: 20px 0 20px 280px; 
-    font-size: 30px;
+    font-size: 20px;
     font-weight: 400;
 }
 
@@ -272,7 +272,7 @@ section.setting {
     left: 0;
     top: 0;
     display: block;
-    background: rgba(0, 0, 0, 0.3);
+    background: rgba(0, 0, 0, 0.5);
     height: 100%;
     width: 100%;
     transform: scale(0);
@@ -307,6 +307,7 @@ section.setting {
 
 .modal .modal-header .title {
     font-weight: bold;
+    font-size: 15px;
     color: #837DEC;
     padding: 10px 10px 10px 0;
 }

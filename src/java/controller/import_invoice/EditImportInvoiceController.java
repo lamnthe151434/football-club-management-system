@@ -87,14 +87,14 @@ public class EditImportInvoiceController extends HttpServlet {
         result += description + "|";
         if (importInvoice.getStatus() == 1) {
             result += "<input id=\"edit-status\" type=\"hidden\" name =\"status\" />\n";
-            result += "<button type=\"submit\" onclick=\"checkInput('edit-form', 'edit-status', '1')\">LƯU</button>\n";
-            result += "<button type=\"submit\" onclick=\"checkInput('edit-form', 'edit-status', '2')\">HOÀN THÀNH</button>\n";
-            result += "<button type=\"submit\" onclick=\"checkInput('edit-form', 'edit-status', '0')\">HỦY PHIẾU</button>";
+            result += "<button type=\"button\" onclick=\"checkInput('edit','edit-form', 'edit-status', '1')\">LƯU</button>\n";
+            result += "<button type=\"button\" onclick=\"checkInput('edit','edit-form', 'edit-status', '2')\">HOÀN THÀNH</button>\n";
+            result += "<button type=\"button\" onclick=\"checkInput('edit','edit-form', 'edit-status', '0')\">HỦY PHIẾU</button>";
         }
         if (importInvoice.getStatus() == 2) {
             result += "<input id=\"edit-status\" type=\"hidden\" name =\"status\" />\n";
-            result += "<button type=\"submit\" onclick=\"checkInput('edit-form', 'edit-status', '2')\">LƯU</button>\n";
-            result += "<button type=\"submit\" onclick=\"checkInput('edit-form', 'edit-status', '0')\">HỦY PHIẾU</button>";
+            result += "<button type=\"button\" onclick=\"checkInput('edit-form', 'edit-status', '2')\">LƯU</button>\n";
+            result += "<button type=\"button\" onclick=\"checkInput('edit-form', 'edit-status', '0')\">HỦY PHIẾU</button>";
         }
         result += "|";
 
@@ -127,7 +127,6 @@ public class EditImportInvoiceController extends HttpServlet {
         }
 
         String[] separeated = result.split("|");
-        System.out.println("leng " + separeated.length);
         writer.println(result);
 
     }
@@ -207,8 +206,7 @@ public class EditImportInvoiceController extends HttpServlet {
         int newStatus = Integer.parseInt(rawStatus);
         int oldStatus = importInvoice.getStatus();
 
-        System.out.println(newStatus + ", " + oldStatus);
-
+//        System.out.println(newStatus + ", " + oldStatus);
         // phiếu tạm -> đã nhập hàng
         if (newStatus == (oldStatus + 1)) {
 
@@ -218,7 +216,7 @@ public class EditImportInvoiceController extends HttpServlet {
 
         }
         // đã nhập hàng -> hủy phiếu
-        if (newStatus == (oldStatus - 2)) {
+        if ((newStatus == (oldStatus - 2)) || (newStatus == 2 && oldStatus == 2)) {
             ArrayList<ImportInvoiceDetail> invoices = iidb.getImportInvoiceDetails(importInvoiceID);
             for (int i = 0; i < invoices.size(); i++) {
                 ImportInvoiceDetail iid = invoices.get(i);
@@ -228,6 +226,7 @@ public class EditImportInvoiceController extends HttpServlet {
             }
         }
 
+
         iidb.deleteImportInvoiceDetail(importInvoiceID);
 
         ArrayList<ImportInvoiceDetail> importInvoiceDetails = new ArrayList<>();
@@ -236,7 +235,7 @@ public class EditImportInvoiceController extends HttpServlet {
             int productID = Integer.parseInt(String.valueOf(productIDs[i]));
             int quantity = Integer.parseInt(String.valueOf(quantities[i]));
             Product p = pdb.getProduct(productID);
-            if (newStatus == (oldStatus + 1)) {
+            if ((newStatus == (oldStatus + 1)) || (oldStatus == 2 && newStatus ==2)) {
                 pdb.increaseQuantity(p, quantity);
             }
             ImportInvoiceDetail ii = new ImportInvoiceDetail(importInvoiceID, p, p.getCost(), quantity);
@@ -244,7 +243,8 @@ public class EditImportInvoiceController extends HttpServlet {
         }
 
         ImportInvoice invoice = new ImportInvoice(importInvoiceID, date, supplier,
-                discount, discountType, paid, importInvoiceDetails, oldStatus, description);
+                discount, discountType, paid, importInvoiceDetails, newStatus, description);
+        System.out.println("Size: " + invoice.getInvoices().size());
         iidb.updateImportInvoice(invoice);
 
         response.sendRedirect("list");

@@ -79,7 +79,7 @@ public class ImportInvoiceDBContext extends DBContext {
                         sta, description);
                 importInvoices.add(invoice);
             }
-            System.out.println(sql);
+//            System.out.println(sql);
         } catch (SQLException ex) {
             Logger.getLogger(ImportInvoiceDBContext.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -224,6 +224,7 @@ public class ImportInvoiceDBContext extends DBContext {
             stm.setFloat(5, in.getPaid());
             stm.setInt(6, in.getStatus());
             stm.setString(7, in.getDescription());
+            stm.setInt(8, in.getImportInvoiceID());
             stm.executeUpdate();
 
             ArrayList<ImportInvoiceDetail> invoices = in.getInvoices();

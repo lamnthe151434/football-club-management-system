@@ -17,6 +17,14 @@
     </head>
     <style>
 
+        .modal .modal-header .title {
+            font-weight: bold;
+            font-size: 20px;
+            color: #837DEC;
+            padding: 10px 10px 10px 0;
+        }
+
+
         .container .main-content .middle table {
             /*margin-top: 15px;*/
             font-size: 17px;
@@ -93,25 +101,41 @@
         {
             position: absolute;
             padding: 15px 35px 15px 35px;
-            border-radius: 10px;
-            background: #FDFDFE;
-            transform: scale(0);
+            background: #fff;            transform: scale(0);
             transition-duration: 0.5s;
             z-index: 10;
+            border-radius: 20px;
+            box-shadow: 0px 0px 2px 2px #ccc;
         }
 
         /*        .modal{
                     z-index: 99;
                 }*/
-
+        /*.header .title {
+            padding: 10px 0 10px 280px; 
+            font-size: 15px;
+            font-weight: 400;
+        }*/
         .modal .product-insert-modal,
         .modal .product-edit-modal
         {
-            top: 10.5vh;
-            left: 38.5vh;
-            width: 70vw;
-            height: 65vh;
+            top: 7vh;
+            left: 80vh;
+            width: 35vw;
+            height: 70vh;
 
+        }
+        .modal {
+            position: fixed;
+            left: 0;
+            top: 0;
+            display: block;
+            background: rgba(0, 0, 0, 0.5);
+            height: 100%;
+            width: 100%;
+            transform: scale(0);
+            transition-duration: 0s;
+            z-index: 2;
         }
 
         .modal .product-unit-insert-modal,
@@ -120,6 +144,8 @@
             left: 65vh;
             width: 40vw;
             height: 50vh;
+
+
         }
 
         .modal .category-insert-modal,
@@ -142,49 +168,76 @@
         .modal .category-edit-modal .modal-content,
         .modal .unit-insert-modal .modal-content ,
         .modal .unit-edit-modal .modal-content {
-            margin-top: 15px;
+            margin-top: 10px;
         }
 
         .modal .product-insert-modal .modal-content ,
         .modal .product-edit-modal .modal-content  {
-            margin-top: 25px;
-            /*border: 1px solid #000;*/
-        }
-        .modal .product-insert-modal .modal-content .row,
-        .modal .product-edit-modal .modal-content .row {
-            display: block;
-            margin-bottom: 25px;
-            /*border: 1px solid #000;*/
+            margin-top: 10px;
+            position: relative;
         }
 
-        .modal .product-insert-modal .modal-content .row .column,
-        .modal .product-edit-modal .modal-content .row .column {
-            display: inline-block;
-            margin-right: 100px;
-        }
 
-        .modal .product-insert-modal .modal-content .row .column:nth-of-type(3),
-        .modal .product-insert-modal .modal-content .row .column:nth-of-type(6),
-        .modal .product-edit-modal .modal-content .row .column:nth-of-type(3),
-        .modal .product-edit-modal .modal-content .row .column:nth-of-type(6) {
-            margin-right: 0px;
-        }
-        .modal .product-insert-modal .modal-content .row .column:nth-of-type(2),
-        .modal .product-insert-modal .modal-content .row .column:nth-of-type(5),
-        .modal .product-edit-modal .modal-content .row .column:nth-of-type(2),
-        .modal .product-edit-modal .modal-content .row .column:nth-of-type(5)
+        .modal .product-insert-modal .modal-content input,
+        .modal .product-edit-modal .modal-content input
         {
-            margin-right: 90px;
-
-        }
-
-        .modal .product-insert-modal .modal-content .row .column input,
-        .modal .product-edit-modal .modal-content .row .column input
-        {
-            width: 250px;
-            height: 35px;
+            width: 98%;
+            padding: 10px;
+            /*height: 30px;*/
             margin-top: 5px;
+            background: #fff;
+            border:none;
+            outline: none;
+            border-bottom: 1px solid #C7C7C7;           
+            background: #fff;
         }
+
+        .modal .product-edit-modal .modal-content table td:nth-child(1),
+        .modal .product-insert-modal .modal-content table td:nth-child(1) {
+            padding:10px 10px 10px 0px;
+            width: 120px;
+            /*border: 1px solid #000;*/
+        }
+
+        .table-title {
+            font-size: 17px;
+            font-weight: 600;
+        }
+
+        .modal .product-edit-modal .modal-content table td:nth-child(2),
+        .modal .product-insert-modal .modal-content table td:nth-child(2) {
+            padding: 10px 0px 0x 0px;
+            width: 390px;
+            box-sizing: border-box;
+            /*border: 1px solid #000;*/
+
+        }
+        .modal .product-edit-modal .modal-content input:focus,
+        .modal .product-insert-modal .modal-content input:focus {
+            border-bottom: 1px solid blue;
+            box-shadow: 0px  2px #ccc;
+        }
+
+        .modal .product-edit-modal .modal-content table td span,
+        .modal .product-insert-modal .modal-content table td span {
+            padding: 10px;
+            width: 98%;
+            display: inline-block;
+            border-bottom: 1px solid #C7C7C7; 
+            cursor: pointer;
+        }
+
+        #brand-edit-name,
+        #category-edit-name,
+        #brand-insert-name,
+        #category-insert-name {
+            width: 350px;
+        }
+        .modal .product-edit-modal .modal-content table td span:hover,
+        .modal .product-insert-modal .modal-content table td span:hover{
+            border-bottom: 1px solid blue; 
+        }
+
 
         .modal .category-insert-modal .modal-content input,
         .modal .brand-insert-modal .modal-content input,
@@ -195,79 +248,45 @@
             width: 255px;
             height: 35px;
             margin-top: 5px;
-
-
         }
 
-        .modal .product-insert-modal .modal-content .row .column .btn-add,
-        .modal .product-edit-modal .modal-content .row .column .btn-add
-        {
-            cursor: pointer;
-            color: blue;
-            font-weight: bold;
-            padding: 5px;
-        }
-
-        .modal .product-insert-modal .modal-content .row .column .btn-add:hover,
-        .modal .product-edit-modal .modal-content .row .column .btn-add:hover
-        {
-            color: #fff;
-            background: #ccc;
-            border-radius: 5px;
-        }
-
-
-        .modal .product-insert-modal .modal-content .row .column .category-container,
-        .modal .product-insert-modal .modal-content .row .column .brand-container,
-        .modal .product-edit-modal .modal-content .row .column .category-container,
-        .modal .product-edit-modal .modal-content .row .column .brand-container {
-            position: relative;
-            display: inline-block;
-            /*border: 1px solid #000;*/
-            box-sizing: border-box;
-            border-collapse: collapse;
-            margin-top: 5px;
-
-        }
-        .modal .product-insert-modal .modal-content .row .column .category-container #category-insert-name,
-        .modal .product-insert-modal .modal-content .row .column .brand-container #brand-insert-name,
-        .modal .product-edit-modal .modal-content .row .column .category-container #category-edit-name,
-        .modal .product-edit-modal .modal-content .row .column .brand-container #brand-edit-name
-        {
-            display: inline-block;
-            width: 250px;
-            height: 38px;
-            padding: 8px;
-            border: 1px solid #000;
-            box-sizing: border-box;
-            cursor: pointer;
-        }
-
-
-
-        .modal .product-insert-modal .modal-content .row .column .category-container #category-insert-search-box,
-        .modal .product-insert-modal .modal-content .row .column .brand-container #brand-insert-search-box,
-        .modal .product-edit-modal .modal-content .row .column .category-container #category-edit-search-box,
-        .modal .product-edit-modal .modal-content .row .column .brand-container #brand-edit-search-box
-        {
+        .modal .product-insert-modal .modal-content #category-insert-box ,
+        .modal .product-insert-modal .modal-content #brand-insert-box,
+        .modal .product-edit-modal .modal-content #category-edit-box ,
+        .modal .product-edit-modal .modal-content #brand-edit-box {
             position: absolute;
-            top: 0px;
-            left: 0px;
-            height: 220px;
-            width: 250px;
-            background: #fff;
-            /*border: 1px solid #000;*/
-            box-shadow: 0px 0px 2px 2px #ccc;
-            box-sizing: border-box;   
+            top: 200px;
+            left: 132px;
+            height: 170px;
+            width: 390px;
             display: none;
+            background: #fff;
+        }
+        modal .product-insert-modal .modal-content #brand-insert-box,
+        modal .product-edit-modal .modal-content #brand-edit-box{
+            top: 170px;
         }
 
+        .modal .product-insert-modal .modal-content #category-insert-box .category-container,
+        .modal .product-insert-modal .modal-content #brand-insert-box .brand-container ,
+        .modal .product-edit-modal .modal-content #brand-edit-box .category-container,
+        .modal .product-edit-modal .modal-content #category-edit-box .brand-container{ 
+            width: 100%;
+        }
+        .modal .product-insert-modal .modal-content #category-insert-box .category-container #category-insert-search-box,
+        .modal .product-insert-modal .modal-content #brand-insert-box .brand-container #brand-insert-search-box ,
+        .modal .product-edit-modal .modal-content #brand-edit-box .category-container #category-edit-search-box ,
+        .modal .product-edit-modal .modal-content #category-edit-box .brand-container #brand-edit-search-box { 
+            width: 100%;
+        }
+        
 
-        .modal .product-insert-modal .modal-content .row .column .category-container #category-insert-search-box input,
-        .modal .product-insert-modal .modal-content .row .column .brand-container #brand-insert-search-box input,
-        .modal .product-edit-modal .modal-content .row .column .category-container #category-edit-search-box input,
-        .modal .product-edit-modal .modal-content .row .column .brand-container #brand-edit-search-box input{
-            width: 230px;
+        
+        .modal .product-insert-modal .modal-content #category-insert-box .category-container #category-insert-search-box input,
+        .modal .product-insert-modal .modal-content #brand-insert-box .brand-container #brand-insert-search-box input,
+        .modal .product-edit-modal .modal-content #brand-edit-box .category-container #category-edit-search-box input,
+        .modal .product-edit-modal .modal-content #category-edit-box .brand-container #brand-edit-search-box input{
+            width: 100%;
             height: 45px;
             box-sizing: border-box;
             border: none;
@@ -282,46 +301,36 @@
 
 
 
-        .modal .product-insert-modal .modal-content .row .column .category-container #category-insert-search-box #category-insert-box,
-        .modal .product-insert-modal .modal-content .row .column .brand-container #brand-insert-search-box #brand-insert-box,
-        .modal .product-edit-modal .modal-content .row .column .category-container #category-edit-search-box #category-edit-box,
-        .modal .product-edit-modal .modal-content .row .column .brand-container #brand-edit-search-box #brand-edit-box {
+        .modal .product-insert-modal .modal-content #category-insert-box .category-container #category-insert-search-box #category-insert-list,
+        .modal .product-insert-modal .modal-content #brand-insert-box .brand-container #brand-insert-search-box #brand-insert-list,
+        .modal .product-edit-modal .modal-content #category-edit-box .category-container #category-edit-search-box #category-insert-list,
+        .modal .product-edit-modal .modal-content #brand-edit-box .brand-container #brand-edit-search-box #brand-insert-list {
             overflow: auto;
             height: 165px;
-            width: 250px;
+            width: 100%x;
         }
 
 
 
-        .modal .product-insert-modal .modal-content .row .column .category-container #category-insert-search-box,
-        .modal .product-edit-modal .modal-content .row .column .category-container #category-edit-search-box
-        {
-            z-index: 3;
-        }
+       
 
-
-        .modal .product-insert-modal .modal-content .row .column .brand-container #brand-insert-search-box,
-        .modal .product-edit-modal .modal-content .row .column .brand-container #brand-edit-search-box {
-            z-index: 2;
-        }
-
-        .modal .product-insert-modal .modal-content .row .column .category-container #category-insert-search-box #category-insert-box span,
-        .modal .product-insert-modal .modal-content .row .column .brand-container #brand-insert-search-box  #brand-insert-box span,
-        .modal .product-edit-modal .modal-content .row .column .category-container #category-edit-search-box #category-edit-box span,
-        .modal .product-edit-modal .modal-content .row .column .brand-container #brand-edit-search-box #brand-edit-box span
+        .modal .product-insert-modal .modal-content #category-insert-box .category-container #category-insert-search-box #category-insert-list span,
+        .modal .product-insert-modal .modal-content #brand-insert-box .brand-container #brand-insert-search-box  #brand-insert-list span,
+        .modal .product-edit-modal .modal-content #category-edit-box .category-container #category-edit-search-box #category-insert-list span,
+        .modal .product-edit-modal .modal-content  #brand-edit-box .brand-container #brand-edit-search-box #brand-insert-list span
         {
             cursor: pointer;
             display: inline-block;
-            width: 245px;
+             width: 390px;
             height: 20px;
             padding: 5px;
             margin: 0px;
         }
 
-        .modal .product-insert-modal .modal-content .row .column .category-container #category-insert-search-box #category-insert-box span:hover,
-        .modal .product-insert-modal .modal-content .row .column .brand-container  #brand-insert-search-box  #brand-insert-box  span:hover,
-        .modal .product-edit-modal .modal-content .row .column .category-container #category-edit-search-box #category-edit-box span:hover,
-        .modal .product-edit-modal .modal-content .row .column .brand-container #brand-edit-search-box #brand-edit-box  span:hover
+        .modal .product-insert-modal .modal-content #category-insert-box .category-container #category-insert-search-box #category-insert-list span:hover,
+        .modal .product-insert-modal .modal-content #brand-insert-box .brand-container  #brand-insert-search-box  #brand-insert-list  span:hover,
+        .modal .product-edit-modal .modal-content #category-edit-box .category-container #category-edit-search-box #category-insert-list span:hover,
+        .modal .product-edit-modal .modal-content #brand-edit-box .brand-container #brand-edit-search-box #brand-insert-list  span:hover
 
         {
             background: #FFCD1F;
@@ -455,15 +464,15 @@
         .container .main-content .top .group-search .category .btn-add:hover {
             background: #ccc;
         }
-        .modal .product-insert-modal .modal-content .row  .column .radio-button input , 
-        .modal .product-edit-modal .modal-content .row .column .radio-button input  {
+        .modal .product-insert-modal .modal-content .radio-button input , 
+        .modal .product-edit-modal .modal-content  .radio-button input  {
             width: 30px;
             height: 15px;
         }
 
 
-        .modal .product-insert-modal .modal-content .row  .column  textarea, 
-        .modal .product-edit-modal .modal-content .row  .column  textarea {
+        .modal .product-insert-modal .modal-content  textarea, 
+        .modal .product-edit-modal .modal-content  textarea {
             overflow: scroll;
             resize: none;
             margin-top: 5px;
@@ -471,12 +480,6 @@
             border: 1px solid #000;
         }
 
-        .modal .product-insert-modal .modal-content .row:nth-of-type(4) button {
-            width: 1000px;
-            height: 30px;
-            display: block;
-            text-align: center;
-        }
 
         .container .bottom span {
             position: absolute;
@@ -651,180 +654,106 @@
                 </div>
                 <form action="insert" method="POST" >
                     <div class ="modal-content" >
-                        <div class ="row" >
-                            <div class ="column" > 
-                                <span>Mã hàng</span> <br/>
-                                <input type ="text" name ="productID" class ="product-insert"  />
-                            </div>
-                            <div class ="column"  > 
-                                <span>Nhóm hàng</span> <br/>
-                                <div class ="category-container" >
-                                    <span id ="category-insert-name"  onclick="openBox('category-insert-search-box')" >---Chọn nhóm hàng---</span>
-                                    <input id ="category-insert-id" class ="product-insert" type ="hidden" name ="category" >
-                                    <div id="category-insert-search-box">
-                                        <input class ="product-insert" type ="text" onkeyup="search(this.value, 'category-insert')" placeholder="Tìm kiếm nhóm hàng" />
-                                        <div id = "category-insert-box" >
-                                            <table>
-                                                <c:forEach var="c" begin="0" end="${categories.size()}" items="${categories}" >
-                                                    <tr>
-                                                        <td><span onclick="setValue('${c.categoryID}', '${c.categoryName}', 'category-insert')" class ="category-value">${c.categoryName}</span></td>
-                                                    </tr>
-                                                </c:forEach>
-                                            </table>
-                                        </div>
+                        <table>
+                            <tr>
+                                <td class="table-title" >Mã hàng</td>
+                                <td colspan="2" ><span>Mã hàng tự động</span></td>
+                            </tr>
+                            <tr>
+                                <td class="table-title">Tên hàng</td>
+                                <td colspan="2"><input type ="text" name ="productName" class ="product-insert"  /></td>
+                            </tr>
+                            <tr>
+                                <td class="table-title">Nhóm hàng</td>
+                                <td>
+                                    <span id ="category-insert-name"  onclick="openBox('category-box')" >---Chọn nhóm hàng---</span>
+                                </td>
+                                <td>
+                                    <button type="button" onclick="openModal('category-insert-modal')" class ="btn-add" ><i class="fa fa-plus" ></i></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="table-title">Thương hiệu</td>
+                                <td>
+                                    <span  onclick="openBox('brand-insert-box')"  id ="brand-insert-name" >---Chọn thương hiệu---</span>
+                                </td>
+                                <td>
+                                    <button type="button" onclick="openModal('brand-insert-modal')" class ="btn-add" ><i class="fa fa-plus" ></i></button>
+
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="table-title">Giá vốn</td>
+                                <td colspan="2"> 
+                                    <input type ="text" name ="cost" class ="product-insert"  />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="table-title">Giá bán</td>
+                                <td colspan="2">  <input type ="text" name ="price" class ="product-insert" /></td>
+                            </tr>
+                            <tr>
+                                <td class="table-title">Đơn vị</td>
+                                <td colspan="2"><input type ="text" name ="unit" class ="product-insert" /></td>
+                            </tr>
+                            <tr>
+                                <td class="table-title">Tồn kho</td>
+                                <td colspan="2"> <input type ="text" name ="quantity" class ="product-insert"  /></td>
+                            </tr>
+                            <tr>
+                                <td class="table-title">Mô tả</td>
+                                <td colspan="2">   <input type ="text" name ="description" class ="product-insert"  /></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </table>
+                        <div class ="btn-group" 
+                             <input type="submit" value ="Save" class ="product-input" />
+                        </div>
+                        <div id="category-insert-box">
+                            <div class ="category-container" >
+                                <input id ="category-insert-id" class ="product-insert" type ="hidden" name ="category" >
+                                <div id="category-insert-search-box">
+                                    <input class ="product-insert" type ="text" onkeyup="search(this.value, 'category-insert')" placeholder="Tìm kiếm nhóm hàng" />
+                                    <div id = "category-insert-list" >
+                                        <table>
+                                            <c:forEach var="c" begin="0" end="${categories.size()}" items="${categories}" >
+                                                <tr>
+                                                    <td><span onclick="setValue('${c.categoryID}', '${c.categoryName}', 'category-insert')" class ="category-value">${c.categoryName}</span></td>
+                                                </tr>
+                                            </c:forEach>
+                                        </table>
                                     </div>
                                 </div>
-                                <span onclick="openModal('category-insert-modal')" class ="btn-add" ><i class="fa fa-plus" ></i></span>
                             </div>
-                            <div class ="column" > 
-                                <span>Số lượng</span> <br/>
-                                <input type ="text" name ="quantity" class ="product-insert"  />
-                            </div>
-
                         </div>
-                        <div class ="row" >
-                            <div class ="column" > 
-                                <span>Mã vạch</span> <br/>
-                                <input type ="text" name ="barcode" class ="product-insert"  />
-                            </div>
-                            <div class ="column" > 
-                                <span>Thương hiệu</span> <br/>
-                                <div class ="brand-container" >
-                                    <span  onclick="openBox('brand-insert-search-box')"  id ="brand-insert-name" >---Chọn thương hiệu---</span>
-                                    <input id ="brand-insert-id" class ="product-insert" type ="hidden" name ="brand"  >
-                                    <div id="brand-insert-search-box">
-                                        <input  class ="product-insert"
-                                                type ="text" onkeyup="search(this.value, 'brand-insert')" placeholder="Tìm kiếm thương hiệu"/>
-                                        <div id = "brand-insert-box" >
-                                            <table>
-                                                <c:forEach var="b" begin="0" end="${brands.size()}" items="${brands}" >
-                                                    <tr>
-                                                        <td class="first-td" ><span onclick="setValue('${b.brandID}', '${b.brandName}', 'brand-insert')" class ="brand-value">${b.brandName}</span></td>
-                                                    </tr>
-                                                </c:forEach>
-                                            </table>
-                                        </div>
+
+                        <div id="brand-insert-box" >
+                            <div class ="brand-container" >
+                                <input id ="brand-insert-id" class ="product-insert" type ="hidden" name ="brand"  >
+                                <div id="brand-insert-search-box">
+                                    <input  class ="product-insert"
+                                            type ="text" onkeyup="search(this.value, 'brand-insert')" placeholder="Tìm kiếm thương hiệu"/>
+                                    <div id = "brand-insert-list" >
+                                        <table>
+                                            <c:forEach var="b" begin="0" end="${brands.size()}" items="${brands}" >
+                                                <tr>
+                                                    <td class="first-td" ><span onclick="setValue('${b.brandID}', '${b.brandName}', 'brand-insert')" class ="brand-value">${b.brandName}</span></td>
+                                                </tr>
+                                            </c:forEach>
+                                        </table>
                                     </div>
                                 </div>
-                                <span onclick="openModal('brand-insert-modal')" class ="btn-add" ><i class="fa fa-plus" ></i></span>
-                            </div> 
-                            <div class ="column" > 
-                                <span>Giá vốn</span> <br/>
-                                <input type ="text" name ="cost" class ="product-insert"  />
                             </div>
-                        </div>
-                        <div class ="row" >
-                            <div class ="column" > 
-                                <span>Tên hàng hóa</span> <br/>
-                                <input type ="text" name ="productName" class ="product-insert"  />
-                            </div>
-                            <div class ="column"> 
-                                <span>Đơn vị</span> <br/>
-                                <input type ="text" name ="unit" class ="product-insert" />
-                            </div>
-                            <div class ="column"> 
-                                <span>Giá bán</span> <br/>
-                                <input type ="text" name ="price" class ="product-insert" />
-                            </div>
-
-                        </div>
-                        <div class ="row" >
-                            <div class ="column" > 
-                                <span>Mô tả</span> <br/>
-                                <input type ="text" name ="description" class ="product-insert"  />
-                            </div>
-
-                            <input type="checkbox" value="1" name="status" />
-                            <label>Bán trực tiếp</label>
-                        </div>
-                        <div class ="btn-group" >
-                            <input type="submit" value ="Save" class ="product-input" />
                         </div>
                     </div>
                 </form>
             </div>
         </div>
-        <div class ="modal" >
-            <div class ="product-edit-modal" id ="product-edit-modal" >
-                <div class ="modal-header" >
-                    <h2 class ="title" >Sửa hàng hóa</h2>
-                    <button class ="btn-close" onclick="closeModal('product-edit-modal')" >x</button>
-                </div>
-                <div class ="modal-content" >
-                    <form action ="edit" method ="POST" >
-                        <div class ="row" >
-                            <div class ="column" > 
-                                <span>Mã hàng hóa</span> <br/>
-                                <span class ="product-edit"></span>
-                                <input type ="hidden" name ="productID" class ="product-edit" />
-                            </div>
-                            <div class ="column"  > 
-                                <span>Nhóm hàng</span> <br/>
-                                <div class ="category-container" >
-                                    <span id ="category-edit-name" onclick="openBox('category-edit-search-box')" >---Chọn nhóm hàng---</span>
-                                    <input id ="category-edit-id" class ="product-edit" type ="hidden" name ="category" >
-                                    <div id="category-edit-search-box">
-                                        <input type ="text" onkeyup="search(this.value, 'category-edit')" placeholder="Tìm kiếm nhóm hàng" />
-                                        <div id = "category-edit-box" >
-                                            <table>
-                                                <c:forEach var="c" begin="0" end="${categories.size()}" items="${categories}" >
-                                                    <tr>
-                                                        <td><span onclick="setValue('${c.categoryID}', '${c.categoryName}', 'category-edit')" class ="category-value">${c.categoryName}</span></td>
-                                                        <td><button class="action" type="button" onclick="edit(${c.categoryID}, 'category')" ><i class="fa fa-pencil" ></i></button></td>
-                                                        <td><button class="action" type ="button" onclick="deleteEntity(${c.categoryID}, 'category')"><i class ="fa fa-trash" ></i> </button></td>
-                                                    </tr>
-                                                </c:forEach>
-                                            </table>
-                                        </div>
-
-                                    </div>
-                                </div>
-                                <span onclick="openModal('category-insert-modal')" class ="btn-add" ><i class="fa fa-plus" ></i></span>
-                            </div>
-                            <div class ="column" > 
-                                <span>Giá nhập</span> <br/>
-                                <input type ="text" name ="cost" class ="product-edit"/>
-                            </div>
-                        </div>
-                        <div class ="row" >
-                            <div class ="column" > 
-                                <span>Tên hàng hóa</span> <br/>
-                                <input type ="text" name ="productName" class ="product-edit"  />
-                            </div>
-                            <div class ="column" > 
-                                <span>Thương hiệu</span> <br/>
-                                <div class ="brand-container" >
-                                    <span id ="brand-edit-name" onclick="openBox('brand-edit-search-box')" >---Chọn thương hiệu---</span>
-                                    <input id ="brand-edit-id" type ="hidden" name ="brandID" class ="product-edit" >
-                                    <div id="brand-edit-search-box" >
-                                        <input type ="text" onkeyup="search(this.value, 'brand-edit')" placeholder="Tìm kiếm thương hiệu" />
-                                        <div id = "brand-edit-box" >
-                                            <table>
-                                                <c:forEach var="b" begin="0" end="${brands.size()}" items="${brands}" >
-                                                    <tr>
-                                                        <td class="first-td" ><span onclick="setValue('${b.brandID}', '${b.brandName}', 'brand-edit')" class ="brand-value">${b.brandName}</span></td>
-                                                        <td><button class="action" type="button"  onclick="edit(${b.brandID}, 'brand')" ><i class="fa fa-pencil" ></i></button></td>
-                                                        <td><button class="action" type="button"  onclick="deleteEntity(${b.brandID}, 'brand')"><i class ="fa fa-trash" ></i></button></td>
-                                                    </tr>
-                                                </c:forEach>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                                <span onclick="openModal('brand-insert-modal')" class ="btn-add" ><i class="fa fa-plus" ></i></span>
-                            </div>
-                            <div class ="column"> 
-                                <span>Giá bán</span> <br/>
-                                <input type ="text" name ="price" class ="product-edit"  />
-                            </div>
-                        </div>
-                        <div class ="btn-group" >
-                            <input type="submit" value ="Save" />
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
+       
         <div class ="modal"  > 
             <div class ="category-insert-modal" id ="category-insert-modal" >
                 <div class ="modal-header" >
@@ -1086,11 +1015,13 @@
 
 
             function openBox(id) {
+//                alert(id);
                 var box = document.getElementById(id);
-                if (box.style.display == 'block') {
+                if (box.style.display === 'block') {
                     box.style.display = "none";
                 } else {
                     box.style.display = "block";
+//                    alert(box.style.display);
                 }
             }
             function closeBox(id) {

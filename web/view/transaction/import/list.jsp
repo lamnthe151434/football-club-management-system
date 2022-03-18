@@ -73,6 +73,11 @@
             width: 82vw;
             height: 84.5vh;
         }
+        .modal .import-invoice-view-modal {
+            height: 80vh;
+        }
+
+
         .modal .import-invoice-insert-modal .modal-content,
         .modal .import-invoice-edit-modal .modal-content,
         .modal .import-invoice-view-modal .modal-content{
@@ -113,6 +118,10 @@
             border-radius: 10px;
 
 
+        }
+
+        .modal .import-invoice-view-modal .modal-content .column:nth-of-type(2) {
+            height: 470px;
         }
 
         .modal .import-invoice-insert-modal .modal-content .column:nth-of-type(2) span,
@@ -286,8 +295,12 @@
 
         {
             width: 100%;
-            height: 77.7%;
+            height: 75%;
             overflow: auto;
+        }
+
+        .modal .import-invoice-view-modal .modal-content .column #view-product-box {
+            height: 90%;
         }
 
         /*        .modal .import-invoice-insert-modal .modal-content .column #insert-product-box {
@@ -692,6 +705,46 @@
 
         }
 
+        .warning {
+            position: absolute;
+            right: 15px;
+            bottom: 15px;
+            z-index: 99;
+        }
+
+        .warning div {
+            width: 250px;
+            background: #C75B56;
+            padding: 15px;
+            /*padding-top: 10px;*/
+            /*padding-bottom: 10px;*/
+            color: #fff;
+            border-radius: 7px;
+            margin-top: 5px;
+            /*animation-name: fadeIn;*/
+            animation-duration: 0.3s;
+            cursor: pointer;
+        }
+        @keyframes fadeIn{
+            from{
+                opacity: 0;
+            } 
+            to {
+                opacity: 1;
+            }
+        }
+        @keyframes fadeOut{
+            from{
+                opacity: 1;
+            } 
+            to {
+                opacity: 0;
+            }
+        }
+        .warning div:hover {
+            box-shadow: 0px 0px 2px 2px grey;
+            background: red;
+        }
 
 
 
@@ -878,13 +931,13 @@
                                 <tr>
                                     <td>Mã phiếu nhập</td>
                                     <td>
-                                        <span class="import-invoice-insert">Mã tự động</span>
+                                        <span>Mã tự động</span>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>Trạng thái</td>
                                     <td>
-                                        <span class="import-invoice-insert">Phiếu tạm</span>
+                                        <span>Phiếu tạm</span>
                                     </td>
                                 </tr>
                                 <tr>
@@ -897,6 +950,7 @@
                                     <td>Nhà cung cấp</td>
                                     <td>
                                         <span class="import-invoice-insert" onclick="openBox('insert-supplier-search-box')" id="insert-supplier-name" >---Chọn nhà cung cấp---</span>
+                                        <input class="import-invoice-insert" id ="insert-supplier-id" name ="supplierID" type ="hidden" value="1"/>
                                         <button type="button" onclick="openModal('supplier-insert-modal')"  class="btn-add"><i class="fa fa-plus" ></i></button>
                                     </td>
                                 </tr>
@@ -941,10 +995,10 @@
                                 </tr>
                                 <tr>
 
-                                    <td id="button-group" colspan="2" class="import-invoice-insert">
+                                    <td id="button-group" colspan="2" >
                                         <input id="insert-status" type="hidden" name ="status" />
-                                        <button type="submit" onclick="checkInput('insert-form', 'insert-status', '1')">LƯU TẠM</button>
-                                        <button type="submit" onclick="checkInput('insert-form', 'insert-status', '2')">HOÀN THÀNH</button>
+                                        <button type="button" onclick="checkInput('insert', 'insert-form', 'insert-status', '1')">LƯU TẠM</button>
+                                        <button type="button" onclick="checkInput('insert', 'insert-form', 'insert-status', '2')">HOÀN THÀNH</button>
                                     </td>
 
                                 </tr>
@@ -958,7 +1012,6 @@
                             </div>
                             <div class="supplier-container-outer">
                                 <div class="supplier-container">
-                                    <input class="import-invoice-insert" id ="insert-supplier-id" name ="supplierID" type ="hidden" />
                                     <div id ="insert-supplier-search-box">
                                         <input type ="text" onkeyup="searchSupplier('insert', this.value)"  placeholder="Tìm kiếm nhà cung cấp"/>
                                         <div id="insert-supplier-box" >
@@ -975,7 +1028,7 @@
                             </div>
                         </div>
                         <div class="column"  > 
-                            <span>Thêm hàng vào phiếu nhập hàng</span>
+                            <span>Thêm hàng vào phiếu</span>
                             <div id="insert-search-box" class="row" >
                                 <!--<label>Thêm hàng vào hóa đơn</label> <br />-->
                                 <input id="insert-search-bar" onkeyup ="productSearch('insert', this.value)" type="text" 
@@ -1080,7 +1133,7 @@
                                 <tr>
                                     <td>Tiền thừa nhận từ nhà cung cấp</td>
                                     <td>
-                                        <span class="import-invoice-edit" id="return-edit">0</span>
+                                        <span class="import-invoice-edit" id="edit-return">0</span>
                                     </td>
                                 </tr>
                                 <tr>
@@ -1121,7 +1174,7 @@
                             </div>
                         </div>
                         <div class="column"  > 
-                            <span>Thêm hàng vào phiếu nhập hàng</span>
+                            <span>Chỉnh sửa hàng trong phiếu</span>
                             <div id="edit-search-box" class="row" >
                                 <!--<label>Thêm hàng vào hóa đơn</label> <br />-->
                                 <input id="edit-search-bar" onkeyup ="productSearch('edit', this.value)" type="text" 
@@ -1278,17 +1331,44 @@
                 <div onclick="insert('supplier-insert')" class="btn-save"> <span>Save</span></div>
             </div>
         </div>
+        <div class="warning" id="warning" onclick="fadeOutMessage()" >
+
+        </div>
     </body>
     <script>
         <c:if test="${requestScope.importInvoices.size() >= 10 || requestScope.pageIndex >= 2}" >
-        pagge r('pagger',${requestScope.pageIndex},
+        pagger('pagger',${requestScope.pageIndex},
             ${requestScope.selectedPageSize},
             ${requestScope.totalPage}, 2
                 );
         </c:if>
 
 
+        function generateWarning(message) {
+            var warningBox = document.getElementById("warning");
+            var number = warningBox.length;
 
+            var messageBox = "<div onclick=\"fadeOutSpecificMessage('message" + number + "')\" id=\"message" + number + "\" >" + message + "</div>"
+
+            warningBox.innerHTML += messageBox;
+
+            var box = document.getElementById("message" + number);
+            box.style.animationName = "fadeIn";
+        }
+
+        function fadeOutSpecificMessage(id) {
+            var mesage = document.getElememessagentById(id);
+            mesage.style.animationName = "fadeOut";
+        }
+
+        function fadeOutMessage() {
+            var warningBox = document.getElementById("warning");
+            var messageBox = warningBox.children;
+            for (var i = messageBox.length - 1, max = 0; i >= max; i--) {
+                warningBox.removeChild(messageBox[i]);
+            }
+
+        }
 
         var ordinalNumber = 1;
         function setSign(type, value) {
@@ -1308,9 +1388,10 @@
             var returnBox = document.getElementById(type + '-return'); // return back
             var inputPay = document.getElementById(type + '-paid'); // to supplier
 //            alert(inputPay.value);
-            var status = checkInputNumber(paid);
+            var status = checkInputNumber(inputPay.value);
             if (status === false || inputPay.value === "") {
                 inputPay.value = "0";
+//                alert(paid);
             } else {
                 if (paid.charAt(0) === '0' && paid.length > 1) {
                     paid = paid.replace('0', '');
@@ -1411,6 +1492,7 @@
         }
 
         function checkInputNumber(number) {
+            var number = parseInt(number);
             for (var i = 0, max = number.length; i < max; i++) {
                 var ch = number[i];
                 if (ch < '0' || ch > '9') {
@@ -1605,7 +1687,7 @@
 //            alert(position);
             var childs = list.children;
             list.removeChild(removeChild);
-            for (var i = 1, max = childs.length; i < max; i++) {
+            for (var i = 0, max = childs.length; i < max; i++) {
                 var childId = parseInt((childs[i].id).split(type + "-")[1]);
                 if (childId > position) {
                     var ch = childs[i].children;
@@ -1628,7 +1710,7 @@
                 }
             }
             var limit = list.children.length;
-            //            alert(limit);
+//                        alert(limit);
             ordinalNumber -= 1;
             setTotalAmount(type, limit);
         }
@@ -1653,15 +1735,23 @@
                     boxes[0].value += boxes[i].value;
                 }
             }
-            //            alert(boxes[0].value);
             submitForm(formId);
         }
 
-        function checkInput(formId, statusId, value) {
+        function checkInput(type, formId, statusId, value) {
             var form = document.getElementById(formId);
-            var status = document.getElementById(statusId);
-            status.value = value;
-            form.submit();
+//            var productList = document.getElementById(type + '-product-list');
+//            alert("(" + productList.innerHTML + ")");
+            var totalAmount = document.getElementById(type + '-total');
+            if (totalAmount.innerHTML === "0") {
+                generateWarning("Phiếu hàng đang trống");
+            } else {
+                var status = document.getElementById(statusId);
+                status.value = value;
+                form.submit();
+            }
+
+
         }
 
 
@@ -1699,22 +1789,23 @@
         function clearData(id) {
             //            alert('ok' + id);
             var input = document.getElementsByClassName(id);
-            input[1].value = "${requestScope.today}";
-            input[2].innerHTML = "--Chọn nhà cung cấp--";
-            input[3].value = "";
-            input[4].innerHTML = "";
+            input[1].innerHTML = "--Chọn nhà cung cấp--";
+            input[3].innerHTML = "0";
             input[5].innerHTML = "0";
-            input[6].value = "0";
-            input[7].innerHTML = "0";
-            input[8].innerHTML = "0";
-            input[9].value = "0";
+            input[6].innerHTML = "0";
+            input[9].innerHTML = "0";
+            input[11].value = "";
+
+            input[0].value = "${requestScope.today}";
+            input[2].value = "0";
+            input[4].value = "0";
+            input[7].value = "0";
+            input[8].value = "0";
             input[10].value = "0";
-            input[11].innerHTML = "0";
             input[12].value = "0";
-            input[13].innerHTML = "";
-            input[14].value = "0";
-            input[15].innerHTML = "0";
-            input[16].value = "0";
+            input[13].value = "1";
+            var productList = document.getElementById('insert-product-list');
+            productList.innerHTML = "";
             ordinalNumber = 1;
         }
 
@@ -1792,9 +1883,6 @@
                 edit[13].value = arr[13];
                 edit[15].value = arr[15];
                 edit[16].value = arr[16];
-
-                document.getE
-
 
                 var productList = document.getElementById('edit-product-list');
                 productList.innerHTML = "";
