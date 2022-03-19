@@ -86,7 +86,7 @@ section.setting {
 
 .header .title {
     padding: 20px 0 20px 280px; 
-    font-size: 20px;
+    font-size: 30px;
     font-weight: 400;
 }
 
@@ -307,7 +307,7 @@ section.setting {
 
 .modal .modal-header .title {
     font-weight: bold;
-    font-size: 15px;
+    font-size: 20px;
     color: #837DEC;
     padding: 10px 10px 10px 0;
 }

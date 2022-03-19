@@ -33,7 +33,7 @@ public class DeleteProductController extends BaseAuthenticationController {
             throws ServletException, IOException {
         int productID = Integer.parseInt(request.getParameter("id"));
         ProductDBContext db = new ProductDBContext();
-        db.deleteProduct(productID);
+        db.updateStatus(productID);
         response.sendRedirect("list");
     }
 

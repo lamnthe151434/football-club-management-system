@@ -68,7 +68,6 @@ public class SearchProductController extends HttpServlet {
 
         if (product != null) {
             result += product.getProductID() + "|";
-            result += product.getBarcode() + "|";
             result += product.getProductName() + "|";
             result += product.getCategory().getCategoryName() + "|";
             result += product.getBrand().getBrandName() + "|";

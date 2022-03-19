@@ -47,9 +47,12 @@ public class EditSupplierController extends HttpServlet {
         String result = "";
         result += supplier.getSupplierID() + "|";
         result += supplier.getSupplierID() + "|";
-        result += supplier.getAddress() + "|";
-        result += supplier.getPhone() + "|";
         result += supplier.getSupplierName() + "|";
+        result += supplier.getDob()+ "|";
+        result += supplier.isGender()+ "|";
+        result += supplier.getPhone() + "|";
+        result += supplier.getAddress() + "|";
+        result += supplier.getDescription() ;
 
         PrintWriter writer = response.getWriter();
         writer.println(result);

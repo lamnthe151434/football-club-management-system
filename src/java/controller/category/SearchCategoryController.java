@@ -44,12 +44,14 @@ public class SearchCategoryController extends HttpServlet {
         boolean status = false;
 
         result += "<table>";
-        if (String.valueOf("All categories").contains(searchKeyword)) {
-            if (status == false) {
-                status = true;
+        if (boxType.equals("category")) {
+            if (String.valueOf("Tất cả").contains(searchKeyword)) {
+                if (status == false) {
+                    status = true;
+                }
+                result += "<td><span onclick=\"setValue('-1', 'Tất cả', '" + boxType + "')\" \n"
+                        + " class =\"category-value\">Tất cả</span></td>";
             }
-            result += "<td><span onclick=\"setValue('-1', 'All categories', '" + boxType + "')\" \n"
-                    + " class =\"category-value\">All categories</span></td>";
         }
         for (int i = categories.size() - 1; i >= 0; i--) {
             Category category = categories.get(i);
@@ -62,17 +64,11 @@ public class SearchCategoryController extends HttpServlet {
                 result += "<span onclick=\"setValue('" + category.getCategoryID() + "','" + category.getCategoryName() + "', '" + boxType + "')\" class =\"product-insert\" >"
                         + category.getCategoryName() + "</span> <br/>";
                 result += "</td>";
-                result += "<td>";
-                result += "<button onclick=\"edit(" + category.getCategoryID() + ", 'category')\" >Edit</button>";
-                result += "</td>";
-                result += "<td>";
-                result += "<button onclick=\"deleteEntity(" + category.getCategoryID() + ", 'category')\">Delete</button>";
-                result += "</td>";
                 result += "</tr>";
             }
         }
         if (status == false) {
-            result += "<tr><td>Không có bản ghi nào tìm thấy!</td></tr>";
+            result += "<tr><td><span class=\"no-result\" >Không tìm thấy nhóm hàng!</span></td></tr>";
         }
         result += "</table>";
         writer.println(result);

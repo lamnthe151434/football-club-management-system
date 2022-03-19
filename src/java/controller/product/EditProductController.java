@@ -34,16 +34,23 @@ public class EditProductController extends BaseAuthenticationController {
         ProductDBContext db = new ProductDBContext();
         Product product = db.getProduct(productID);
         String result = "";
+
+        if (product.getDescription() == null) {
+            product.setDescription("");
+        }
+
         result += product.getProductID() + "|";
         result += product.getProductID() + "|";
-        result += product.getCategory().getCategoryName() + "|";
-        result += product.getCategory().getCategoryID() + "|";
-        result += product.getCost() + "|";
         result += product.getProductName() + "|";
-        result += product.getBrand().getBrandName() + "|";
+        result += product.getCategory().getCategoryID() + "|";
+        result += product.getCategory().getCategoryName() + "|";
         result += product.getBrand().getBrandID() + "|";
-        result += product.getPrice();
-//        result += product.getQuantity();
+        result += product.getBrand().getBrandName() + "|";
+        result += product.getCost() + "|";
+        result += product.getPrice() + "|";
+        result += product.getUnit() + "|";
+        result += product.getQuantity() + "|";
+        result += product.getDescription();
 
         PrintWriter writer = response.getWriter();
 
@@ -58,26 +65,29 @@ public class EditProductController extends BaseAuthenticationController {
         CategoryDBContext cdb = new CategoryDBContext();
         BrandDBContext bdb = new BrandDBContext();
 
-        String rawProductID = request.getParameter("productID");
-        String rawProductName = request.getParameter("productName");
-        String rawCategoryID = request.getParameter("categoryID");
-        String rawBrandID = request.getParameter("brandID");
-        String rawImportPrice = request.getParameter("cost");
-        String rawSellPrice = request.getParameter("price");
-//        String rawQuanity = request.getParameter("quantity");
+        int productId = Integer.parseInt(request.getParameter("productID"));
+        String productName = request.getParameter("productName");
+        String unit = request.getParameter("unit");
+        String rawCategoryID = request.getParameter("category");
+        String rawBrandID = request.getParameter("brand");
+        String rawQuantity = request.getParameter("quantity");
+        String rawCost = request.getParameter("cost");
+        String rawPrice = request.getParameter("price");
+        String rawDescription = request.getParameter("description");
 
-        int productID = Integer.parseInt(rawProductID);
-        String productName = rawProductName;
         int categoryID = Integer.parseInt(rawCategoryID);
         int brandID = Integer.parseInt(rawBrandID);
-        float cost = Float.parseFloat(rawImportPrice);
-        float price = Float.parseFloat(rawSellPrice);
-//        int quantity = Integer.parseInt(rawQuanity);
+        int quantity = Integer.parseInt(rawQuantity);
+        float cost = Float.parseFloat(rawCost);
+        float price = Float.parseFloat(rawPrice);
+        String description = rawDescription;
 
         Category category = cdb.getCategory(categoryID);
         Brand brand = bdb.getBrand(brandID);
-//        Product product = new Product(productID, productName, category, brand,
-//                cost, price, 0, 1);
+        Product product = new Product(productId, productName, category,
+                brand, unit, cost, price, quantity, 1, description);
+        db.updateProduct(product);
+
 //        db.updateProduct(product);
         response.sendRedirect("list");
     }

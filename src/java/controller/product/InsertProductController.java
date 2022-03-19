@@ -16,6 +16,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import model.product.Brand;
 import model.product.Category;
 import model.product.Product;
@@ -43,37 +44,33 @@ public class InsertProductController extends BaseAuthenticationController {
         ProductDBContext db = new ProductDBContext();
         CategoryDBContext cdb = new CategoryDBContext();
         BrandDBContext bdb = new BrandDBContext();
+        HttpSession session = request.getSession();
 
-        String rawBarcode = request.getParameter("barcode");
-        String rawProductName = request.getParameter("productName");
-        String rawUnit = request.getParameter("unit");
+        String submitType = request.getParameter("submitType");
+        session.setAttribute("submitType", submitType);
+
+        String productName = request.getParameter("productName");
+        String unit = request.getParameter("unit");
         String rawCategoryID = request.getParameter("category");
         String rawBrandID = request.getParameter("brand");
         String rawQuantity = request.getParameter("price");
         String rawCost = request.getParameter("cost");
         String rawPrice = request.getParameter("price");
         String rawDescription = request.getParameter("description");
-        String rawStatus = request.getParameter("status");
-        if (rawStatus == null) {
-            rawStatus = "0";
-        }
 
-        int barcode = Integer.parseInt(rawBarcode);
-        String productName = rawProductName;
         int categoryID = Integer.parseInt(rawCategoryID);
         int brandID = Integer.parseInt(rawBrandID);
-        String unit = rawUnit;
         int quantity = Integer.parseInt(rawQuantity);
         float cost = Float.parseFloat(rawCost);
         float price = Float.parseFloat(rawPrice);
-        int status = Integer.parseInt(rawStatus);
         String description = rawDescription;
 
         Category category = cdb.getCategory(categoryID);
         Brand brand = bdb.getBrand(brandID);
-        Product product = new Product(barcode, productName, category,
-                brand, unit, cost, price, quantity, status, description);
+        Product product = new Product(productName, category,
+                brand, unit, cost, price, quantity, 1, description);
         db.insertProduct(product);
+
         response.sendRedirect("list");
     }
 

@@ -141,7 +141,6 @@
                     <table>
                         <thead>
                             <tr>
-                                <th><input type ="checkbox" /></th>
                                 <th>Customer ID</th>
                                 <th>Customer Name</th>
                                 <th>Address</th>

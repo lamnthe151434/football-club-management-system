@@ -37,33 +37,38 @@ public class SearchBrandController extends HttpServlet {
         String searchKeyword = request.getParameter("keyword");
         String boxType = request.getParameter("boxType");
 
-        ArrayList<Brand> brands = db.getBrands();
+        ArrayList<Brand> categories = db.getBrands();
         PrintWriter writer = response.getWriter();
 
         String result = "";
+        boolean status = false;
+
         result += "<table>";
         if (boxType.equals("brand")) {
-            result += "<tr>\n"
-                    + " <td><span onclick=\"setValue('-1', 'All brands', '" + boxType + "')\" \n"
-                    + " class =\"brand-value\">All brands</span></td>\n"
-                    + " </tr>";
+            if (String.valueOf("Tất cả").contains(searchKeyword)) {
+                if (status == false) {
+                    status = true;
+                }
+                result += "<td><span onclick=\"setValue('-1', 'Tất cả', '" + boxType + "')\" \n"
+                        + " class =\"brand-value\">Tất cả</span></td>";
+            }
         }
-        for (int i = brands.size() - 1; i >= 0; i--) {
-            Brand brand = brands.get(i);
+        for (int i = categories.size() - 1; i >= 0; i--) {
+            Brand brand = categories.get(i);
             if (brand.getBrandName().contains(searchKeyword)) {
+                if (status == false) {
+                    status = true;
+                }
                 result += "<tr>";
                 result += "<td>";
-                result += "<span onclick=\"setValue('" + brand.getBrandID() + "','" + brand.getBrandName() + "', '" + boxType + "')\" class =\"brand-value\" >"
+                result += "<span onclick=\"setValue('" + brand.getBrandID() + "','" + brand.getBrandName() + "', '" + boxType + "')\" class =\"product-insert\" >"
                         + brand.getBrandName() + "</span> <br/>";
-                result += "</td>";
-                result += "<td>";
-                result += "<button onclick=\"edit(" + brand.getBrandID() + ", 'brand')\" >Edit</button>";
-                result += "</td>";
-                result += "<td>";
-                result += "<button onclick=\"deleteEntity(" + brand.getBrandID() + ", 'brand')\">Delete</button>";
                 result += "</td>";
                 result += "</tr>";
             }
+        }
+        if (status == false) {
+            result += "<tr><td><span class=\"no-result\" >Không tìm thấy thương hiệu!</span></td></tr>";
         }
         result += "</table>";
         writer.println(result);

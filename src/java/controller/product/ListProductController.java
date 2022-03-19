@@ -15,6 +15,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import model.product.Brand;
 import model.product.Category;
 import model.product.Product;
@@ -39,6 +40,9 @@ public class ListProductController extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         BrandDBContext bdb = new BrandDBContext();
         CategoryDBContext cdb = new CategoryDBContext();
+
+        HttpSession session = request.getSession();
+        String submitType = String.valueOf(session.getAttribute("submitType"));
 
         String rawBrandID = request.getParameter("brandID");
         String rawCategoryID = request.getParameter("categoryID");
@@ -114,7 +118,6 @@ public class ListProductController extends HttpServlet {
         if (totalRecord % pageSize != 0) {
             totalPage += 1;
         }
-        System.out.println("IM HERE");
 
         String track = "Hiển thị ";
 
@@ -175,6 +178,7 @@ public class ListProductController extends HttpServlet {
         request.setAttribute("category", category);
         request.setAttribute("brand", brand);
         request.setAttribute("searchKey", searchKey);
+        request.setAttribute("submitType", submitType);
 
         request.getRequestDispatcher("../view/product/list.jsp").forward(request, response);
     }

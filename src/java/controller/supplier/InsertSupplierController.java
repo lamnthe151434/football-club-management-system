@@ -33,7 +33,7 @@ public class InsertSupplierController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-//        String rawSupplierID = request.getParameter("supplierID");
+        
         String rawSupplierName = request.getParameter("supplierName");
         String rawAddress = request.getParameter("address");
         String rawPhone = request.getParameter("phone");
@@ -50,9 +50,11 @@ public class InsertSupplierController extends HttpServlet {
         if (rawDob == null) {
             rawDob = "0001-01-01";
         }
-        rawGender = "1";
 
-//        int supplierID = Integer.parseInt(rawSupplierID);
+        if(rawGender == null) {
+            rawGender = "1";
+        }
+        
         String supplierName = rawSupplierName;
         String address = rawAddress;
         String phone = rawPhone;
@@ -60,6 +62,7 @@ public class InsertSupplierController extends HttpServlet {
         String description = rawDescription;
         int genderInt = Integer.parseInt(rawGender);
         boolean gender = true;
+        
         if (genderInt == 1) {
             gender = true;
         } else {

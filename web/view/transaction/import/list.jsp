@@ -303,17 +303,6 @@
             height: 90%;
         }
 
-        /*        .modal .import-invoice-insert-modal .modal-content .column #insert-product-box {
-                    height: 390px;
-                }
-                .modal .import-invoice-edit-modal .modal-content .column #edit-product-box {
-                    height: 380px;
-                }
-        
-                .modal .import-invoice-view-modal .modal-content .column #view-product-box {
-                    height: 460px;
-                }*/
-
         .modal .import-invoice-insert-modal .modal-content .column #insert-product-box,
         .modal .import-invoice-edit-modal .modal-content .column #edit-product-box {
             margin-top: 32px;
@@ -1492,7 +1481,7 @@
         }
 
         function checkInputNumber(number) {
-            var number = parseInt(number);
+//            var number = parseInt(number);
             for (var i = 0, max = number.length; i < max; i++) {
                 var ch = number[i];
                 if (ch < '0' || ch > '9') {
@@ -1518,7 +1507,7 @@
                 }).then(function (result) {
                     var data = result.split('|');
 //                    alert(data.length);
-                    if (data.length === 10) {
+                    if (data.length === 9) {
                         var product = concatProduct(type, data);
 //                        productList.innerHTML += product;
                         productList.insertAdjacentHTML('beforeend', product);
@@ -1644,10 +1633,10 @@
             str += "<td>" + " <button type =\"button\" onclick=\"deleteFrom('" + type + "'," + ordinalNumber + ")\"><i class=\"fa fa-trash\" ></i></button>" + "</td>";
             str += "<td>" + ordinalNumber + "</td>";
             str += "<td>" + formatProductId(data[0]) + "</td>";
-            str += "<td>" + data[2] + "<input type=\"hidden\" name =\"id\" value =\""
+            str += "<td>" + data[1] + "<input type=\"hidden\" name =\"id\" value =\""
                     + data[0] + "\"" + "/></td>";
-            str += "<td>" + data[5] + "</td>";
-            str += "<td>" + data[7] + "</td>";
+            str += "<td>" + data[4] + "</td>";
+            str += "<td>" + data[6] + "</td>";
             str += "<td>"
                     + "<button type=\"button\" onclick=\"increaseQuantity('" + type + "'," + ordinalNumber + ")\" ><i class =\"fa fa-arrow-up\"></i></button>"
                     + "<input maxlength =\"12\" onkeyup =\"setAmount('" + type + "',this.value," + ordinalNumber
@@ -1857,7 +1846,7 @@
         }
 
 
-        function editInvoice(id, position) {
+        function editInvoice(id) {
             var url = "edit?id=" + id;
             var edit = document.getElementsByClassName('import-invoice-edit');
             fetch(url).then(function (response) {

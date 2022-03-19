@@ -6,7 +6,6 @@ import model.product.Brand;
 public class Product {
 
     private int productID;
-    private int barcode;
     private String productName;
     private Category category;
     private Brand brand;
@@ -20,9 +19,8 @@ public class Product {
     public Product() {
     }
 
-    public Product(int productID, int barcode, String productName, Category category, Brand brand, String unit, float cost, float price, int quantity, int status, String description) {
+    public Product(int productID, String productName, Category category, Brand brand, String unit, float cost, float price, int quantity, int status, String description) {
         this.productID = productID;
-        this.barcode = barcode;
         this.productName = productName;
         this.category = category;
         this.brand = brand;
@@ -34,8 +32,7 @@ public class Product {
         this.description = description;
     }
 
-    public Product(int barcode, String productName, Category category, Brand brand, String unit, float cost, float price, int quantity, int status, String description) {
-        this.barcode = barcode;
+    public Product(String productName, Category category, Brand brand, String unit, float cost, float price, int quantity, int status, String description) {
         this.productName = productName;
         this.category = category;
         this.brand = brand;
@@ -53,14 +50,6 @@ public class Product {
 
     public void setProductID(int productID) {
         this.productID = productID;
-    }
-
-    public int getBarcode() {
-        return barcode;
-    }
-
-    public void setBarcode(int barcode) {
-        this.barcode = barcode;
     }
 
     public String getProductName() {
