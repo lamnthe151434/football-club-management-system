@@ -52,7 +52,10 @@ public class EditSupplierController extends HttpServlet {
         result += supplier.isGender()+ "|";
         result += supplier.getPhone() + "|";
         result += supplier.getAddress() + "|";
-        result += supplier.getDescription() ;
+        result += supplier.getDescription();
+        
+        String[] arr = result.split("|");
+        System.out.println(arr.length);
 
         PrintWriter writer = response.getWriter();
         writer.println(result);

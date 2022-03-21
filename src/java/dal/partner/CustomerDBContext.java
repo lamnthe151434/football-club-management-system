@@ -189,6 +189,7 @@ public class CustomerDBContext extends DBContext {
             stm.setDate(4, customer.getDob());
             stm.setBoolean(5, customer.isGender());
             stm.setString(6, customer.getDescription());
+            stm.setInt(7, customer.getCustomerID());
             stm.executeUpdate();
         } catch (SQLException ex) {
             Logger.getLogger(CustomerDBContext.class.getName()).log(Level.SEVERE, null, ex);

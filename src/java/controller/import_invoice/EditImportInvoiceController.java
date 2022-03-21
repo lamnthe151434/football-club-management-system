@@ -93,8 +93,8 @@ public class EditImportInvoiceController extends HttpServlet {
         }
         if (importInvoice.getStatus() == 2) {
             result += "<input id=\"edit-status\" type=\"hidden\" name =\"status\" />\n";
-            result += "<button type=\"button\" onclick=\"checkInput('edit-form', 'edit-status', '2')\">LƯU</button>\n";
-            result += "<button type=\"button\" onclick=\"checkInput('edit-form', 'edit-status', '0')\">HỦY PHIẾU</button>";
+            result += "<button type=\"button\" onclick=\"checkInput('edit','edit-form', 'edit-status', '2')\">LƯU</button>\n";
+            result += "<button type=\"button\" onclick=\"checkInput('edit','edit-form', 'edit-status', '0')\">HỦY PHIẾU</button>";
         }
         result += "|";
 
@@ -144,7 +144,7 @@ public class EditImportInvoiceController extends HttpServlet {
             case 4:
                 return "P0" + id;
             default:
-                return "P0000" + id;
+                return "P" + id;
         }
 
     }

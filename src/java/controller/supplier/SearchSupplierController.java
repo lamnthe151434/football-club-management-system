@@ -21,32 +21,6 @@ import model.partner.Supplier;
  */
 public class SearchSupplierController extends HttpServlet {
 
-    /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet SearchSupplierController</title>");
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet SearchSupplierController at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
-        }
-    }
-
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
@@ -60,9 +34,10 @@ public class SearchSupplierController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        
-        
+
         String searchKeyword = request.getParameter("keyword");
+        String type = request.getParameter("type");
+
         SupplierDBContext sdb = new SupplierDBContext();
         ArrayList<Supplier> suppliers = sdb.getSuppliers();
         boolean status = false;
@@ -72,17 +47,15 @@ public class SearchSupplierController extends HttpServlet {
         for (int i = suppliers.size() - 1; i >= 0; i--) {
             Supplier supplier = suppliers.get(i);
             if (supplier.getSupplierName().contains(searchKeyword)) {
+                String hyperSign = "";
+                if (supplier.getPhone().length() > 0) {
+                    hyperSign = "-";
+                }
                 status = true;
                 result += "<tr>";
                 result += "<td>";
-                result += "<span onclick=\"setValue('" + supplier.getSupplierID() + "','" + supplier.getSupplierName() + "', 'supplier')\" class =\"product-insert\" >"
-                        + supplier.getSupplierName() + "</span> <br/>";
-                result += "</td>";
-                result += "<td>";
-                result += "<button onclick=\"edit(" + supplier.getSupplierID() + ", 'supplier')\" >Edit</button>";
-                result += "</td>";
-                result += "<td>";
-                result += "<button onclick=\"deleteEntity(" + supplier.getSupplierID() + ", 'supplier')\">Delete</button>";
+                result += "<span onclick=\"setValue('" + supplier.getSupplierID() + "','" + supplier.getSupplierName() + "','" + type + "')\"  >"
+                        + supplier.getSupplierName() + " " + hyperSign + " " + supplier.getPhone() + "</span> <br/>";
                 result += "</td>";
                 result += "</tr>";
             }
@@ -105,7 +78,6 @@ public class SearchSupplierController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
     }
 
     /**

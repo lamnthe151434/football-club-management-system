@@ -13,6 +13,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import model.partner.Customer;
 
 /**
@@ -33,7 +34,12 @@ public class InsertCustomerController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        String rawCustomerID = request.getParameter("customerID");
+
+        HttpSession session = request.getSession();
+
+        String submitType = request.getParameter("submitType");
+        session.setAttribute("submitType", submitType);
+
         String rawCustomerName = request.getParameter("customerName");
         String rawAddress = request.getParameter("address");
         String rawPhone = request.getParameter("phone");
@@ -51,7 +57,10 @@ public class InsertCustomerController extends HttpServlet {
             rawDob = "0001-01-01";
         }
 
-        int customerID = Integer.parseInt(rawCustomerID);
+        if (rawGender == null) {
+            rawGender = "1";
+        }
+
         String customerName = rawCustomerName;
         String address = rawAddress;
         String phone = rawPhone;
@@ -59,13 +68,14 @@ public class InsertCustomerController extends HttpServlet {
         String description = rawDescription;
         int genderInt = Integer.parseInt(rawGender);
         boolean gender = true;
+
         if (genderInt == 1) {
             gender = true;
         } else {
             gender = false;
         }
 
-        Customer customer = new Customer(customerID, customerName, gender, dob,
+        Customer customer = new Customer(customerName, gender, dob,
                 phone, address, description);
         CustomerDBContext cdb = new CustomerDBContext();
         cdb.insertCustomer(customer);

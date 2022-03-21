@@ -19,6 +19,7 @@
     <style>
 
 
+
         .container .main-content .middle {
             margin-left: 15px;
             width: 1200px;
@@ -36,11 +37,16 @@
             /*box-sizing: border-box;*/
         }
 
+
         .container .main-content .middle thead{
             position: sticky;
             top:0;
             background-color: #009879;
             color: #ffffff;
+        }
+
+        .container .main-content .middle table thead td {
+            cursor: pointer;
         }
 
         .container .main-content .middle table thead td, 
@@ -64,7 +70,7 @@
             position: absolute;
             padding: 15px 35px 15px 35px;
             border-radius: 10px;
-            background: #FDFDFE;
+            background: #fff;
             transform: scale(0);
             transition-duration: 0.5s;
             z-index: 99;
@@ -75,6 +81,59 @@
         }
         .modal .import-invoice-view-modal {
             height: 80vh;
+        }
+
+        .modal .insert-confirm-modal,
+        .modal .delete-confirm-modal{
+            position: absolute;
+            padding: 15px 35px 15px 35px;
+            border-radius: 5px;
+            background: #fff;
+            transform: scale(0);
+            transition-duration: 0.2s;
+            z-index: 99;
+            top: 0vh;
+            left: 75vh;
+            width: 25vw;
+            height: 10vh;
+            font-size: 17px;
+            box-shadow: 0px 2px 2px #000;
+            padding: 10px 20px 10px 20px;
+            /*border: 0.5px solid blue;*/
+        }
+        .modal .insert-confirm-modal .btn-group,
+        .modal .delete-confirm-modal .btn-group
+
+        {
+            width: 100%;
+            margin-top: 10px;
+            text-align: right;
+        }
+
+        .modal .insert-confirm-modal .btn-group button ,
+        .modal .delete-confirm-modal .btn-group button 
+        {
+            padding: 5px;
+            margin-left: 10px;
+            width: 70px;
+            border: 5px;
+            color: #fff;
+        }
+        .modal .insert-confirm-modal .btn-group button:hover ,
+        .modal .delete-confirm-modal .btn-group button:hover 
+        {
+            box-shadow: 0px 0px 2px 2px #ccc;
+        }
+        .modal .insert-confirm-modal .btn-group button:nth-of-type(1) ,
+        .modal .delete-confirm-modal .btn-group button:nth-of-type(1) 
+        {
+            background: rgb(200, 0, 0);
+        }
+        .modal .insert-confirm-modal .btn-group button:nth-of-type(2),
+        .modal .delete-confirm-modal .btn-group button:nth-of-type(2) {
+
+            background: rgb(0, 200, 0);
+            /*margin-right: 10px;*/
         }
 
 
@@ -356,7 +415,7 @@
         }
 
         #insert-search-box #insert-search-result .product-result:hover ,
-        #insert-search-box #insert-search-result .product-result:hover 
+        #edit-search-box #edit-search-result .product-result:hover 
         {
             background: #ccc;
         }
@@ -371,13 +430,7 @@
 
         }
 
-        .modal .import-invoice-insert-modal .modal-content .column .supplier-container-outer ,
-        .modal .import-invoice-edit-modal .modal-content .column .supplier-container-outer 
-        {
-            position: absolute;
-            top: 270px;
-            left: 220px;
-        }
+
         .modal .import-invoice-insert-modal .modal-content .column .insert-discount-box ,
         .modal .import-invoice-edit-modal .modal-content .column .edit-discount-box 
         {
@@ -434,37 +487,48 @@
             padding: 4px;
         }
 
-
-        .modal .import-invoice-insert-modal .modal-content .column .supplier-container-outer .supplier-container,
-        .modal .import-invoice-edit-modal .modal-content .column .supplier-container-outer .supplier-container
+        .modal .import-invoice-insert-modal .modal-content .column #insert-supplier-container ,
+        .modal .import-invoice-edit-modal .modal-content .column  #edit-supplier-container
         {
-            position: relative;
-            display: inline-block;
-            /*border: 1px solid #000;*/
-            box-sizing: border-box;
-            border-collapse: collapse;
-        }
-
-
-
-        .modal .import-invoice-insert-modal .modal-content .column .supplier-container-outer .supplier-container #insert-supplier-search-box, 
-        .modal .import-invoice-edit-modal .modal-content .column .supplier-container-outer .supplier-container #edit-supplier-search-box{
             position: absolute;
-            top: 0px;
-            left: 0px;
-            height: 170px;
-            width: 180px;
-            background: #fff;
-            /*border: 1px solid #000;*/
+            top: 280px;
+            left: 150px;
+            width: 315px;
+            height: 220px;
+            border: 1px solid blue;
             box-shadow: 0px 0px 2px 2px #ccc;
             box-sizing: border-box;   
+            border-radius: 5px;
             display: none;
+            background: #fff;
+
         }
-        .modal .import-invoice-insert-modal .modal-content .column .supplier-container-outer .supplier-container #insert-supplier-search-box input, 
-        .modal .import-invoice-edit-modal .modal-content .column .supplier-container-outer .supplier-container #edit-supplier-search-box input
+
+
+
+        .modal .import-invoice-insert-modal .modal-content .column  #insert-supplier-container #insert-supplier-search-box, 
+        .modal .import-invoice-edit-modal .modal-content .column #edit-supplier-container #edit-supplier-search-box{
+            position: relative;
+            height: 100%;
+            width: 100%;
+            border-radius: 10px;
+        }
+
+        .modal .import-invoice-insert-modal .modal-content .column  #insert-supplier-container #insert-supplier-search-box #insert-supplier-box , 
+        .modal .import-invoice-edit-modal .modal-content .column  #edit-supplier-container #edit-supplier-search-box #edit-supplier-box{
+            width: 100%;
+            height: 75%;
+            border-radius: 10px;
+
+            overflow: auto;
+        }
+
+
+        .modal .import-invoice-insert-modal .modal-content .column  #insert-supplier-container #insert-supplier-search-box input, 
+        .modal .import-invoice-edit-modal .modal-content .column  #edit-supplier-container #edit-supplier-search-box input
 
         {
-            width: 170px;
+            width: 90%;
             height: 45px;
             box-sizing: border-box;
             border: none;
@@ -476,28 +540,27 @@
             padding-bottom: 5px;
             border-bottom: 3px solid #FFCD1F;
         }
-        .modal .import-invoice-insert-modal .modal-content .column .supplier-container-outer .supplier-container #insert-supplier-box,
-        .modal .import-invoice-edit-modal .modal-content .column .supplier-container-outer .supplier-container #edit-supplier-box 
 
-        {
-            overflow: auto;
-            height: 165px;
-            width: 180px;
+        .modal .import-invoice-insert-modal .modal-content .column  #insert-supplier-container #insert-supplier-box table td,
+        .modal .import-invoice-edit-modal .modal-content .column  #edit-supplier-container #edit-supplier-box table td {
+            width: 100%;
+            height: 20px;
         }
-        .modal .import-invoice-insert-modal .modal-content .column .supplier-container-outer .supplier-container #insert-supplier-box span,
-        .modal .import-invoice-edit-modal .modal-content .column .supplier-container-outer .supplier-container #edit-supplier-box span 
+
+        .modal .import-invoice-insert-modal .modal-content .column  #insert-supplier-container #insert-supplier-box span,
+        .modal .import-invoice-edit-modal .modal-content .column  #edit-supplier-container #edit-supplier-box span 
 
         {
             cursor: pointer;
             display: inline-block;
-            width: 180px;
-            height: 38px;
-            padding: 5px;
+            width: 100%;
+            height: 20px;
+            padding: 10px;
             margin: 0px;
             border: none;
         }
-        .modal .import-invoice-insert-modal .modal-content .column .supplier-container-outer .supplier-container #insert-supplier-box span:hover,
-        .modal .import-invoice-edit-modal .modal-content .column .supplier-container-outer .supplier-container #edit-supplier-box span:hover
+        .modal .import-invoice-insert-modal .modal-content .column  #insert-supplier-container #insert-supplier-box span:hover,
+        .modal .import-invoice-edit-modal .modal-content .column  #edit-supplier-container #edit-supplier-box span:hover
         {
             background: #FFCD1F;
             color: #000;
@@ -735,6 +798,161 @@
             background: red;
         }
 
+        .modal .supplier-insert-modal, 
+        .modal .supplier-view-modal {
+            position: absolute;
+            padding: 15px 35px 15px 35px;
+            border-radius: 10px;
+            background: #FDFDFE;
+            transform: scale(0);
+            transition-duration: 0.5s;
+            z-index: 99;
+            top: 11vh;
+            left: 60vh;
+            width: 40vw;
+            height: 70vh;
+
+        }
+        .modal .supplier-view-modal .modal-content table td span:hover,
+        .modal .supplier-insert-modal .modal-content table td span:hover{
+            border-bottom: 1px solid blue; 
+        }
+
+        .modal .supplier-insert-modal .modal-content ,
+        .modal .supplier-view-modal .modal-content  {
+            margin-top: 10px;
+            position: relative;
+            background: #fff;
+        }
+
+
+        .modal .supplier-insert-modal .modal-content input,
+        .modal .supplier-view-modal .modal-content input,
+        .modal .supplier-insert-modal .modal-content .textarea,
+        .modal .supplier-view-modal .modal-content .textarea
+        {
+            width: 95.5%;
+            padding: 10px;
+            /*height: 30px;*/
+            margin-top: 5px;
+            background: #fff;
+            border:none;
+            outline: none;
+            border-bottom: 1px solid #C7C7C7;           
+            background: #fff;
+        }
+
+        .modal .supplier-insert-modal .modal-content .radio ,
+        .modal .supplier-view-modal .modal-content .radio 
+
+        {
+            width: 20px;
+            padding: 0px;
+            margin: 0px;
+        }
+
+        .modal .supplier-insert-modal .modal-content .textarea,
+        .modal .supplier-view-modal .modal-content .textarea{
+            resize: none;
+        }
+
+        .modal .supplier-view-modal .modal-content table td:nth-child(1),
+        .modal .supplier-insert-modal .modal-content table td:nth-child(1) {
+            padding:10px 10px 10px 0px;
+            width: 150px;
+            /*border: 1px solid #000;*/
+        }
+
+        .modal .supplier-insert-modal .modal-content table tr:nth-child(8) td, 
+        .modal .supplier-view-modal .modal-content table tr:nth-child(8) td {
+            /*border: 1px solid #000;*/
+            /*box-sizing: border-box;*/
+            text-align: right;
+            width: 460px;
+        }
+
+        .modal .supplier-insert-modal .modal-content table tr:nth-child(4) td:nth-child(2) ,
+        .modal .supplier-view-modal .modal-content table tr:nth-child(4) td:nth-child(2) 
+        {
+            border-bottom:  1px solid #C7C7C7;    
+            padding: 12px;
+            width: 445px;
+        }
+        .modal .supplier-insert-modal .modal-content table tr:nth-child(4) td:nth-child(1),
+        .modal .supplier-view-modal .modal-content table tr:nth-child(4) td:nth-child(1)
+        {
+            padding: 12px 12px 12px 0px;
+        }
+
+        .modal .supplier-view-modal .modal-content table tr:nth-child(8) td button,
+        .modal .supplier-insert-modal .modal-content table tr:nth-child(8) td button{
+            margin-top: 10px;
+            padding:5px 10px 5px 10px;
+            width: 160px;
+            color: #fff;
+            text-align: center;
+            border-radius: 5px;
+            margin-left: 45px;
+        }
+
+        .modal .supplier-view-modal .modal-content table tr:nth-child(8) td button:hover,
+        .modal .supplier-insert-modal .modal-content table tr:nth-child(8) td button:hover {
+            box-shadow: 0px 0px 2px 2px #ccc;
+        }
+
+        .modal .supplier-insert-modal .modal-content table tr:nth-child(8) td button:nth-of-type(3),
+        .modal .supplier-view-modal .modal-content table tr:nth-child(8) td button:nth-of-type(3) {
+            margin-right: 0px;
+            background: rgb(0, 0, 200);
+        }
+        .modal .supplier-insert-modal .modal-content table tr:nth-child(8) td button:nth-of-type(2),
+        .modal .supplier-view-modal .modal-content table tr:nth-child(8) td button:nth-of-type(2) {
+            background: rgb(0, 200, 0);
+
+
+        }
+        .modal .supplier-insert-modal .modal-content table tr:nth-child(8) td button:nth-of-type(1),
+        .modal .supplier-view-modal .modal-content table tr:nth-child(8) td button:nth-of-type(1) {
+            background: rgb(200, 0, 0);
+            margin-left: 5px;
+        }
+
+        .table-title {
+            font-size: 17px;
+            font-weight: 600;
+        }
+
+        .modal .supplier-view-modal .modal-content table td:nth-child(2),
+        .modal .supplier-insert-modal .modal-content table td:nth-child(2) {
+            padding: 10px 0px 0x 0px;
+            width: 440px;
+            box-sizing: border-box;
+            /*border: 1px solid #000;*/
+
+        }
+        .modal .supplier-view-modal .modal-content input:focus,
+        .modal .supplier-insert-modal .modal-content input:focus {
+            border-bottom: 1px solid blue;
+            box-shadow: 0px  2px #ccc;
+        }
+
+        .modal .supplier-view-modal .modal-content table td span,
+        .modal .supplier-insert-modal .modal-content table td span {
+            padding: 10px;
+            width: 95.5%;
+            display: inline-block;
+            border-bottom: 1px solid #C7C7C7; 
+            cursor: pointer;
+        }
+
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            margin: 0;
+        }
+
 
 
     </style>
@@ -753,6 +971,8 @@
                 <input type="hidden" name="status" value="${requestScope.statuses}" />
                 <input type="hidden" id="page-index" value="${requestScope.pageIndex}"  name="pageIndex" />
                 <input type="hidden" id="page-size" value="${requestScope.selectedPageSize}"  name="pageSize"  />
+                <input type="hidden" id="sort-by" name="sortBy" />
+                <input type="hidden" id="sort-type" name="sortType" />
             </form>
         </div>
         <div id ="container" class="container">
@@ -825,14 +1045,69 @@
                 <div class="middle" >
                     <c:if test="${requestScope.importInvoices.size() > 0}" >
                         <table>
-                            <thead>
+                            <thead >
                                 <tr>
-                                    <td>Mã nhập hàng</td>
-                                    <td>Thời gian</td>
-                                    <td>Nhà cung cấp</td>
-                                    <td>Tổng tiền hàng</td>
+                                    <td class="sort-by" onclick="sortBy('Import_Invoice_ID', 0)" >
+                                        <span>Mã nhập hàng</span> 
+                                            <c:if  test="${requestScope.sortBy == 'Import_Invoice_ID' 
+                                                           && requestScope.sortType != '0'}">
+                                                <c:if test="${requestScope.sortType == '1'}">
+                                                <i class="fa fa-arrow-up"></i>
+                                            </c:if>
+                                            <c:if test="${requestScope.sortType == '2'}">
+                                                <i class="fa fa-arrow-down"></i>
+                                            </c:if>
+                                        </c:if> 
+                                    </td>
+                                    <td class="sort-by" onclick="sortBy('Time', 1)" >
+                                        <span>Thời gian</span>
+                                        <c:if  test="${requestScope.sortBy == 'Time' 
+                                                       && requestScope.sortType != '0'}">
+                                            <c:if test="${requestScope.sortType == '1'}">
+                                                <i class="fa fa-arrow-up"></i>
+                                            </c:if>
+                                            <c:if test="${requestScope.sortType == '2'}">
+                                                <i class="fa fa-arrow-down"></i>
+                                            </c:if>
+                                        </c:if> 
+                                    </td>
+                                    <td class="sort-by" onclick="sortBy('Supplier_ID', 2)" >
+                                        <span>Nhà cung cấp</span>
+                                        <c:if  test="${requestScope.sortBy == 'Supplier_ID' 
+                                                       && requestScope.sortType != '0'}">
+                                            <c:if test="${requestScope.sortType == '1'}">
+                                                <i class="fa fa-arrow-up"></i>
+                                            </c:if>
+                                            <c:if test="${requestScope.sortType == '2'}">
+                                                <i class="fa fa-arrow-down"></i>
+                                            </c:if>
+                                        </c:if> 
+                                    </td>
+                                    <td class="sort-by" onclick="sortBy('totalAmount', 3)" >
+                                        <span>Tổng tiền hàng</span>
+                                        <c:if  test="${requestScope.sortBy == 'totalAmount' 
+                                                       && requestScope.sortType != '0'}">
+                                            <c:if test="${requestScope.sortType == '1'}">
+                                                <i class="fa fa-arrow-up"></i>
+                                            </c:if>
+                                            <c:if test="${requestScope.sortType == '2'}">
+                                                <i class="fa fa-arrow-down"></i>
+                                            </c:if>
+                                        </c:if> 
+                                    </td>
                                     <td>Ghi chú</td>
-                                    <td>Trạng thái</td>
+                                    <td class="sort-by" onclick="sortBy('status', 4)" >
+                                        <span>Trạng thái</span>
+                                        <c:if  test="${requestScope.sortBy == 'status' 
+                                                       && requestScope.sortType != '0'}">
+                                            <c:if test="${requestScope.sortType == '1'}">
+                                                <i class="fa fa-arrow-up"></i>
+                                            </c:if>
+                                            <c:if test="${requestScope.sortType == '2'}">
+                                                <i class="fa fa-arrow-down"></i>
+                                            </c:if>
+                                        </c:if> 
+                                    </td>
                                     <td>Hàng động</td>
                                 </tr>
                             </thead>
@@ -938,8 +1213,8 @@
                                 <tr>
                                     <td>Nhà cung cấp</td>
                                     <td>
-                                        <span class="import-invoice-insert" onclick="openBox('insert-supplier-search-box')" id="insert-supplier-name" >---Chọn nhà cung cấp---</span>
-                                        <input class="import-invoice-insert" id ="insert-supplier-id" name ="supplierID" type ="hidden" value="1"/>
+                                        <span class="import-invoice-insert" onclick="openBox('insert-supplier-container')" id="insert-supplier-name" >---Chọn nhà cung cấp---</span>
+                                        <input class="import-invoice-insert" id ="insert-supplier-id" name ="supplierID" type ="hidden"/>
                                         <button type="button" onclick="openModal('supplier-insert-modal')"  class="btn-add"><i class="fa fa-plus" ></i></button>
                                     </td>
                                 </tr>
@@ -966,7 +1241,7 @@
                                 <tr>
                                     <td>Tiền trả nhà cung cấp</td>
                                     <td> 
-                                        <input id="insert-paid" type="text" onkeyup="setPaid('insert', this.value)" class="import-invoice-insert" name="paid" value="0" />
+                                        <input id="insert-paid" type="number" onkeyup="setPaid('insert', this.value)" class="import-invoice-insert" name="paid" value="0" />
                                     </td>
                                 </tr>
                                 <tr>
@@ -999,19 +1274,22 @@
                                 <span onclick="setSign('insert', '1')" class="insert-sign" >VND</span>
                                 <span onclick="setSign('insert', '0')" class="insert-sign"  >%</span>
                             </div>
-                            <div class="supplier-container-outer">
-                                <div class="supplier-container">
-                                    <div id ="insert-supplier-search-box">
-                                        <input type ="text" onkeyup="searchSupplier('insert', this.value)"  placeholder="Tìm kiếm nhà cung cấp"/>
-                                        <div id="insert-supplier-box" >
-                                            <table>
-                                                <c:forEach var="c" begin="0" end="${suppliers.size()}" items="${suppliers}" >
-                                                    <tr>
-                                                        <td><span onclick="setValue('${c.supplierID}', '${c.supplierName}', 'insert')" class="supplier-value">${c.supplierName}</span></td>
-                                                    </tr>
-                                                </c:forEach>
-                                            </table>
-                                        </div>
+                            <div id="insert-supplier-container">
+                                <div id ="insert-supplier-search-box">
+                                    <input id="insert-search-supplier" type ="text" onkeyup="searchSupplier('insert', this.value)"  placeholder="Tìm kiếm nhà cung cấp"/>
+                                    <div id="insert-supplier-box" >
+                                        <table>
+                                            <c:forEach var="c" begin="0" end="${suppliers.size()}" items="${suppliers}" >
+                                                <tr>
+                                                    <td>
+                                                        <span onclick="setValue('${c.supplierID}', '${c.supplierName}', 'insert')" class="supplier-value">${c.supplierName}
+                                                            <c:if test="${c.phone.length() == 10}" >
+                                                                - ${c.phone}
+                                                            </c:if>
+                                                        </span></td>
+                                                </tr>
+                                            </c:forEach>
+                                        </table>
                                     </div>
                                 </div>
                             </div>
@@ -1088,9 +1366,9 @@
                                 <tr>
                                     <td>Nhà cung cấp</td>
                                     <td>
-                                        <span class="import-invoice-edit" onclick="openBox('edit-supplier-search-box')" id="edit-supplier-name" >---Chọn nhà cung cấp---</span>
+                                        <span class="import-invoice-edit" onclick="openBox('edit-supplier-container')" id="edit-supplier-name" >---Chọn nhà cung cấp---</span>
                                         <input class="import-invoice-edit" id ="edit-supplier-id" name ="supplierID" type ="hidden" />
-                                        <button type="button" onclick="openModal('supplier-edit-modal')"  class="btn-add"><i class="fa fa-plus" ></i></button>
+                                        <button type="button" onclick="openModal('supplier-insert-modal')"  class="btn-add"><i class="fa fa-plus" ></i></button>
                                     </td>
                                 </tr>
                                 <tr>
@@ -1116,7 +1394,7 @@
                                 <tr>
                                     <td>Tiền trả nhà cung cấp</td>
                                     <td> 
-                                        <input id="edit-paid" type="text" onkeyup="setPaid('edit', this.value)" class="import-invoice-edit" name="paid" value="0" />
+                                        <input id="edit-paid" type="number" onkeyup="setPaid('edit', this.value)" class="import-invoice-edit" name="paid" value="0" />
                                     </td>
                                 </tr>
                                 <tr>
@@ -1145,19 +1423,21 @@
                                 <span onclick="setSign('edit', '1')" class="edit-sign" >VND</span>
                                 <span onclick="setSign('edit', '0')" class="edit-sign"  >%</span>
                             </div>
-                            <div class="supplier-container-outer">
-                                <div class="supplier-container">
-                                    <div id ="edit-supplier-search-box">
-                                        <input type ="text" onkeyup="searchSupplier('edit', this.value)"  placeholder="Tìm kiếm nhà cung cấp"/>
-                                        <div id="edit-supplier-box" >
-                                            <table>
-                                                <c:forEach var="c" begin="0" end="${suppliers.size()}" items="${suppliers}" >
-                                                    <tr>
-                                                        <td><span onclick="setValue('${c.supplierID}', '${c.supplierName}', 'edit')" class="supplier-value">${c.supplierName}</span></td>
-                                                    </tr>
-                                                </c:forEach>
-                                            </table>
-                                        </div>
+                            <div id="edit-supplier-container">
+                                <div id ="edit-supplier-search-box">
+                                    <input id="edit-search-supplier" type ="text" onkeyup="searchSupplier('edit', this.value)"  placeholder="Tìm kiếm nhà cung cấp"/>
+                                    <div id="edit-supplier-box" >
+                                        <table>
+                                            <c:forEach var="c" begin="0" end="${suppliers.size()}" items="${suppliers}" >
+                                                <tr>
+                                                    <td><span onclick="setValue('${c.supplierID}', '${c.supplierName}', 'edit')" class="supplier-value">${c.supplierName} 
+                                                            <c:if test="${c.supplierName == 10}" >
+                                                                - ${c.phone}
+                                                            </c:if>
+                                                        </span></td>
+                                                </tr>
+                                            </c:forEach>
+                                        </table>
                                     </div>
                                 </div>
                             </div>
@@ -1226,50 +1506,52 @@
                             <tr>
                                 <td>Ngày nhập</td>
                                 <td>
-                                    <span class="import-invoice-view"></span>                                    </td>
+                                    <span class="import-invoice-view"></span>                     
+                                </td>
                             </tr>
                             <tr>
                                 <td>Nhà cung cấp</td>
                                 <td>
                                     <span class="import-invoice-view"></span>   
                                     <input type="hidden" id="view-supplier" class="import-invoice-view" />
-                                    <button type="button" ><i class="fa fa-eye"></i></button>                                </td>
+                                    <button type="button" onclick="openModal('supplier-view-modal')" ><i class="fa fa-eye"></i></button>         
+                                </td>
                                 </td>
                             </tr>
                             <tr>
                                 <td>Tổng tiền hàng</td>
                                 <td>
-                                    <span class="import-invoice-view"></span>                                    </td>
+                                    <span class="import-invoice-view"></span>              
                                 </td>
                             </tr>
                             <tr>
                                 <td>Giảm giá</td>
                                 <td> 
-                                    <span class="import-invoice-view"></span>                                    </td>
+                                    <span class="import-invoice-view"></span>                  
                                 </td>
                             </tr>
                             <tr>
                                 <td>Cần trả nhà cung cấp</td>
                                 <td>
-                                    <span class="import-invoice-view"></span>                                    </td>
+                                    <span class="import-invoice-view"></span>               
                                 </td>
                             </tr>
                             <tr>
                                 <td>Tiền trả nhà cung cấp</td>
                                 <td> 
-                                    <span class="import-invoice-view"></span>                                    </td>
+                                    <span class="import-invoice-view"></span>                  
                                 </td>
                             </tr>
                             <tr>
                                 <td>Tiền thừa nhận từ nhà cung cấp</td>
                                 <td>
-                                    <span class="import-invoice-view"></span>                                    </td>
+                                    <span class="import-invoice-view"></span>              
                                 </td>
                             </tr>
                             <tr>
                                 <td>Ghi chú</td>
                                 <td>
-                                    <span class="import-invoice-view"></span>                                    </td>
+                                    <span class="import-invoice-view"></span>                
                                 </td>
                             </tr>
 
@@ -1303,23 +1585,158 @@
             </div>
         </div>
 
-
-
-        <div class="modal" > 
-            <div class="supplier-insert-modal" id ="supplier-insert-modal" >
-                <div class="modal-header" >
-                    <h2 class="title" >Thêm nhà cung cấp</h2>
-                    <button class="btn-close" onclick="closeModal('supplier-insert-modal')" >x</button>
+        <div class ="modal" >
+            <div class ="supplier-insert-modal" id ="supplier-insert-modal" >
+                <div class ="modal-header" >
+                    <h2 class ="title" >Thêm mới nhà cung cấp</h2>
+                    <button class ="btn-close" onclick="closeModal('supplier-insert-modal')" >x</button>
                 </div>
-                <div class="modal-content" > 
-                    <form action="" >
-                        <!--<span>Brand Name</span>-->
-                        <input type ="text" placeholder="Tên nhà cung cấp hiệu" name ="supplierName" id ="supplier-insert-input"  class="supplier-insert" /> 
+                <div class ="modal-content" >
+                    <form action ="insert" method ="POST" >
+                        <table>
+                            <tr>
+                                <td class="table-title" >Mã nhà cung cấp</td>
+                                <td  ><span>Mã tự động</span></td>
+                            </tr>
+                            <tr>
+                                <td class="table-title">Tên nhà cung cấp</td>
+                                <td ><input type ="text" name ="supplierName" class ="supplier-insert"  /></td>
+                            </tr>
+                            <tr>
+                                <td class="table-title">Ngày sinh</td>
+                                <td>
+                                    <input type="date"  name="dob" class ="supplier-insert"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="table-title">Giới tính</td>
+                                <td  >
+                                    <input class="radio" type ="radio" name ="gender" value="1"  class ="supplier-insert" > Nam
+                                    <input style="margin-left: 15px;" class="radio" type ="radio" name ="gender" value="0"  class ="supplier-insert" > Nữ
+                                </td>
+
+
+                            </tr>
+                            <tr>
+                                <td class="table-title">Số điện thoại</td>
+                                <td > 
+                                    <input type ="text" name ="phone" class ="supplier-insert"  />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="table-title">Địa chỉ</td>
+                                <td >  <input type ="text" name ="address" class ="supplier-insert" /></td>
+                            </tr>
+                            <tr>
+                                <td class="table-title">Ghi chú</td>
+                                <td > <textarea class="textarea" rows="4" cols="30" name ="description" class ="supplier-insert" ></textarea></td>
+                            </tr>
+                            <tr>
+                                <td colspan="3">
+                                    <button type="button" onclick="setSubmitType('0')"  >Đóng</button>
+                                    <button type="submit" onclick="setSubmitType('0')" >Lưu</button>
+                                    <button type="submit" onclick="setSubmitType('1')" >Lưu và thêm mới</button>
+                                    <input type="hidden" name="submitType" id="submit-type" value="${requestScope.submitType}" />
+                                </td>
+
+                            </tr>
+                        </table>
+
                     </form>
                 </div>
-                <div onclick="insert('supplier-insert')" class="btn-save"> <span>Save</span></div>
             </div>
         </div>
+
+
+
+
+        <div class ="modal" >
+            <div class ="supplier-view-modal" id ="supplier-view-modal" >
+                <div class ="modal-header" >
+                    <h2 class ="title" >Xem thông tin nhà cung cấp</h2>
+                    <button class ="btn-close" onclick="closeModal('supplier-view-modal')" >x</button>
+                </div>
+                <div class ="modal-content" >
+                    <form action ="edit" method ="POST" >
+                        <table>
+                            <tr>
+                                <td class="table-title" >Mã nhà cung cấp</td>
+                                <td>
+                                    <span class="supplier-view" ></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="table-title">Tên nhà cung cấp</td>
+                                <td>
+                                    <span class="supplier-view" ></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="table-title">Ngày sinh</td>
+                                <td>
+                                    <span class="supplier-view" ></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="table-title">Giới tính</td>
+                                <td  >
+                                    <input class="radio supplier-view" type ="radio" name ="gender" value="1"  > Nam
+                                    <input class="radio supplier-view" style="margin-left: 15px;"  type ="radio" name ="gender" value="0"   > Nữ
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="table-title">Số điện thoại</td>
+                                <td > 
+                                    <span class="supplier-view" ></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="table-title">Địa chỉ</td>
+                                <td >  
+                                    <span class="supplier-view" ></span>     
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="table-title">Ghi chú</td>
+                                <td >
+                                    <span class="supplier-view" ></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    <button type="button" onclick="closeModal('supplier-view-modal')"  >Đóng</button>
+                                </td>
+                            </tr>
+                        </table>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class ="modal" style="background: rgba(0, 0, 0, 0)" >
+            <div class ="insert-confirm-modal" id ="insert-confirm-modal" >
+                <div class ="modal-content" >
+                    <p>Bạn chưa chọn nhà cung cấp, bạn có muốn tiếp tục?</p>
+                    <div class="btn-group" >
+                        <button type="button" onclick="closeModal('insert-confirm-modal')" >Đóng</button>
+                        <button type="button" onclick="submitForm('insert-form')" >Tiếp tục</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class ="modal" style="background: rgba(0, 0, 0, 0)">
+            <div class ="delete-confirm-modal" id ="delete-confirm-modal" >
+                <div class ="modal-content" >
+                    <p>Phiếu hàng sẽ bị hủy, bạn có muốn tiếp tục?</p>
+                    <div class="btn-group" >
+                        <button type="button" onclick="closeModal('delete-confirm-modal')" >Đóng</button>
+                        <button type="button" onclick="submitForm('edit-form')" >Tiếp tục</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
         <div class="warning" id="warning" onclick="fadeOutMessage()" >
 
         </div>
@@ -1331,6 +1748,40 @@
             ${requestScope.totalPage}, 2
                 );
         </c:if>
+
+        function sortBy(by, position) {
+            var groupTitle = document.getElementsByClassName("sort-by");
+            var title = groupTitle[position].children;
+            var sortByTitle = document.getElementById("sort-by");
+            var sortType = document.getElementById("sort-type");
+            if (title.length > 1) {
+                var icon = title[1];
+//                alert(icon.className);
+                if (icon.className === "fa fa-arrow-up") {
+                    sortType.value = "2";
+                }
+                if (icon.className === "fa fa-arrow-down") {
+                    sortType.value = "1";
+                }
+                sortByTitle.value = by;
+            } else {
+                sortByTitle.value = by;
+                sortType.value = "1";
+            }
+            submitForm("search-form");
+        }
+
+        function generateMessage(message) {
+            var warningBox = document.getElementById("warning");
+            var number = warningBox.length;
+
+            var messageBox = "<div onclick=\"fadeOutSpecificMessage('message" + number + "')\" id=\"message" + number + "\" >" + message + "</div>"
+
+            warningBox.innerHTML += messageBox;
+
+            var box = document.getElementById("message" + number);
+            box.style.animationName = "fadeIn";
+        }
 
 
         function generateWarning(message) {
@@ -1468,12 +1919,12 @@
             for (var i = 0, max = products.length; i < max; i++) {
                 var productAttributes = products[i].children;
                 var formattedProductId = formatProductId(productID);
-                if (productAttributes[2].innerHTML === formattedProductId) {
+                if (formattedProductId === productAttributes[2].innerHTML) {
                     var inputQuantity = productAttributes[6].children;
                     var currenQuantity = parseInt(inputQuantity[1].value);
                     currenQuantity += 1;
                     inputQuantity[1].value = currenQuantity;
-                    setAmount(type, inputQuantity[1].value, productID);
+                    setAmount(type, inputQuantity[1].value, (i + 1));
                     return true;
                 }
             }
@@ -1509,10 +1960,8 @@
 //                    alert(data.length);
                     if (data.length === 9) {
                         var product = concatProduct(type, data);
-//                        productList.innerHTML += product;
                         productList.insertAdjacentHTML('beforeend', product);
                         setAmount(type, 1, ordinalNumber);
-//                        alert(productList.innerHTML);
                         ordinalNumber += 1;
                     }
                 });
@@ -1576,25 +2025,9 @@
             setDiscount(type, discount);
         }
 
-        function formatProductId(productId) {
-            var len = productId.length;
-            switch (len) {
-                case 1:
-                    return "P0000" + productId;
-                case 2:
-                    return "P000" + productId;
-                case 3:
-                    return "P00" + productId;
-                case 4:
-                    return "P0" + productId;
-                default:
-                    return "P0000" + productId;
-            }
-
-        }
 
         function formatInvoiceId(id) {
-            var len = id.length;
+            var len = (id + "").length;
             switch (len) {
                 case 1:
                     return "PN0000" + id;
@@ -1605,12 +2038,13 @@
                 case 4:
                     return "PN0" + id;
                 default:
-                    return "PN0000" + id;
+                    return "PN" + id;
             }
 
         }
         function formatProductId(id) {
-            var len = id.length;
+
+            var len = (id + "").length;
             switch (len) {
                 case 1:
                     return "P0000" + id;
@@ -1621,7 +2055,7 @@
                 case 4:
                     return "P0" + id;
                 default:
-                    return "P0000" + id;
+                    return "P" + id;
             }
 
         }
@@ -1639,8 +2073,8 @@
             str += "<td>" + data[6] + "</td>";
             str += "<td>"
                     + "<button type=\"button\" onclick=\"increaseQuantity('" + type + "'," + ordinalNumber + ")\" ><i class =\"fa fa-arrow-up\"></i></button>"
-                    + "<input maxlength =\"12\" onkeyup =\"setAmount('" + type + "',this.value," + ordinalNumber
-                    + ")\"type=\"text\" name =\"quantity\" value=\"1\" />" +
+                    + "<input min=\"1\" max=\"999999999\" onkeyup =\"setAmount('" + type + "',this.value," + ordinalNumber
+                    + ")\"type=\"number\" name =\"quantity\" value=\"1\" />" +
                     "<button type=\"button\" onclick=\"decreaseQuantity('" + type + "'," + ordinalNumber + ")\"><i class =\"fa fa-arrow-down\"></i></button>"
                     + "</td>";
             str += "<td>0</td>";
@@ -1691,8 +2125,8 @@
                     newDeleteButton.innerHTML = "<button type =\"button\" onclick =\"deleteFrom('" + type + "'," + childId + ")\"><i class=\"fa fa-trash\" ></i></button>";
                     newInputGroup.innerHTML =
                             "<button type=\"button\" onclick=\"increaseQuantity('" + type + "'," + childId + ")\" ><i class =\"fa fa-arrow-up\"></i></button>"
-                            + "<input maxlength =\"12\" onkeyup =\"setAmount('" + type + "',this.value," + childId
-                            + ")\"type=\"text\" name =\"quantity\" value=\"" + currentValue + "\" />" +
+                            + "<input  min=\"1\" max=\"999999999\" onkeyup =\"setAmount('" + type + "',this.value," + childId
+                            + ")\"type=\"number\" name =\"quantity\" value=\"" + currentValue + "\" />" +
                             "<button type=\"button\" onclick=\"decreaseQuantity('" + type + "'," + childId + ")\"><i class =\"fa fa-arrow-down\"></i></button>";
                     childs[i].replaceChild(newDeleteButton, ch[0]);
                     childs[i].replaceChild(newInputGroup, ch[6]);
@@ -1711,8 +2145,6 @@
             var toDate = document.getElementById('to-date');
             fromDate.value = from.value;
             toDate.value = to.value;
-            //            alert(fromDate.value);
-            //            alert(toDate.value);
             submitForm(formId);
         }
 
@@ -1727,19 +2159,33 @@
             submitForm(formId);
         }
 
+//        function submitFormAfterConfirm(id, value) {
+//            var status = document.getElementById(statusId);
+//            status.value = value;
+//            var form = document.getElementById(id);
+//            form.submit();
+//        }
+
         function checkInput(type, formId, statusId, value) {
+            var status = document.getElementById(statusId);
+            status.value = value;
             var form = document.getElementById(formId);
-//            var productList = document.getElementById(type + '-product-list');
-//            alert("(" + productList.innerHTML + ")");
             var totalAmount = document.getElementById(type + '-total');
             if (totalAmount.innerHTML === "0") {
                 generateWarning("Phiếu hàng đang trống");
             } else {
-                var status = document.getElementById(statusId);
-                status.value = value;
-                form.submit();
-            }
+                var supplierId = document.getElementById(type + "-supplier-id").value;
+                if (supplierId === "") {
+                    openModal(type + '-confirm-modal', formId)
+                } else {
+                    if (type === 'edit' && value == '0') {
+                        openModal('delete-confirm-modal');
+                    } else {
 
+                        form.submit();
+                    }
+                }
+            }
 
         }
 
@@ -1754,6 +2200,14 @@
                 modal[1].style.transform = "scale(1)";
             } else if (id === 'import-invoice-view-modal') {
                 modal[2].style.transform = "scale(1)";
+            } else if (id === 'supplier-insert-modal') {
+                modal[3].style.transform = "scale(1)";
+            } else if (id === 'supplier-view-modal') {
+                modal[4].style.transform = "scale(1)";
+            } else if (id === 'insert-confirm-modal') {
+                modal[5].style.transform = "scale(1)";
+            } else if (id === 'delete-confirm-modal') {
+                modal[6].style.transform = "scale(1)";
             }
             box.style.transform = "scale(1)";
         }
@@ -1767,6 +2221,14 @@
                 modal[1].style.transform = "scale(0)";
             } else if (id === 'import-invoice-view-modal') {
                 modal[2].style.transform = "scale(0)";
+            } else if (id === 'supplier-insert-modal') {
+                modal[3].style.transform = "scale(0)";
+            } else if (id === 'supplier-view-modal') {
+                modal[4].style.transform = "scale(0)";
+            } else if (id === 'insert-confirm-modal') {
+                modal[5].style.transform = "scale(0)";
+            } else if (id === 'delete-confirm-modal') {
+                modal[6].style.transform = "scale(0)";
             }
             box.style.transform = "scale(0)";
             var input = id.split('-modal')[0];
@@ -1775,9 +2237,24 @@
             }
         }
 
+        function resetSupplierBoxData(type) {
+            var search = document.getElementById(type + '-search-supplier');
+            search.value = "";
+            // reset value for supplier-box
+            searchSupplier(type, '');
+            closeBox(type + '-supplier-container');
+        }
+
         function clearData(id) {
             //            alert('ok' + id);
             var input = document.getElementsByClassName(id);
+
+            var type = id.split("-")[2];
+            resetSupplierBoxData(type);
+
+
+
+
             input[1].innerHTML = "--Chọn nhà cung cấp--";
             input[3].innerHTML = "0";
             input[5].innerHTML = "0";
@@ -1786,7 +2263,7 @@
             input[11].value = "";
 
             input[0].value = "${requestScope.today}";
-            input[2].value = "0";
+            input[2].value = "";
             input[4].value = "0";
             input[7].value = "0";
             input[8].value = "0";
@@ -1817,11 +2294,8 @@
         function closeBox(id) {
             var box = document.getElementById(id);
             box.style.display = "none";
-            if (id !== "insert-supplier-search-box") {
-                var search = document.getElementById('search-product');
-                search.value = "";
-                box.innerHTML = "";
-            }
+
+
         }
 
         function viewInvoice(id) {
@@ -1902,25 +2376,22 @@
 
         function searchSupplier(type, keyword) {
             var url = "../../supplier/search?keyword=" + keyword;
+            url += "&type=" + type;
             fetch(url).then(function (response) {
                 return response.text();
             }).then(function (result) {
                 var box = document.getElementById(type + "-supplier-box");
-                if (result === "") {
-                    box.innerHTML = "Không tìm thấy nhà cung cấp!"
-                    return;
-                }
                 box.innerHTML = result;
             });
         }
 
 
-        function setValue(idValue, nameValue, id) {
-            var inputId = document.getElementById(id + '-supplier-id');
-            var inputName = document.getElementById(id + '-supplier-name');
+        function setValue(idValue, nameValue, type) {
+            var inputId = document.getElementById(type + '-supplier-id');
+            var inputName = document.getElementById(type + '-supplier-name');
             inputId.value = idValue;
             inputName.innerHTML = nameValue;
-            closeBox(id + "-supplier-search-box");
+            resetSupplierBoxData(type);
         }
     </script>
 </html>

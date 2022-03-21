@@ -47,9 +47,15 @@ public class EditCustomerController extends HttpServlet {
         String result = "";
         result += customer.getCustomerID() + "|";
         result += customer.getCustomerID() + "|";
-        result += customer.getAddress() + "|";
-        result += customer.getPhone() + "|";
         result += customer.getCustomerName() + "|";
+        result += customer.getDob()+ "|";
+        result += customer.isGender()+ "|";
+        result += customer.getPhone() + "|";
+        result += customer.getAddress() + "|";
+        result += customer.getDescription();
+        
+        String[] arr = result.split("|");
+        System.out.println(arr.length);
 
         PrintWriter writer = response.getWriter();
         writer.println(result);

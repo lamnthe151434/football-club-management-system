@@ -288,7 +288,7 @@
             border-radius: 5px;
 
         }
-        
+
 
         .modal .product-edit-modal .modal-content #brand-edit-container ,
         .modal .product-insert-modal .modal-content #brand-insert-container 
@@ -752,10 +752,10 @@
                             </tr>
                             <tr>
                                 <td colspan="3">
-                                    <button type="button" onclick="closeModal('product-insert-modal')"  >Đóng</button>
+                                    <button type="button" onclick="setSubmitType('0')"  >Đóng</button>
                                     <button type="submit" onclick="setSubmitType('0')" >Lưu</button>
                                     <button type="submit" onclick="setSubmitType('1')" >Lưu và thêm mới</button>
-                                    <input type="hidden" name="submitType" id="submit-type" />
+                                    <input type="hidden" name="submitType" id="submit-type" value="${requestScope.submitType}" />
                                 </td>
 
                             </tr>
@@ -967,11 +967,25 @@
                 ${requestScope.selectedPageSize},
                 ${requestScope.totalPage}, 2);
             </c:if>
-                
+
             <c:if test="${requestScope.submitType.equals('1')}">
-                openModal('product-insert-modal');
+            openModal('product-insert-modal');
             </c:if>
 
+
+            function setSubmitType(newType) {
+                var submitType = document.getElementById('submit-type');
+                var currentType = submitType.value;
+                if (currentType === "1" && newType === "0") {
+                    var url = "../set/session?submitType=0";
+                    fetch(url);
+                }
+
+                if (newType === "0") {
+                    closeModal('product-insert-modal');
+                }
+                submitType.value = newType;
+            }
             function openModal(id) {
                 var box = document.getElementById(id);
                 var modal = document.getElementsByClassName('modal');
@@ -1025,11 +1039,6 @@
                 }
 
 
-            }
-
-            function setSubmitType(value) {
-                var submitType = document.getElementById('submit-type');
-                submitType.value = value;
             }
 
             function clearInputData(id) {

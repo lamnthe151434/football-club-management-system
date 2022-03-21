@@ -13,6 +13,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import model.partner.Supplier;
 
 /**
@@ -35,6 +36,9 @@ public class ListSupplierController extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         SupplierDBContext sdb = new SupplierDBContext();
 
+        HttpSession session = request.getSession();
+        String submitType = String.valueOf(session.getAttribute("submitType"));
+
         String rawPageIndex = request.getParameter("pageIndex");
         if (rawPageIndex == null) {
             rawPageIndex = "1";
@@ -55,12 +59,12 @@ public class ListSupplierController extends HttpServlet {
             totalPage += 1;
         }
 
-        String trace = "";
+        String track = "";
 
         int begin = ((pageIndex - 1) * pageSize) + 1;
         int end = 0;
 
-        trace += String.valueOf(begin);
+        track += String.valueOf(begin);
 
         if (pageIndex == totalPage) {
             if (pageIndex * pageSize == totalRecord) {
@@ -73,11 +77,11 @@ public class ListSupplierController extends HttpServlet {
         }
 
         if (end != begin) {
-            trace += "-";
-            trace += String.valueOf(end);
+            track += "-";
+            track += String.valueOf(end);
         }
 
-        trace += " of " + totalRecord;
+        track += " of " + totalRecord;
 
         ArrayList<Integer> pageSizeOptions = new ArrayList<>();
         pageSizeOptions.add(10);
@@ -91,7 +95,8 @@ public class ListSupplierController extends HttpServlet {
         request.setAttribute("pageIndex", pageIndex);
         request.setAttribute("totalPage", totalPage);
         request.setAttribute("suppliers", suppliers);
-        request.setAttribute("trace", trace);
+        request.setAttribute("track", track);
+        request.setAttribute("submitType", submitType);
 
         request.getRequestDispatcher("../view/supplier/list.jsp").forward(request, response);
     }

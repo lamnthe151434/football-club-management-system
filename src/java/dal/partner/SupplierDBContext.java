@@ -189,6 +189,7 @@ public class SupplierDBContext extends DBContext {
             stm.setDate(4, supplier.getDob());
             stm.setBoolean(5, supplier.isGender());
             stm.setString(6, supplier.getDescription());
+            stm.setInt(7, supplier.getSupplierID());
             stm.executeUpdate();
         } catch (SQLException ex) {
             Logger.getLogger(SupplierDBContext.class.getName()).log(Level.SEVERE, null, ex);

@@ -1,26 +1,24 @@
+package common;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package controller.customer;
 
-import dal.partner.CustomerDBContext;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import model.partner.Customer;
 
 /**
  *
  * @author ADMIN
  */
-public class ListCustomerController extends HttpServlet {
+public class SetSessionController extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -34,71 +32,11 @@ public class ListCustomerController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        CustomerDBContext sdb = new CustomerDBContext();
-
+        String submitType = request.getParameter("submitType");
         HttpSession session = request.getSession();
-        String submitType = String.valueOf(session.getAttribute("submitType"));
-
-        String rawPageIndex = request.getParameter("pageIndex");
-        if (rawPageIndex == null) {
-            rawPageIndex = "1";
-        }
-        String rawPageSize = request.getParameter("pageSize");
-        if (rawPageSize == null) {
-            rawPageSize = "10";
-        }
-
-        int pageIndex = Integer.parseInt(rawPageIndex);
-        int pageSize = Integer.parseInt(rawPageSize);
-        ArrayList<Customer> customers = sdb.getCustomers(pageIndex, pageSize);
-
-        int totalRecord = sdb.getTotalRecord();
-//        System.out.println(totalRecord);
-        int totalPage = totalRecord / pageSize;
-        if (totalRecord % pageSize != 0) {
-            totalPage += 1;
-        }
-
-        String track = "";
-
-        int begin = ((pageIndex - 1) * pageSize) + 1;
-        int end = 0;
-
-        track += String.valueOf(begin);
-
-        if (pageIndex == totalPage) {
-            if (pageIndex * pageSize == totalRecord) {
-                end = totalRecord;
-            } else {
-                end = pageIndex * pageSize - (pageSize - (totalRecord % pageSize));
-            }
-        } else {
-            end = pageIndex * pageSize;
-        }
-
-        if (end != begin) {
-            track += "-";
-            track += String.valueOf(end);
-        }
-
-        track += " of " + totalRecord;
-
-        ArrayList<Integer> pageSizeOptions = new ArrayList<>();
-        pageSizeOptions.add(10);
-        pageSizeOptions.add(20);
-        pageSizeOptions.add(30);
-        pageSizeOptions.add(40);
-        pageSizeOptions.add(50);
-
-        request.setAttribute("pageSizeOptions", pageSizeOptions);
-        request.setAttribute("selectedPageSize", pageSize);
-        request.setAttribute("pageIndex", pageIndex);
-        request.setAttribute("totalPage", totalPage);
-        request.setAttribute("customers", customers);
-        request.setAttribute("track", track);
-        request.setAttribute("submitType", submitType);
-
-        request.getRequestDispatcher("../view/customer/list.jsp").forward(request, response);
+        session.setAttribute("submitType", submitType);
+        
+        response.getWriter().print("ok");
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

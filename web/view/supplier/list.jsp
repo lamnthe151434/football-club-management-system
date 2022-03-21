@@ -18,6 +18,62 @@
     </head>
     <style>
 
+      
+
+
+        .container .main-content .middle table {
+            /*margin-top: 15px;*/
+            font-size: 17px;
+            text-align: left;
+            width: 1220px;
+            table-layout: fixed;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+            border-collapse: collapse;
+            /*box-sizing: border-box;*/
+        }
+
+        .container .main-content .middle {
+            margin-left: 15px;
+            width: 1220px;
+            height: 450px;
+            overflow: auto;
+        }
+        .container .main-content .middle table {
+            /*margin-top: 15px;*/
+            font-size: 17px;
+            text-align: left;
+            width: 1250px;
+            table-layout: fixed;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+            border-collapse: collapse;
+            /*box-sizing: border-box;*/
+        }
+
+        .container .main-content .middle thead{
+            position: sticky;
+            top:0;
+            background-color: #009879;
+            color: #ffffff;
+        }
+
+        .container .main-content .middle table td {
+            width: 100px;
+            padding: 10px;
+            word-wrap: break-word;    
+        }
+
+        .container .main-content .middle table tbody tr {
+            border-bottom: 1px solid #dddddd;
+        }
+
+        .container .main-content .middle table tbody tr:nth-of-type(even) {
+            background-color: #f3f3f3;
+        }
+
+        .container .main-content .middle table tbody tr:nth-of-type(even) {
+            background-color: #f3f3f3;
+        }
+
         .modal .supplier-insert-modal, 
         .modal .supplier-edit-modal {
             position: absolute;
@@ -196,14 +252,14 @@
                         <table>
                             <thead>
                                 <tr>
-                                    <th>Mã nhà cung cấp</th>
-                                    <th>Tên nhà cung cấp</th>
-                                    <th>Ngày sinh</th>
-                                    <th>Giới tính</th>
-                                    <th>Số điện thoại</th>
-                                    <th>Dịa chỉ</th>
-                                    <th>Ghi chú</th>
-                                    <th>Hành động</th>
+                                    <td>Mã nhà cung cấp</td>
+                                    <td>Tên nhà cung cấp</td>
+                                    <td>Ngày sinh</td>
+                                    <td>Giới tính</td>
+                                    <td>Số điện thoại</td>
+                                    <td>Dịa chỉ</td>
+                                    <td>Ghi chú</td>
+                                    <td>Hành động</td>
                                 </tr>
                             </thead>
                             <tbody id="supplier-list">
@@ -225,8 +281,8 @@
                                         <td>${c.address}</td>
                                         <td>${c.description}</td>
                                         <td>
-                                            <button onclick="edit(${c.supplierID})">Edit</button>
-                                            <button onclick="deleteEntity(${c.supplierID})">Delete</button>
+                                            <button onclick="edit(${c.supplierID})"><i class="fa fa-pencil" ></i></button>
+                                            <button onclick="deleteEntity(${c.supplierID})"><i class="fa fa-trash" ></i></button>
                                         </td>
                                     </tr>
                                 </c:forEach>
@@ -249,7 +305,7 @@
                                 </c:forEach>
                             </select>
                         </div>
-                        <span>${requestScope.trace}</span>
+                        <span>${requestScope.track}</span>
                         <div class ="pagger" id ="pagger" > </div>
                     </div>
                 </c:if>
@@ -303,10 +359,10 @@
                             </tr>
                             <tr>
                                 <td colspan="3">
-                                    <button type="button" onclick="closeModal('supplier-insert-modal')"  >Đóng</button>
+                                    <button type="button" onclick="setSubmitType('0')"  >Đóng</button>
                                     <button type="submit" onclick="setSubmitType('0')" >Lưu</button>
                                     <button type="submit" onclick="setSubmitType('1')" >Lưu và thêm mới</button>
-                                    <input type="hidden" name="submitType" id="submit-type" />
+                                    <input type="hidden" name="submitType" id="submit-type" value="${requestScope.submitType}" />
                                 </td>
 
                             </tr>
@@ -328,40 +384,40 @@
                             <tr>
                                 <td class="table-title" >Mã nhà cung cấp</td>
                                 <td>
-                                    <span class ="supplier-edit"></span>
-                                    <input type="hidden" class ="supplier-edit" />
+                                    <span class="supplier-edit" ></span>
+                                    <input name="supplierID" type="hidden" class="supplier-edit" />
                                 </td>
                             </tr>
                             <tr>
                                 <td class="table-title">Tên nhà cung cấp</td>
-                                <td ><input type ="text" name ="supplierName" class ="supplier-edit"  /></td>
+                                <td ><input type ="text" name ="supplierName" class="supplier-edit"  /></td>
                             </tr>
                             <tr>
                                 <td class="table-title">Ngày sinh</td>
                                 <td>
-                                    <input type="date"  name="dob" class ="supplier-edit"/>
+                                    <input type="date"  name="dob" class="supplier-edit"/>
                                 </td>
                             </tr>
                             <tr>
                                 <td class="table-title">Giới tính</td>
                                 <td  >
-                                    <input class="radio" type ="radio" name ="gender" value="1"  class ="supplier-edit" > Nam
-                                    <input class="radio" style="margin-left: 15px;"  type ="radio" name ="gender" value="0"  class ="supplier-edit" > Nữ
+                                    <input class="radio supplier-edit" type ="radio" name ="gender" value="1"  > Nam
+                                    <input class="radio supplier-edit" style="margin-left: 15px;"  type ="radio" name ="gender" value="0"   > Nữ
                                 </td>
                             </tr>
                             <tr>
                                 <td class="table-title">Số điện thoại</td>
                                 <td > 
-                                    <input type ="text" name ="phone" class ="supplier-edit"  />
+                                    <input type ="text" name ="phone" class="supplier-edit"  />
                                 </td>
                             </tr>
                             <tr>
                                 <td class="table-title">Địa chỉ</td>
-                                <td >  <input type ="text" name ="address" class ="supplier-edit" /></td>
+                                <td >  <input type ="text" name ="address" class="supplier-edit" /></td>
                             </tr>
                             <tr>
                                 <td class="table-title">Ghi chú</td>
-                                <td > <textarea class="textarea" rows="4" cols="30" name ="description" class ="supplier-edit" ></textarea></td>
+                                <td > <textarea class="textarea supplier-edit" rows="4" cols="30" name ="description"></textarea></td>
                             </tr>
                             <tr>
                                 <td colspan="2">
@@ -391,8 +447,9 @@
 
 
         <c:if test="${requestScope.submitType.equals('1')}">
-        openModal('product-insert-modal');
+        openModal('supplier-insert-modal');
         </c:if>
+
 
 
 
@@ -428,6 +485,21 @@
 //            setSubmitType('0');
         }
 
+        function setSubmitType(newType) {
+            var submitType = document.getElementById('submit-type');
+            var currentType = submitType.value;
+            if (currentType === "1" && newType === "0") {
+                var url = "../set/session?submitType=0";
+                fetch(url);
+            }
+
+            if (newType === "0") {
+                closeModal('supplier-insert-modal');
+            }
+            submitType.value = newType;
+        }
+
+
         function edit(id) {
             var url = "edit?id=" + id;
             var edit = document.getElementsByClassName('supplier-edit');
@@ -435,14 +507,12 @@
                 return response.text();
             }).then(function (result) {
                 var arr = result.split('|');
-                alert(arr.length + ", " + edit.length);
-                
-                
+
                 edit[0].innerHTML = 'NC000' + arr[0];
                 edit[1].value = arr[1];
                 edit[2].value = arr[2];
                 edit[3].value = arr[3];
-                alert(arr[4]);
+//                alert(arr[4]);
                 if (arr[4] === "true") {
                     edit[4].checked = "checked";
                 } else {

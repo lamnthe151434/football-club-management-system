@@ -27,7 +27,7 @@ import model.transaction.ImportInvoiceDetail;
 public class ImportInvoiceDBContext extends DBContext {
 
     public ArrayList<ImportInvoice> getImportInvoices(String[] from, String[] to, int[] status,
-            int pageIndex, int pageSize) {
+            int pageIndex, int pageSize, String orderBy) {
         ArrayList<ImportInvoice> importInvoices = new ArrayList<>();
         SupplierDBContext sdb = new SupplierDBContext();
         try {
@@ -40,7 +40,7 @@ public class ImportInvoiceDBContext extends DBContext {
                     + "      ,[Status]\n"
                     + "      ,[Description]\n"
                     + "  FROM "
-                    + " (SELECT *, ROW_NUMBER() OVER (ORDER BY [Import_Invoice_ID] ASC) as row_index FROM [Import_Invoice]"
+                    + " (SELECT *, ROW_NUMBER() OVER (" + orderBy + ") as row_index FROM [Import_Invoice]"
                     + "  WHERE (YEAR([Date]) BETWEEN " + from[0] + "  AND " + to[0] + " )\n"
                     + "  AND (MONTH([Date]) BETWEEN " + from[1] + " AND " + to[1] + " )\n"
                     + "  AND (DAY([Date]) BETWEEN " + from[2] + " AND  " + to[2] + " )";
@@ -57,6 +57,8 @@ public class ImportInvoiceDBContext extends DBContext {
             }
             sql += ") tb";
             sql += "  WHERE row_index >=(?-1)*?+1 AND row_index <= ?*?";
+            
+            System.out.println(sql);
             PreparedStatement stm = connection.prepareStatement(sql);
             stm.setInt(1, pageIndex);
             stm.setInt(2, pageSize);

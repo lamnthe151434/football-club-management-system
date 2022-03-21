@@ -41,6 +41,34 @@ public class ListImportInvoiceController extends HttpServlet {
         String searchKey = request.getParameter("searchKey");
         ArrayList<ImportInvoice> importInvoices = null;
 
+        String sortBy = request.getParameter("sortBy");
+        String sortType = request.getParameter("sortType");
+
+        String orderBy = "ORDER BY ";
+        if (sortBy != null && sortType != null) {
+            if (sortBy != "totalAmount") {
+                if(sortBy != "Date") {
+                    orderBy += sortBy + " ";
+                } else {
+                    orderBy += "(CAST(Date AS VARCHAR(100))) ";
+                }
+                if (!sortType.equals("0")) {
+                    if (sortType.equals("1")) {
+                        orderBy += "ASC";
+                    } 
+                    
+                    if(sortType.equals("2")){
+                        orderBy += "DESC";
+                    }
+                }
+            }
+        }
+        System.out.println("(" + sortBy + "),(" + sortType + ")");
+        if (sortBy == null || sortType == null || sortBy == "" || sortType == ""){
+//            System.out.println("IM HERE");
+            orderBy += "[Import_Invoice_ID] ASC";
+        }
+
         String rawFrom = request.getParameter("from");
         String rawTo = request.getParameter("to");
 
@@ -131,7 +159,7 @@ public class ListImportInvoiceController extends HttpServlet {
             }
         } else {
             importInvoices = idb.getImportInvoices(separatedFrom, separatedTo,
-                    status, pageIndex, pageSize);
+                    status, pageIndex, pageSize, orderBy);
         }
         ArrayList<Supplier> suppliers = sdb.getSuppliers();
         ArrayList<Integer> pageSizeOptions = new ArrayList<>();
@@ -149,6 +177,8 @@ public class ListImportInvoiceController extends HttpServlet {
         request.setAttribute("pageIndex", pageIndex);
         request.setAttribute("totalPage", totalPage);
         request.setAttribute("statuses", statuses);
+        request.setAttribute("sortBy", sortBy);
+        request.setAttribute("sortType", sortType);
 
         request.setAttribute("today", today);
         request.setAttribute("track", track);

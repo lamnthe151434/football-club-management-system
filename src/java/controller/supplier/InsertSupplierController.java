@@ -13,6 +13,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import model.partner.Supplier;
 
 /**
@@ -33,7 +34,12 @@ public class InsertSupplierController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        
+
+        HttpSession session = request.getSession();
+
+        String submitType = request.getParameter("submitType");
+        session.setAttribute("submitType", submitType);
+
         String rawSupplierName = request.getParameter("supplierName");
         String rawAddress = request.getParameter("address");
         String rawPhone = request.getParameter("phone");
@@ -51,10 +57,10 @@ public class InsertSupplierController extends HttpServlet {
             rawDob = "0001-01-01";
         }
 
-        if(rawGender == null) {
+        if (rawGender == null) {
             rawGender = "1";
         }
-        
+
         String supplierName = rawSupplierName;
         String address = rawAddress;
         String phone = rawPhone;
@@ -62,7 +68,7 @@ public class InsertSupplierController extends HttpServlet {
         String description = rawDescription;
         int genderInt = Integer.parseInt(rawGender);
         boolean gender = true;
-        
+
         if (genderInt == 1) {
             gender = true;
         } else {
