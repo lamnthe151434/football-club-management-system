@@ -52,7 +52,8 @@ public class SearchProductController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
+          response.setContentType("text/html;charset=UTF-8");
+        request.setCharacterEncoding("utf-8");
         String rawProductID = request.getParameter("id");
 
         if (rawProductID == "") {
@@ -96,7 +97,8 @@ public class SearchProductController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
+         response.setContentType("text/html;charset=UTF-8");
+        request.setCharacterEncoding("utf-8");
 
         String searchKey = request.getParameter("searchKey");
         String type = request.getParameter("type");

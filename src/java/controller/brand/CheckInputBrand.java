@@ -32,7 +32,8 @@ public class CheckInputBrand extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-         response.setContentType("text/html;charset=UTF-8");
+        response.setContentType("text/html;charset=UTF-8");
+        request.setCharacterEncoding("utf-8");
         BrandDBContext cdb = new BrandDBContext();
         ArrayList<Brand> brands = cdb.getBrands();
 
@@ -42,7 +43,7 @@ public class CheckInputBrand extends HttpServlet {
         for (int i = 0; i < brands.size(); i++) {
             Brand c = brands.get(i);
             if (c.getBrandName().equals(brandName)) {
-                if(c.getBrandName().equals(currentBrandName)) {
+                if (c.getBrandName().equals(currentBrandName)) {
                     continue;
                 } else {
                     status = false;

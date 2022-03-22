@@ -536,13 +536,22 @@
         generateWarning("Thay đổi giá thành công!");
         </c:if>
 
-         <c:if test="${(requestScope.products.size() >= 10 
+        <c:if test="${(requestScope.products.size() >= 10 
                       || requestScope.pageIndex >= 2) 
                       && requestScope.totalPage > 1}" >
         pagger('pagger',${requestScope.pageIndex},
               ${requestScope.selectedPageSize},
               ${requestScope.totalPage}, 2);
         </c:if>
+
+        function convertToVND(id) {
+            var inp = document.getElementById(id);
+            inp.type = "text";
+            var x = parseInt(inp.value);
+            x = x.toLocaleString('it-IT', {style: 'currency', currency: 'VND'});
+            inp.value = x;
+        }
+
 
         function sortBy(by, position) {
             var groupTitle = document.getElementsByClassName("sort-by");

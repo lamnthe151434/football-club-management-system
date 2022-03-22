@@ -28,7 +28,8 @@ public class EditProductController extends BaseAuthenticationController {
 
     @Override
     protected void processGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
+          response.setContentType("text/html;charset=UTF-8");
+        request.setCharacterEncoding("utf-8");
 
         int productID = Integer.parseInt(request.getParameter("id"));
         ProductDBContext db = new ProductDBContext();
@@ -61,6 +62,8 @@ public class EditProductController extends BaseAuthenticationController {
 
     @Override
     protected void processPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+         response.setContentType("text/html;charset=UTF-8");
+        request.setCharacterEncoding("utf-8");
         ProductDBContext db = new ProductDBContext();
         CategoryDBContext cdb = new CategoryDBContext();
         BrandDBContext bdb = new BrandDBContext();

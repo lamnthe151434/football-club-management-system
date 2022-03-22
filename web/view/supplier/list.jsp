@@ -474,6 +474,11 @@
                             </tbody>
                         </table>
                     </c:if>
+                        <c:if test="${requestScope.suppliers.size() == 0}" >
+                            <div>
+                                <p>Không tìm thấy nhà cung cấp</p>
+                            </div>
+                        </c:if>
                 </div>
                 <c:if test="${requestScope.suppliers.size() >= 10 || requestScope.pageIndex >= 2}" >
                     <div class ="bottom" >

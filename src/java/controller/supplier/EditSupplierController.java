@@ -33,6 +33,8 @@ public class EditSupplierController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+          response.setContentType("text/html;charset=UTF-8");
+        request.setCharacterEncoding("utf-8");
         int supplierID = Integer.parseInt(request.getParameter("id"));
         SupplierDBContext cdb = new SupplierDBContext();
         Supplier supplier = cdb.getSupplier(supplierID);
@@ -69,6 +71,8 @@ public class EditSupplierController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+          response.setContentType("text/html;charset=UTF-8");
+        request.setCharacterEncoding("utf-8");
         String rawSupplierID = request.getParameter("supplierID");
         String rawSupplierName = request.getParameter("supplierName");
         String rawAddress = request.getParameter("address");

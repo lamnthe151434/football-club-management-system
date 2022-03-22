@@ -71,7 +71,7 @@ public class AuthenticationController extends HttpServlet {
             response.addCookie(c_username);
             response.addCookie(c_password);
             session.setAttribute("account", account);
-            response.sendRedirect("product/list");
+            response.sendRedirect("dashboard");
         } else {
             request.getRequestDispatcher("view/login.jsp").forward(request, response);
         }

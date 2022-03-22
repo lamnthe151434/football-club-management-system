@@ -19,6 +19,8 @@ import model.partner.Supplier;
 import model.product.Product;
 import model.transaction.ReturnInvoice;
 import model.transaction.ReturnInvoiceDetail;
+import model.transaction.ReturnInvoice;
+import model.transaction.ReturnInvoiceDetail;
 
 /**
  *
@@ -26,6 +28,61 @@ import model.transaction.ReturnInvoiceDetail;
  */
 public class ReturnInvoiceDBContext extends DBContext {
 
+     public ArrayList<ReturnInvoice> getReturnInvoices() {
+        ArrayList<ReturnInvoice> returnInvoices = new ArrayList<>();
+        SupplierDBContext sdb = new SupplierDBContext();
+        try {
+            String sql = "SELECT [Return_Invoice_ID]\n"
+                    + "      ,[Date]\n"
+                    + "      ,[Supplier_ID]\n"
+                    + "      ,[Discount]\n"
+                    + "      ,[Discount_Type]\n"
+                    + "      ,[Pay]\n"
+                    + "      ,[Total_Amount]\n"
+                    + "      ,[Status]\n"
+                    + "      ,[Description]\n"
+                    + "  FROM [dbo].[Return_Invoice]";
+            PreparedStatement stm = connection.prepareStatement(sql);
+            ResultSet rs = stm.executeQuery();
+            while (rs.next()) {
+                int returnInvoiceID = rs.getInt("Return_Invoice_ID");
+                Date date = rs.getDate("Date");
+                Supplier supplier = sdb.getSupplier(rs.getInt("Supplier_ID"));
+                float discount = rs.getFloat("Discount");
+                float paid = rs.getFloat("Pay");
+                boolean discountType = rs.getBoolean("Discount_Type");
+                String description = rs.getString("Description");
+                int sta = rs.getInt("Status");
+                float totalAmount = rs.getFloat("Total_Amount");
+                ArrayList<ReturnInvoiceDetail> returnInvoiceDetails
+                        = getReturnInvoiceDetails(rs.getInt("Return_Invoice_ID"));
+                ReturnInvoice invoice = new ReturnInvoice(returnInvoiceID, date,
+                        supplier, discount, discountType, paid, totalAmount,
+                        returnInvoiceDetails, sta, description);
+               returnInvoices.add(invoice);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ReturnInvoiceDBContext.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return returnInvoices;
+    }
+     
+       public void updateDefaultSupplier(int supplierID, int returnInvoiceID) {
+        try {
+            String sql = "UPDATE [dbo].[Return_Invoice]\n"
+                    + "   SET [Supplier_ID] = ?\n"
+                    + " WHERE [Return_Invoice_ID] = ?";
+            PreparedStatement stm = connection.prepareStatement(sql);
+            stm.setInt(1, supplierID);
+            stm.setInt(2, returnInvoiceID);
+            stm.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(ReturnInvoiceDBContext.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+
+    
     public ArrayList<ReturnInvoice> getReturnInvoices(String[] from, String[] to, int[] status,
             int pageIndex, int pageSize, String orderBy) {
         ArrayList<ReturnInvoice> returnInvoices = new ArrayList<>();

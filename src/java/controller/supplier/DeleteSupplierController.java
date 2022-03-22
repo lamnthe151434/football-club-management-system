@@ -6,12 +6,17 @@
 package controller.supplier;
 
 import dal.partner.SupplierDBContext;
+import dal.transaction.ImportInvoiceDBContext;
+import dal.transaction.ReturnInvoiceDBContext;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import model.transaction.ImportInvoice;
+import model.transaction.ReturnInvoice;
 
 /**
  *
@@ -30,10 +35,25 @@ public class DeleteSupplierController extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        int id = Integer.parseInt(request.getParameter("id"));
+          response.setContentType("text/html;charset=UTF-8");
+        request.setCharacterEncoding("utf-8");
+        int supplierID = Integer.parseInt(request.getParameter("id"));
         SupplierDBContext sdb = new SupplierDBContext();
-        sdb.deleteSupplier(id);
+
+        ImportInvoiceDBContext iidb = new ImportInvoiceDBContext();
+        ReturnInvoiceDBContext rdb = new ReturnInvoiceDBContext();
+        int defaultSupplierID = 1;
+        ArrayList<ImportInvoice> importInvoices = iidb.getImportInvoices();
+        ArrayList<ReturnInvoice> returnInvoices = rdb.getReturnInvoices();
+        for (ImportInvoice in : importInvoices) {
+            iidb.updateDefaultSupplier(defaultSupplierID, in.getImportInvoiceID());
+        }
+        
+        for (ReturnInvoice re : returnInvoices) {
+            rdb.updateDefaultSupplier(defaultSupplierID, re.getReturnInvoiceID());
+        }
+        
+        sdb.deleteSupplier(supplierID);
         response.sendRedirect("list");
     }
 

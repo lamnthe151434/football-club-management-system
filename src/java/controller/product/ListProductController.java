@@ -37,7 +37,8 @@ public class ListProductController extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
+         response.setContentType("text/html;charset=UTF-8");
+        request.setCharacterEncoding("utf-8");
         BrandDBContext bdb = new BrandDBContext();
         CategoryDBContext cdb = new CategoryDBContext();
 

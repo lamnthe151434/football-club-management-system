@@ -33,6 +33,8 @@ public class EditCustomerController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+          response.setContentType("text/html;charset=UTF-8");
+        request.setCharacterEncoding("utf-8");
         int customerID = Integer.parseInt(request.getParameter("id"));
         CustomerDBContext cdb = new CustomerDBContext();
         Customer customer = cdb.getCustomer(customerID);
@@ -69,6 +71,8 @@ public class EditCustomerController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+          response.setContentType("text/html;charset=UTF-8");
+        request.setCharacterEncoding("utf-8");
         String rawCustomerID = request.getParameter("customerID");
         String rawCustomerName = request.getParameter("customerName");
         String rawAddress = request.getParameter("address");

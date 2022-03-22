@@ -35,12 +35,13 @@ public class DeleteBrandController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
+        request.setCharacterEncoding("utf-8");
         int brandID = Integer.parseInt(request.getParameter("id"));
         BrandDBContext bdb = new BrandDBContext();
         ProductDBContext pdb = new ProductDBContext();
         ArrayList<Product> products = pdb.getProductsByBrand(brandID);
         
-        Brand defaultBrand = new Brand(1, "Không có thương hiệu");
+        Brand defaultBrand = new Brand(1, "Không có");
         
         for (Product product : products) {
             product.setBrand(defaultBrand);

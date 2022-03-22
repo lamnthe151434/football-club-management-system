@@ -34,7 +34,8 @@ public class EditCategoryController extends BaseAuthenticationController {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
+          response.setContentType("text/html;charset=UTF-8");
+        request.setCharacterEncoding("utf-8");
         int categoryID = Integer.parseInt(request.getParameter("id"));
         CategoryDBContext db = new CategoryDBContext();
         Category category = db.getCategory(categoryID);
@@ -56,7 +57,8 @@ public class EditCategoryController extends BaseAuthenticationController {
 
     @Override
     protected void processPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
+          response.setContentType("text/html;charset=UTF-8");
+        request.setCharacterEncoding("utf-8");
         int categoryID = Integer.parseInt(request.getParameter("categoryID"));
         String categoryName = request.getParameter("categoryName");
         CategoryDBContext cdb = new CategoryDBContext();

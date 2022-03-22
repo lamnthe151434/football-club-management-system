@@ -29,6 +29,8 @@ public class InsertProductController extends BaseAuthenticationController {
 
     @Override
     protected void processGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        response.setContentType("text/html;charset=UTF-8");
+        request.setCharacterEncoding("utf-8");
         CategoryDBContext cdb = new CategoryDBContext();
         BrandDBContext bdb = new BrandDBContext();
         ArrayList<Category> categories = cdb.getCategories();
@@ -41,6 +43,8 @@ public class InsertProductController extends BaseAuthenticationController {
 
     @Override
     protected void processPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        response.setContentType("text/html;charset=UTF-8");
+        request.setCharacterEncoding("utf-8");
         ProductDBContext db = new ProductDBContext();
         CategoryDBContext cdb = new CategoryDBContext();
         BrandDBContext bdb = new BrandDBContext();
@@ -55,10 +59,13 @@ public class InsertProductController extends BaseAuthenticationController {
         String rawBrandID = request.getParameter("brand");
         System.out.println(rawBrandID);
         String rawQuantity = request.getParameter("quantity");
-        String rawCost = request.getParameter("cost").replace("Â VND", "");
+        String rawCost = request.getParameter("cost").replace("VND", "").trim();
         rawCost = rawCost.replace(".", "");
-        String rawPrice = request.getParameter("price").replace("Â VND", "");
+        rawCost = rawCost.substring(0, rawCost.length() - 1);
+        System.out.println("(" + rawCost + ")");
+        String rawPrice = request.getParameter("price").replace("VND", "").trim();
         rawPrice = rawPrice.replace(".", "");
+        rawPrice = rawPrice.substring(0, rawPrice.length() - 1);
         String rawDescription = request.getParameter("description");
 
         int brandID = Integer.parseInt(rawBrandID);

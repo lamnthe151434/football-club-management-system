@@ -59,8 +59,10 @@ public class InsertImportInvoiceController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+          response.setContentType("text/html;charset=UTF-8");
+        request.setCharacterEncoding("utf-8");
         SupplierDBContext sdb = new SupplierDBContext();
-        ImportInvoiceDBContext idb = new ImportInvoiceDBContext();
+//        ImportInvoiceDBContext idb = new ImportInvoiceDBContext();
         ProductDBContext pdb = new ProductDBContext();
 
         String rawDate = request.getParameter("date");
@@ -73,6 +75,9 @@ public class InsertImportInvoiceController extends HttpServlet {
         String rawDescription = request.getParameter("desciption");
         String rawStatus = request.getParameter("status");
 
+        if(rawSupplierID == null || rawSupplierID.equals("")) {
+            rawSupplierID = "1";
+        }
         float mustPay = Float.parseFloat(rawMustPay);
         float totalAmount = Float.parseFloat(rawTotal);
         float discount = Float.parseFloat(rawDiscount);

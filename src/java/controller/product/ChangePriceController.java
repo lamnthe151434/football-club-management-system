@@ -36,7 +36,8 @@ public class ChangePriceController extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
+         response.setContentType("text/html;charset=UTF-8");
+        request.setCharacterEncoding("utf-8");
         BrandDBContext bdb = new BrandDBContext();
         CategoryDBContext cdb = new CategoryDBContext();
         String sortBy = request.getParameter("sortBy");
@@ -228,7 +229,8 @@ public class ChangePriceController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
+          response.setContentType("text/html;charset=UTF-8");
+        request.setCharacterEncoding("utf-8");
         ProductDBContext pdb = new ProductDBContext();
         String priceType = request.getParameter("priceType");
         String baseType = request.getParameter("baseType");

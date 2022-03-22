@@ -1757,6 +1757,9 @@
         for (var i = 0, max = trs.length; i < max; i++) {
             tds = trs[i].children;
             tds[0].innerHTML = formatInvoiceId(tds[0].innerHTML);
+            var x = parseInt(tds[3].innerHTML);
+            x = x.toLocaleString('vi-VN', {style: 'currency', currency: 'VND'});
+            tds[3].innerHTML = x;
         }
 
 

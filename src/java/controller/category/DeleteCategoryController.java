@@ -35,7 +35,8 @@ public class DeleteCategoryController extends BaseAuthenticationController {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
+          response.setContentType("text/html;charset=UTF-8");
+        request.setCharacterEncoding("utf-8");
         int categoryID = Integer.parseInt(request.getParameter("id"));
         CategoryDBContext cdb = new CategoryDBContext();
         ProductDBContext pdb = new ProductDBContext();

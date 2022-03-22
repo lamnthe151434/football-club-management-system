@@ -59,6 +59,8 @@ public class InsertReturnInvoiceController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+         response.setContentType("text/html;charset=UTF-8");
+        request.setCharacterEncoding("utf-8");
         SupplierDBContext sdb = new SupplierDBContext();
         ReturnInvoiceDBContext idb = new ReturnInvoiceDBContext();
         ProductDBContext pdb = new ProductDBContext();
@@ -77,6 +79,9 @@ public class InsertReturnInvoiceController extends HttpServlet {
         float totalAmount = Float.parseFloat(rawTotal);
         float discount = Float.parseFloat(rawDiscount);
         float paid = Float.parseFloat(rawPaid);
+          if(rawSupplierID == null || rawSupplierID.equals("")) {
+            rawSupplierID = "1";
+        }
 
         boolean discountType = true;
         if (rawDiscountType.equals("1")) {

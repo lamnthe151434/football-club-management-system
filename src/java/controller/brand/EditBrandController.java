@@ -34,7 +34,8 @@ public class EditBrandController extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
+          response.setContentType("text/html;charset=UTF-8");
+        request.setCharacterEncoding("utf-8");
         int brandID = Integer.parseInt(request.getParameter("id"));
         BrandDBContext db = new BrandDBContext();
         Brand brand = db.getBrand(brandID);
@@ -75,7 +76,8 @@ public class EditBrandController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
+          response.setContentType("text/html;charset=UTF-8");
+        request.setCharacterEncoding("utf-8");
         int brandID = Integer.parseInt(request.getParameter("brandID"));
         String brandName = request.getParameter("brandName");
         System.out.println(brandID);

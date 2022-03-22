@@ -128,6 +128,45 @@ public class ImportInvoiceDBContext extends DBContext {
         return null;
     }
 
+    public ArrayList<ImportInvoice> getImportInvoices() {
+        ArrayList<ImportInvoice> importInvoices = new ArrayList<>();
+        SupplierDBContext sdb = new SupplierDBContext();
+        try {
+            String sql = "SELECT [Import_Invoice_ID]\n"
+                    + "      ,[Date]\n"
+                    + "      ,[Supplier_ID]\n"
+                    + "      ,[Discount]\n"
+                    + "      ,[Discount_Type]\n"
+                    + "      ,[Pay]\n"
+                    + "      ,[Total_Amount]\n"
+                    + "      ,[Status]\n"
+                    + "      ,[Description]\n"
+                    + "  FROM [dbo].[Import_Invoice]";
+            PreparedStatement stm = connection.prepareStatement(sql);
+            ResultSet rs = stm.executeQuery();
+            while (rs.next()) {
+                int importInvoiceID = rs.getInt("Import_Invoice_ID");
+                Date date = rs.getDate("Date");
+                Supplier supplier = sdb.getSupplier(rs.getInt("Supplier_ID"));
+                float discount = rs.getFloat("Discount");
+                float paid = rs.getFloat("Pay");
+                boolean discountType = rs.getBoolean("Discount_Type");
+                String description = rs.getString("Description");
+                int sta = rs.getInt("Status");
+                float totalAmount = rs.getFloat("Total_Amount");
+                ArrayList<ImportInvoiceDetail> importInvoiceDetails
+                        = getImportInvoiceDetails(rs.getInt("Import_Invoice_ID"));
+                ImportInvoice invoice = new ImportInvoice(importInvoiceID, date,
+                        supplier, discount, discountType, paid, totalAmount,
+                        importInvoiceDetails, sta, description);
+               importInvoices.add(invoice);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ImportInvoiceDBContext.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return importInvoices;
+    }
+
     public ArrayList<ImportInvoiceDetail> getImportInvoiceDetails(int importInvoiceID) {
         ProductDBContext pdb = new ProductDBContext();
         ArrayList<ImportInvoiceDetail> importInvoiceDetails = new ArrayList<>();
@@ -269,6 +308,20 @@ public class ImportInvoiceDBContext extends DBContext {
                     + "      WHERE [Import_Invoice_ID] = ?";
             PreparedStatement stm = connection.prepareStatement(sql);
             stm.setInt(1, importInvoiceID);
+            stm.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(ImportInvoiceDBContext.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public void updateDefaultSupplier(int supplierID, int importInvoiceID) {
+        try {
+            String sql = "UPDATE [dbo].[Import_Invoice]\n"
+                    + "   SET [Supplier_ID] = ?\n"
+                    + " WHERE [Import_Invoice_ID] = ?";
+            PreparedStatement stm = connection.prepareStatement(sql);
+            stm.setInt(1, supplierID);
+            stm.setInt(2, importInvoiceID);
             stm.executeUpdate();
         } catch (SQLException ex) {
             Logger.getLogger(ImportInvoiceDBContext.class.getName()).log(Level.SEVERE, null, ex);

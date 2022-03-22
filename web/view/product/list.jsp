@@ -1210,6 +1210,12 @@
             for (var i = 0, max = trs.length; i < max; i++) {
                 tds = trs[i].children;
                 tds[0].innerHTML = formatProductId(tds[0].innerHTML);
+                var x = parseInt(tds[5].innerHTML);
+                x = x.toLocaleString('vi-VN', {style: 'currency', currency: 'VND'});
+                tds[5].innerHTML = x;
+                x = parseInt(tds[6].innerHTML);
+                x = x.toLocaleString('vi-VN', {style: 'currency', currency: 'VND'});
+                tds[6].innerHTML = x;
             }
 
 

@@ -39,7 +39,8 @@ public class EditImportInvoiceController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
+         response.setContentType("text/html;charset=UTF-8");
+        request.setCharacterEncoding("utf-8");
         ImportInvoiceDBContext iidb = new ImportInvoiceDBContext();
         int id = Integer.parseInt(request.getParameter("id"));
 
@@ -170,6 +171,8 @@ public class EditImportInvoiceController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+          response.setContentType("text/html;charset=UTF-8");
+        request.setCharacterEncoding("utf-8");
         SupplierDBContext sdb = new SupplierDBContext();
         ProductDBContext pdb = new ProductDBContext();
         int importInvoiceID = Integer.parseInt(request.getParameter("invoiceID"));
