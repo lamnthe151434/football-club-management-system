@@ -1221,7 +1221,7 @@
                                     <td>Nhà cung cấp</td>
                                     <td>
                                         <span class="return-invoice-insert" onclick="openBox('insert-supplier-container')" id="insert-supplier-name" >---Chọn nhà cung cấp---</span>
-                                        <input class="return-invoice-insert" id ="insert-supplier-id" name ="supplierID" type ="hidden"/>
+                                        <input class="return-invoice-insert" id ="insert-supplier-id" name ="supplierID" type ="hidden" />
                                         <button type="button" onclick="openModal('supplier-insert-modal')"  class="btn-add"><i class="fa fa-plus" ></i></button>
                                     </td>
                                 </tr>
