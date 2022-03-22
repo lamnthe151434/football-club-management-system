@@ -68,11 +68,13 @@ public class InsertImportInvoiceController extends HttpServlet {
         String rawDiscount = request.getParameter("discount");
         String rawMustPay = request.getParameter("mustPay");
         String rawPaid = request.getParameter("paid");
+        String rawTotal = request.getParameter("totalAmount");
         String rawDiscountType = request.getParameter("discountType");
         String rawDescription = request.getParameter("desciption");
         String rawStatus = request.getParameter("status");
 
         float mustPay = Float.parseFloat(rawMustPay);
+        float totalAmount = Float.parseFloat(rawTotal);
         float discount = Float.parseFloat(rawDiscount);
         float paid = Float.parseFloat(rawPaid);
 
@@ -101,7 +103,6 @@ public class InsertImportInvoiceController extends HttpServlet {
         String description = rawDescription;
         int status = Integer.parseInt(rawStatus);
 
-//        ArrayList<Product> products = new ArrayList<>();
         ImportInvoiceDBContext iidb = new ImportInvoiceDBContext();
 
         ArrayList<ImportInvoiceDetail> importInvoiceDetails = new ArrayList<>();
@@ -118,11 +119,11 @@ public class InsertImportInvoiceController extends HttpServlet {
             }
             ImportInvoiceDetail ii = new ImportInvoiceDetail(importInvoiceID, p, p.getCost(), quantity);
             importInvoiceDetails.add(ii);
-            System.out.println(importInvoiceID);
         }
 
-        ImportInvoice invoice = new ImportInvoice(importInvoiceID, date, supplier, discount,
-                discountType, paid, importInvoiceDetails, status, description);
+        ImportInvoice invoice = new ImportInvoice(importInvoiceID, date, supplier, 
+                discount, discountType, paid, totalAmount, 
+                importInvoiceDetails, status, description);
         iidb.insertImportInvoice(invoice);
 
         response.sendRedirect("list");

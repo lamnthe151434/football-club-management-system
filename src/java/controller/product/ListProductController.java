@@ -44,6 +44,27 @@ public class ListProductController extends HttpServlet {
         HttpSession session = request.getSession();
         String submitType = String.valueOf(session.getAttribute("submitType"));
 
+        String sortBy = request.getParameter("sortBy");
+        String sortType = request.getParameter("sortType");
+
+        String orderBy = "ORDER BY ";
+
+        if (sortBy != null && sortType != null && sortBy != "" && sortType != "") {
+            orderBy += sortBy + " ";
+            if (!sortType.equals("0")) {
+                if (sortType.equals("1")) {
+                    orderBy += "ASC";
+                }
+                if (sortType.equals("2")) {
+                    orderBy += "DESC";
+                }
+            }
+        }
+
+        if (orderBy.trim().equals("ORDER BY")) {
+            orderBy += "[Product_ID] ASC";
+        }
+
         String rawBrandID = request.getParameter("brandID");
         String rawCategoryID = request.getParameter("categoryID");
         String searchKey = request.getParameter("searchKey");
@@ -146,16 +167,16 @@ public class ListProductController extends HttpServlet {
         ArrayList<Product> products = new ArrayList<>();
 
         if (brandID == -1 && categoryID == -1) {
-            products = pdb.getProducts(searchKey, pageIndex, pageSize);
+            products = pdb.getProducts(searchKey, pageIndex, pageSize, orderBy);
         } else {
             if (brandID == -1) {
-                products = pdb.getProductsByCategory(searchKey, categoryID, pageIndex, pageSize);
+                products = pdb.getProductsByCategory(searchKey, categoryID, pageIndex, pageSize, orderBy);
             }
             if (categoryID == -1) {
-                products = pdb.getProductsByBrand(searchKey, brandID, pageIndex, pageSize);
+                products = pdb.getProductsByBrand(searchKey, brandID, pageIndex, pageSize, orderBy);
             }
             if (categoryID != -1 && brandID != -1) {
-                products = pdb.getProducts(searchKey, criterias, pageIndex, pageSize);
+                products = pdb.getProducts(searchKey, criterias, pageIndex, pageSize, orderBy);
             }
         }
 
@@ -174,6 +195,9 @@ public class ListProductController extends HttpServlet {
         request.setAttribute("pageIndex", pageIndex);
         request.setAttribute("totalPage", totalPage);
         request.setAttribute("track", track);
+        request.setAttribute("sortBy", sortBy);
+        request.setAttribute("sortType", sortType);
+        System.out.println("totalpage: " + totalPage);
 
         request.setAttribute("category", category);
         request.setAttribute("brand", brand);

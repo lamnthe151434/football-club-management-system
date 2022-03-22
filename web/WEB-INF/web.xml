@@ -164,6 +164,34 @@
         <servlet-name>SetSessionController</servlet-name>
         <servlet-class>common.SetSessionController</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>CheckInputProduct</servlet-name>
+        <servlet-class>controller.product.CheckInputProduct</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>CheckInputCategory</servlet-name>
+        <servlet-class>controller.category.CheckInputCategory</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>CheckInputBrand</servlet-name>
+        <servlet-class>controller.brand.CheckInputBrand</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>GetCategoryController</servlet-name>
+        <servlet-class>controller.category.GetCategoryController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>GetBrandController</servlet-name>
+        <servlet-class>controller.brand.GetBrandController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>CheckExistSupplier</servlet-name>
+        <servlet-class>controller.supplier.CheckExistSupplier</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>SearchCustomerController</servlet-name>
+        <servlet-class>controller.customer.SearchCustomerController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>LoginController</servlet-name>
         <url-pattern>/login</url-pattern>
@@ -327,6 +355,34 @@
     <servlet-mapping>
         <servlet-name>SetSessionController</servlet-name>
         <url-pattern>/set/session</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>CheckInputProduct</servlet-name>
+        <url-pattern>/product/check/input</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>CheckInputCategory</servlet-name>
+        <url-pattern>/category/check/input</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>CheckInputBrand</servlet-name>
+        <url-pattern>/brand/check/input</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>GetCategoryController</servlet-name>
+        <url-pattern>/category/get</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>GetBrandController</servlet-name>
+        <url-pattern>/brand/get</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>CheckExistSupplier</servlet-name>
+        <url-pattern>/supplier/check</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>SearchCustomerController</servlet-name>
+        <url-pattern>/customer/search</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

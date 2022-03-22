@@ -21,23 +21,34 @@ public class ImportInvoice {
     private float discount;
     private boolean discountType;
     private float paid;
+    private float totalAmount;
     private ArrayList<ImportInvoiceDetail> invoices;
     private int status;
     private String description;
 
-    public ImportInvoice(int importInvoiceID, Date date, Supplier supplier, float discount, boolean discountType, float paid, int status, String description) {
+    public ImportInvoice(int importInvoiceID, Date date, Supplier supplier,
+            float discount, boolean discountType, float paid,
+            float totalAmount, ArrayList<ImportInvoiceDetail> invoices, 
+            int status, String description) {
         this.importInvoiceID = importInvoiceID;
         this.date = date;
         this.supplier = supplier;
         this.discount = discount;
         this.discountType = discountType;
         this.paid = paid;
+        this.totalAmount = totalAmount;
+        this.invoices = invoices;
         this.status = status;
         this.description = description;
     }
-    
-    
 
+    public float getTotalAmount() {
+        return totalAmount;
+    }
+
+    public void setTotalAmount(float totalAmount) {
+        this.totalAmount = totalAmount;
+    }
     public float getMustPay() {
         float sum = 0;
         for (ImportInvoiceDetail invoice : invoices) {
@@ -78,18 +89,7 @@ public class ImportInvoice {
         this.description = description;
     }
 
-    public ImportInvoice(int importInvoiceID, Date date, Supplier supplier, float discount, boolean discountType, float paid, ArrayList<ImportInvoiceDetail> invoices, int status, String description) {
-        this.importInvoiceID = importInvoiceID;
-        this.date = date;
-        this.supplier = supplier;
-        this.discount = discount;
-        this.discountType = discountType;
-        this.paid = paid;
-        this.invoices = invoices;
-        this.status = status;
-        this.description = description;
-    }
-
+  
     public int getImportInvoiceID() {
         return importInvoiceID;
     }

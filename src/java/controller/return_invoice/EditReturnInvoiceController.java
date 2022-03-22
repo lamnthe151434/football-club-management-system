@@ -40,16 +40,16 @@ public class EditReturnInvoiceController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        ReturnInvoiceDBContext rdb = new ReturnInvoiceDBContext();
+        ReturnInvoiceDBContext iidb = new ReturnInvoiceDBContext();
         int id = Integer.parseInt(request.getParameter("id"));
 
-        ReturnInvoice returnInvoices = rdb.getReturnInvoice(id);
-        String description = returnInvoices.getDescription();
+        ReturnInvoice returnInvoice = iidb.getReturnInvoice(id);
+        String description = returnInvoice.getDescription();
         if (description == null) {
             description = "";
         }
 
-        int statusNumber = returnInvoices.getStatus();
+        int statusNumber = returnInvoice.getStatus();
 
         String status = "";
         if (statusNumber == 0) {
@@ -62,49 +62,100 @@ public class EditReturnInvoiceController extends HttpServlet {
             status = "Đã trả hàng nhập";
         }
 
+        int discountType = 1;
+        if (returnInvoice.isDiscountType()) {
+            discountType = 1;
+        } else {
+            discountType = 0;
+        }
+
         String result = "";
         PrintWriter writer = response.getWriter();
-        result += returnInvoices.getReturnInvoiceID() + "|";
-        result += returnInvoices.getReturnInvoiceID() + "|";
-        result += returnInvoices.getStatus() + "|";
-        result += returnInvoices.getDate() + "|";
-        result += returnInvoices.getSupplier().getSupplierID() + "|";
-        result += returnInvoices.getSupplier().getSupplierName() + "|";
-        result += returnInvoices.getTotal() + "|";
+        result += returnInvoice.getReturnInvoiceID() + "|";
+        result += returnInvoice.getReturnInvoiceID() + "|";
         result += status + "|";
+        result += returnInvoice.getDate() + "|";
+        result += returnInvoice.getSupplier().getSupplierName() + "|";
+        result += returnInvoice.getSupplier().getSupplierID() + "|";
+        result += returnInvoice.getTotal() + "|";
+        result += returnInvoice.getTotal() + "|";
+        result += returnInvoice.getDiscount() + "|";
+        result += returnInvoice.getMustPay() + "|";
+        result += returnInvoice.getMustPay() + "|";
+        result += returnInvoice.getPaid() + "|";
+        result += returnInvoice.getReturnMoney() + "|";
         result += description + "|";
-        ArrayList<ReturnInvoiceDetail> invoices = returnInvoices.getInvoices();
+        if (returnInvoice.getStatus() == 1) {
+            result += "<input id=\"edit-status\" type=\"hidden\" name =\"status\" />\n";
+            result += "<button type=\"button\" onclick=\"checkInput('edit','edit-form', 'edit-status', '1')\">LƯU</button>\n";
+            result += "<button type=\"button\" onclick=\"checkInput('edit','edit-form', 'edit-status', '2')\">HOÀN THÀNH</button>\n";
+            result += "<button type=\"button\" onclick=\"checkInput('edit','edit-form', 'edit-status', '0')\">HỦY PHIẾU</button>";
+        }
+        if (returnInvoice.getStatus() == 2) {
+            result += "<input id=\"edit-status\" type=\"hidden\" name =\"status\" />\n";
+            result += "<button type=\"button\" onclick=\"checkInput('edit','edit-form', 'edit-status', '2')\">LƯU</button>\n";
+            result += "<button type=\"button\" onclick=\"checkInput('edit','edit-form', 'edit-status', '0')\">HỦY PHIẾU</button>";
+        }
+        result += "|";
+
+        result += returnInvoice.getDiscount() + "|";
+        result += discountType + "|";
+
+        ArrayList<ReturnInvoiceDetail> invoices = returnInvoice.getInvoices();
         for (int i = 0; i < invoices.size(); i++) {
             ReturnInvoiceDetail in = invoices.get(i);
             Product product = in.getProduct();
             result += "<tr id =\"edit-" + (i + 1) + "\">";
-            result += "<td><button type =\"button\" onclick=\"deleteFrom('edit','edit-" + (i + 1)
-                    + "')\"><i class =\"fa fa-trash\" ></i></button></td>";
+            result += "<td><button type =\"button\" onclick=\"deleteFrom('edit'," + (i + 1)
+                    + ")\"><i class =\"fa fa-trash\" ></i></button></td>";
             result += "<td>" + (i + 1) + "</td>";
-            result += "<td>" + product.getProductID() + "<input type=\"hidden\" name = \"id\" value = \""
+            if (product.getStatus() == 0) {
+                result += "<td>" + formatProductId(product.getProductID()) + "(Đã xóa)</td>";
+            } else {
+                result += "<td>" + formatProductId(product.getProductID()) + "</td>";
+            }
+            result += "<td>" + product.getProductName() + "<input type=\"hidden\" name =\"id\" value =\""
                     + product.getProductID() + "\"" + "</td>";
-            result += "<td>" + product.getProductName() + "</td>";
             result += "<td>" + product.getUnit() + "</td>";
             result += "<td>" + in.getUnitPrice() + "</td>";
-            result += "<td><input onkeyup = \"setAmount('edit',this.value,'edit-"
-                    + (i + 1) + "')\" type=\"text\" name = \"quantity\"  value = \"" + in.getQuantity() + "\" /></td>";
+            if (product.getStatus() == 0) {
+                result += "<td>" + product.getQuantity();
+                result += "<input type=\"hidden\" value=\"" +product.getQuantity()  + "\" name =\"quantity\" />";
+                result += "</td>";
+            } else {
+                result += "<td>";
+                result += "<button type=\"button\" onclick=\"increaseQuantity('edit'," + (i + 1)
+                        + ")\"><i class=\"fa fa-arrow-up\"></i></button>";
+                result += "<input maxlength =\"12\" onkeyup =\"setAmount('edit',this.value," + (i + 1)
+                        + ")\"type=\"text\" name =\"quantity\" value=\"" + in.getQuantity() + "\" />";
+                result += "<button type=\"button\" onclick=\"decreaseQuantity('edit'," + (i + 1)
+                        + ")\"><i class=\"fa fa-arrow-down\"></i></button>";
+                result += "</td>";
+            }
             result += "<td>" + in.getTotal() + "</td>";
-            result += "</tr>";
-        }
-        result += "|";
-        if (returnInvoices.getStatus() == 1) {
-            result += "<input type=\"submit\" onclick=\"checkInput('edit-form', 'edit-status', '1')\" value =\"Lưu\" />\n";
-            result += "<input type=\"submit\" onclick=\"checkInput('edit-form', 'edit-status', '2')\" value =\"Hoàn thành\" />\n";
-            result += "<input type=\"submit\" onclick=\"checkInput('edit-form', 'edit-status', '0')\" value =\"Hủy phiếu\" />";
-        }
-        if (returnInvoices.getStatus() == 2) {
-            result += "<input type=\"submit\" onclick=\"checkInput('edit-form', 'edit-status', '2')\" value =\"Lưu\" />\n";
-            result += "<input type=\"submit\" onclick=\"checkInput('edit-form', 'edit-status', '0')\" value =\"Hủy phiếu\" />";
+            result += "</tr>" + "@";
         }
 
         String[] separeated = result.split("|");
-        System.out.println("leng " + separeated.length);
         writer.println(result);
+
+    }
+
+    public String formatProductId(int id) {
+        String idStr = String.valueOf(id);
+        int len = idStr.length();
+        switch (len) {
+            case 1:
+                return "P0000" + id;
+            case 2:
+                return "P000" + id;
+            case 3:
+                return "P00" + id;
+            case 4:
+                return "P0" + id;
+            default:
+                return "P" + id;
+        }
 
     }
 
@@ -119,18 +170,21 @@ public class EditReturnInvoiceController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-          SupplierDBContext sdb = new SupplierDBContext();
+        SupplierDBContext sdb = new SupplierDBContext();
         ProductDBContext pdb = new ProductDBContext();
-
         int returnInvoiceID = Integer.parseInt(request.getParameter("invoiceID"));
         String rawDate = request.getParameter("date");
         String rawSupplierID = request.getParameter("supplierID");
         String rawDiscount = request.getParameter("discount");
+        String rawMustPay = request.getParameter("mustPay");
         String rawPaid = request.getParameter("paid");
+        String rawTotalAmount = request.getParameter("totalAmount");
         String rawDiscountType = request.getParameter("discountType");
         String rawDescription = request.getParameter("desciption");
         String rawStatus = request.getParameter("status");
 
+        float mustPay = Float.parseFloat(rawMustPay);
+        float totalAmount = Float.parseFloat(rawTotalAmount);
         float discount = Float.parseFloat(rawDiscount);
         float paid = Float.parseFloat(rawPaid);
 
@@ -164,9 +218,8 @@ public class EditReturnInvoiceController extends HttpServlet {
         int newStatus = Integer.parseInt(rawStatus);
         int oldStatus = returnInvoice.getStatus();
 
-        System.out.println(newStatus + ", " + oldStatus);
-
-        // phiếu tạm -> đã nhập hàng
+//        System.out.println(newStatus + ", " + oldStatus);
+        // phiếu tạm -> đã trả hàng nhập
         if (newStatus == (oldStatus + 1)) {
 
         }
@@ -174,14 +227,14 @@ public class EditReturnInvoiceController extends HttpServlet {
         if (newStatus == (oldStatus - 1)) {
 
         }
-        // đã nhập hàng -> hủy phiếu
-        if (newStatus == (oldStatus - 2)) {
+        // đã trả hàng nhập -> hủy phiếu
+        if ((newStatus == (oldStatus - 2)) || (newStatus == 2 && oldStatus == 2)) {
             ArrayList<ReturnInvoiceDetail> invoices = iidb.getReturnInvoiceDetails(returnInvoiceID);
             for (int i = 0; i < invoices.size(); i++) {
                 ReturnInvoiceDetail iid = invoices.get(i);
                 int oldQuantity = iid.getQuantity();
                 Product p = iid.getProduct();
-                pdb.decreaseQuantity(p, oldQuantity);
+                pdb.increaseQuantity(p, oldQuantity);
             }
         }
 
@@ -193,15 +246,16 @@ public class EditReturnInvoiceController extends HttpServlet {
             int productID = Integer.parseInt(String.valueOf(productIDs[i]));
             int quantity = Integer.parseInt(String.valueOf(quantities[i]));
             Product p = pdb.getProduct(productID);
-            if (newStatus == (oldStatus + 1)) {
-                pdb.increaseQuantity(p, quantity);
+            if ((newStatus == (oldStatus + 1)) || (oldStatus == 2 && newStatus == 2)) {
+                pdb.decreaseQuantity(p, quantity);
             }
             ReturnInvoiceDetail ii = new ReturnInvoiceDetail(returnInvoiceID, p, p.getCost(), quantity);
             returnInvoiceDetails.add(ii);
         }
 
         ReturnInvoice invoice = new ReturnInvoice(returnInvoiceID, date, supplier,
-                discount, discountType, paid, returnInvoiceDetails, oldStatus, description);
+                discount, discountType, paid, totalAmount,
+                returnInvoiceDetails, newStatus, description);
         iidb.updateReturnInvoice(invoice);
 
         response.sendRedirect("list");

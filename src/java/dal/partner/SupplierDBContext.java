@@ -52,7 +52,7 @@ public class SupplierDBContext extends DBContext {
         return suppliers;
     }
 
-    public ArrayList<Supplier> getSuppliers(int pageIndex, int pageSize) {
+    public ArrayList<Supplier> getSuppliers(int pageIndex, int pageSize, String searchKey, String orderBy) {
         ArrayList<Supplier> suppliers = new ArrayList<>();
         try {
             String sql = "SELECT [Supplier_ID]\n"
@@ -62,8 +62,12 @@ public class SupplierDBContext extends DBContext {
                     + "      ,[DOB]\n"
                     + "      ,[Gender]\n"
                     + "      ,[Description] FROM\n"
-                    + " (SELECT *, ROW_NUMBER() OVER (ORDER BY [Supplier_ID] ASC) as row_index FROM [Supplier]) tb\n"
+                    + " (SELECT *, ROW_NUMBER() OVER (" + orderBy+ ") as row_index FROM [Supplier]\n"
+                    + " WHERE [Supplier_Name] like '%" + searchKey
+                    + "%' OR Cast(Supplier_ID as NVARCHAR(50)) like '%" + searchKey
+                    + "%') tb\n"
                     + "  WHERE row_index >=(?-1)*?+1 AND row_index <= ?*?";
+            System.out.println(sql);
             PreparedStatement stm = connection.prepareStatement(sql);
             stm.setInt(1, pageIndex);
             stm.setInt(2, pageSize);
@@ -131,7 +135,7 @@ public class SupplierDBContext extends DBContext {
                     + "           ,[Description])\n"
                     + "     VALUES\n"
                     + "           (?,?,?,?,?,?)";
-            connection.setAutoCommit(false);
+//            connection.setAutoCommit(false);
             stm = connection.prepareStatement(sql);
             stm.setString(1, supplier.getSupplierName());
             stm.setString(2, supplier.getAddress());
@@ -143,17 +147,17 @@ public class SupplierDBContext extends DBContext {
         } catch (SQLException ex) {
             Logger.getLogger(SupplierDBContext.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
-            try {
-                if (stm != null) {
-                    stm.close();
-                }
-                connection.setAutoCommit(true);
-                if (connection != null) {
-                    connection.close();
-                }
-            } catch (SQLException ex) {
-                Logger.getLogger(SupplierDBContext.class.getName()).log(Level.SEVERE, null, ex);
-            }
+//            try {
+//                if (stm != null) {
+//                    stm.close();
+//                }
+//                connection.setAutoCommit(true);
+//                if (connection != null) {
+//                    connection.close();
+//                }
+//            } catch (SQLException ex) {
+//                Logger.getLogger(SupplierDBContext.class.getName()).log(Level.SEVERE, null, ex);
+//            }
 
         }
     }

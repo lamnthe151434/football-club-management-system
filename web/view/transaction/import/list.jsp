@@ -543,7 +543,7 @@
 
         .modal .import-invoice-insert-modal .modal-content .column  #insert-supplier-container #insert-supplier-box table td,
         .modal .import-invoice-edit-modal .modal-content .column  #edit-supplier-container #edit-supplier-box table td {
-            width: 100%;
+            width: 315px;
             height: 20px;
         }
 
@@ -827,9 +827,7 @@
 
 
         .modal .supplier-insert-modal .modal-content input,
-        .modal .supplier-view-modal .modal-content input,
-        .modal .supplier-insert-modal .modal-content .textarea,
-        .modal .supplier-view-modal .modal-content .textarea
+        .modal .supplier-insert-modal .modal-content .textarea
         {
             width: 95.5%;
             padding: 10px;
@@ -842,8 +840,7 @@
             background: #fff;
         }
 
-        .modal .supplier-insert-modal .modal-content .radio ,
-        .modal .supplier-view-modal .modal-content .radio 
+        .modal .supplier-insert-modal .modal-content .radio
 
         {
             width: 20px;
@@ -851,8 +848,7 @@
             margin: 0px;
         }
 
-        .modal .supplier-insert-modal .modal-content .textarea,
-        .modal .supplier-view-modal .modal-content .textarea{
+        .modal .supplier-insert-modal .modal-content .textarea {
             resize: none;
         }
 
@@ -863,6 +859,15 @@
             /*border: 1px solid #000;*/
         }
 
+        .modal .supplier-view-modal .modal-content table td:nth-child(1),
+        .modal .supplier-view-modal .modal-content table td:nth-child(2) {
+            padding:10px 10px 10px 10px;
+        }
+        .modal .supplier-view-modal,
+        .modal .supplier-insert-modal {
+            background: #fff;
+        }
+
         .modal .supplier-insert-modal .modal-content table tr:nth-child(8) td, 
         .modal .supplier-view-modal .modal-content table tr:nth-child(8) td {
             /*border: 1px solid #000;*/
@@ -871,15 +876,13 @@
             width: 460px;
         }
 
-        .modal .supplier-insert-modal .modal-content table tr:nth-child(4) td:nth-child(2) ,
-        .modal .supplier-view-modal .modal-content table tr:nth-child(4) td:nth-child(2) 
+        .modal .supplier-insert-modal .modal-content table tr:nth-child(4) td:nth-child(2)
         {
             border-bottom:  1px solid #C7C7C7;    
             padding: 12px;
             width: 445px;
         }
-        .modal .supplier-insert-modal .modal-content table tr:nth-child(4) td:nth-child(1),
-        .modal .supplier-view-modal .modal-content table tr:nth-child(4) td:nth-child(1)
+        .modal .supplier-insert-modal .modal-content table tr:nth-child(4) td:nth-child(1)
         {
             padding: 12px 12px 12px 0px;
         }
@@ -930,7 +933,11 @@
             /*border: 1px solid #000;*/
 
         }
-        .modal .supplier-view-modal .modal-content input:focus,
+
+        .modal .supplier-view-modal .modal-content table td:nth-child(2) {
+            padding: 10px;
+            width: 440px;
+        }
         .modal .supplier-insert-modal .modal-content input:focus {
             border-bottom: 1px solid blue;
             box-shadow: 0px  2px #ccc;
@@ -971,8 +978,8 @@
                 <input type="hidden" name="status" value="${requestScope.statuses}" />
                 <input type="hidden" id="page-index" value="${requestScope.pageIndex}"  name="pageIndex" />
                 <input type="hidden" id="page-size" value="${requestScope.selectedPageSize}"  name="pageSize"  />
-                <input type="hidden" id="sort-by" name="sortBy" />
-                <input type="hidden" id="sort-type" name="sortType" />
+                <input type="hidden" id="sort-by" name="sortBy" value="${requestScope.sortBy}" />
+                <input type="hidden" id="sort-type" name="sortType"  value="${requestScope.sortType}"/>
             </form>
         </div>
         <div id ="container" class="container">
@@ -994,7 +1001,7 @@
                                 <table>
                                     <tr>
                                         <td>Từ ngày: </td>
-                                        <td> <input id="from" type="date" name="from" value="${requestScope.from}" /></td>
+                                        <td><input id="from" type="date" name="from" value="${requestScope.from}" /></td>
                                     </tr>
                                     <tr>
                                         <td>Đếm ngày: </td>
@@ -1049,9 +1056,9 @@
                                 <tr>
                                     <td class="sort-by" onclick="sortBy('Import_Invoice_ID', 0)" >
                                         <span>Mã nhập hàng</span> 
-                                            <c:if  test="${requestScope.sortBy == 'Import_Invoice_ID' 
-                                                           && requestScope.sortType != '0'}">
-                                                <c:if test="${requestScope.sortType == '1'}">
+                                        <c:if  test="${requestScope.sortBy == 'Import_Invoice_ID' 
+                                                       && requestScope.sortType != '0'}">
+                                            <c:if test="${requestScope.sortType == '1'}">
                                                 <i class="fa fa-arrow-up"></i>
                                             </c:if>
                                             <c:if test="${requestScope.sortType == '2'}">
@@ -1059,9 +1066,9 @@
                                             </c:if>
                                         </c:if> 
                                     </td>
-                                    <td class="sort-by" onclick="sortBy('Time', 1)" >
+                                    <td class="sort-by" onclick="sortBy('Date', 1)" >
                                         <span>Thời gian</span>
-                                        <c:if  test="${requestScope.sortBy == 'Time' 
+                                        <c:if  test="${requestScope.sortBy == 'Date' 
                                                        && requestScope.sortType != '0'}">
                                             <c:if test="${requestScope.sortType == '1'}">
                                                 <i class="fa fa-arrow-up"></i>
@@ -1083,9 +1090,9 @@
                                             </c:if>
                                         </c:if> 
                                     </td>
-                                    <td class="sort-by" onclick="sortBy('totalAmount', 3)" >
+                                    <td class="sort-by" onclick="sortBy('Total_Amount', 3)" >
                                         <span>Tổng tiền hàng</span>
-                                        <c:if  test="${requestScope.sortBy == 'totalAmount' 
+                                        <c:if  test="${requestScope.sortBy == 'Total_Amount' 
                                                        && requestScope.sortType != '0'}">
                                             <c:if test="${requestScope.sortType == '1'}">
                                                 <i class="fa fa-arrow-up"></i>
@@ -1096,9 +1103,9 @@
                                         </c:if> 
                                     </td>
                                     <td>Ghi chú</td>
-                                    <td class="sort-by" onclick="sortBy('status', 4)" >
+                                    <td class="sort-by" onclick="sortBy('Status', 4)" >
                                         <span>Trạng thái</span>
-                                        <c:if  test="${requestScope.sortBy == 'status' 
+                                        <c:if  test="${requestScope.sortBy == 'Status' 
                                                        && requestScope.sortType != '0'}">
                                             <c:if test="${requestScope.sortType == '1'}">
                                                 <i class="fa fa-arrow-up"></i>
@@ -1116,7 +1123,7 @@
                                 <c:set var="position" value="0" ></c:set>
                                 <c:forEach begin="0" end="${importInvoices.size()}" items="${importInvoices}" var="ii" >
                                     <tr>
-                                        <td>PN0${ii.importInvoiceID}</td>
+                                        <td>${ii.importInvoiceID}</td>
                                         <td>${ii.date}</td>
                                         <td>${ii.supplier.supplierName}</td>
                                         <td>${ii.getMustPay()}</td>
@@ -1283,11 +1290,9 @@
                                                 <tr>
                                                     <td>
                                                         <span onclick="setValue('${c.supplierID}', '${c.supplierName}', 'insert')" class="supplier-value">${c.supplierName}
-                                                            <c:if test="${c.phone.length() == 10}" >
-                                                                - ${c.phone}
-                                                            </c:if>
-                                                        </span></td>
-                                                </tr>
+                                                            <c:if test="${c.phone.length() == 10}" > - ${c.phone}</c:if>
+                                                            </span></td>
+                                                    </tr>
                                             </c:forEach>
                                         </table>
                                     </div>
@@ -1514,7 +1519,7 @@
                                 <td>
                                     <span class="import-invoice-view"></span>   
                                     <input type="hidden" id="view-supplier" class="import-invoice-view" />
-                                    <button type="button" onclick="openModal('supplier-view-modal')" ><i class="fa fa-eye"></i></button>         
+                                    <button type="button" onclick="viewSupplier()" ><i class="fa fa-eye"></i></button>         
                                 </td>
                                 </td>
                             </tr>
@@ -1592,57 +1597,54 @@
                     <button class ="btn-close" onclick="closeModal('supplier-insert-modal')" >x</button>
                 </div>
                 <div class ="modal-content" >
-                    <form action ="insert" method ="POST" >
-                        <table>
-                            <tr>
-                                <td class="table-title" >Mã nhà cung cấp</td>
-                                <td  ><span>Mã tự động</span></td>
-                            </tr>
-                            <tr>
-                                <td class="table-title">Tên nhà cung cấp</td>
-                                <td ><input type ="text" name ="supplierName" class ="supplier-insert"  /></td>
-                            </tr>
-                            <tr>
-                                <td class="table-title">Ngày sinh</td>
-                                <td>
-                                    <input type="date"  name="dob" class ="supplier-insert"/>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="table-title">Giới tính</td>
-                                <td  >
-                                    <input class="radio" type ="radio" name ="gender" value="1"  class ="supplier-insert" > Nam
-                                    <input style="margin-left: 15px;" class="radio" type ="radio" name ="gender" value="0"  class ="supplier-insert" > Nữ
-                                </td>
+                    <table>
+                        <tr>
+                            <td class="table-title" >Mã nhà cung cấp</td>
+                            <td><span>Mã tự động</span></td>
+                        </tr>
+                        <tr>
+                            <td class="table-title">Tên nhà cung cấp</td>
+                            <td><input type ="text" name ="supplierName" class ="supplier-insert"  /></td>
+                        </tr>
+                        <tr>
+                            <td class="table-title">Ngày sinh</td>
+                            <td>
+                                <input type="date"  name="dob" class ="supplier-insert"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="table-title">Giới tính</td>
+                            <td  >
+                                <input class="radio supplier-insert" type ="radio" name ="gender" value="1"  > Nam
+                                <input class="radio supplier-insert"  style="margin-left: 15px;" type ="radio" name ="gender" value="0"  > Nữ
+                            </td>
 
 
-                            </tr>
-                            <tr>
-                                <td class="table-title">Số điện thoại</td>
-                                <td > 
-                                    <input type ="text" name ="phone" class ="supplier-insert"  />
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="table-title">Địa chỉ</td>
-                                <td >  <input type ="text" name ="address" class ="supplier-insert" /></td>
-                            </tr>
-                            <tr>
-                                <td class="table-title">Ghi chú</td>
-                                <td > <textarea class="textarea" rows="4" cols="30" name ="description" class ="supplier-insert" ></textarea></td>
-                            </tr>
-                            <tr>
-                                <td colspan="3">
-                                    <button type="button" onclick="setSubmitType('0')"  >Đóng</button>
-                                    <button type="submit" onclick="setSubmitType('0')" >Lưu</button>
-                                    <button type="submit" onclick="setSubmitType('1')" >Lưu và thêm mới</button>
-                                    <input type="hidden" name="submitType" id="submit-type" value="${requestScope.submitType}" />
-                                </td>
+                        </tr>
+                        <tr>
+                            <td class="table-title">Số điện thoại</td>
+                            <td > 
+                                <input type ="text" name ="phone" class ="supplier-insert"  />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="table-title">Địa chỉ</td>
+                            <td >  <input type ="text" name ="address" class ="supplier-insert" /></td>
+                        </tr>
+                        <tr>
+                            <td class="table-title">Ghi chú</td>
+                            <td > <textarea class="textarea supplier-insert" rows="4" cols="30" name ="description"  ></textarea></td>
+                        </tr>
+                        <tr>
+                            <td colspan="3">
+                                <button type="button"  onclick="closeModal('supplier-insert-modal')"  >Đóng</button>
+                                <button type="button" onclick="insertSupplier()" >Lưu</button>
+                                <input type="hidden" name="submitType" id="submit-type" value="${requestScope.submitType}" />
+                            </td>
 
-                            </tr>
-                        </table>
+                        </tr>
+                    </table>
 
-                    </form>
                 </div>
             </div>
         </div>
@@ -1679,9 +1681,8 @@
                             </tr>
                             <tr>
                                 <td class="table-title">Giới tính</td>
-                                <td  >
-                                    <input class="radio supplier-view" type ="radio" name ="gender" value="1"  > Nam
-                                    <input class="radio supplier-view" style="margin-left: 15px;"  type ="radio" name ="gender" value="0"   > Nữ
+                                <td>
+                                    <span class="supplier-view" ></span>
                                 </td>
                             </tr>
                             <tr>
@@ -1716,7 +1717,7 @@
         <div class ="modal" style="background: rgba(0, 0, 0, 0)" >
             <div class ="insert-confirm-modal" id ="insert-confirm-modal" >
                 <div class ="modal-content" >
-                    <p>Bạn chưa chọn nhà cung cấp, bạn có muốn tiếp tục?</p>
+                    <p>Chưa chọn nhà cung cấp, bạn có muốn tiếp tục?</p>
                     <div class="btn-group" >
                         <button type="button" onclick="closeModal('insert-confirm-modal')" >Đóng</button>
                         <button type="button" onclick="submitForm('insert-form')" >Tiếp tục</button>
@@ -1742,12 +1743,22 @@
         </div>
     </body>
     <script>
-        <c:if test="${requestScope.importInvoices.size() >= 10 || requestScope.pageIndex >= 2}" >
+        <c:if test="${(requestScope.importInvoices.size() >= 10 
+                      || requestScope.pageIndex >= 2) 
+                      && requestScope.totalPage > 1}" >
         pagger('pagger',${requestScope.pageIndex},
-            ${requestScope.selectedPageSize},
-            ${requestScope.totalPage}, 2
+              ${requestScope.selectedPageSize},
+              ${requestScope.totalPage}, 2
                 );
         </c:if>
+
+        var productList = document.getElementById('import-invoice-list');
+        var trs = productList.children;
+        for (var i = 0, max = trs.length; i < max; i++) {
+            tds = trs[i].children;
+            tds[0].innerHTML = formatInvoiceId(tds[0].innerHTML);
+        }
+
 
         function sortBy(by, position) {
             var groupTitle = document.getElementsByClassName("sort-by");
@@ -1771,17 +1782,17 @@
             submitForm("search-form");
         }
 
-        function generateMessage(message) {
-            var warningBox = document.getElementById("warning");
-            var number = warningBox.length;
-
-            var messageBox = "<div onclick=\"fadeOutSpecificMessage('message" + number + "')\" id=\"message" + number + "\" >" + message + "</div>"
-
-            warningBox.innerHTML += messageBox;
-
-            var box = document.getElementById("message" + number);
-            box.style.animationName = "fadeIn";
-        }
+//        function generateMessage(message) {
+//            var warningBox = document.getElementById("warning");
+//            var number = warningBox.length;
+//
+//            var messageBox = "<div onclick=\"fadeOutSpecificMessage('message" + number + "')\" id=\"message" + number + "\" >" + message + "</div>"
+//
+//            warningBox.innerHTML += messageBox;
+//
+//            var box = document.getElementById("message" + number);
+//            box.style.animationName = "fadeIn";
+//        }
 
 
         function generateWarning(message) {
@@ -1797,7 +1808,7 @@
         }
 
         function fadeOutSpecificMessage(id) {
-            var mesage = document.getElememessagentById(id);
+            var mesage = document.getElementById(id);
             mesage.style.animationName = "fadeOut";
         }
 
@@ -1844,6 +1855,127 @@
             }
 //            alert(inputPay.value);
 
+        }
+
+        function insertSupplier() {
+            var box1 = document.getElementById('edit-supplier-box');
+            var box2 = document.getElementById('insert-supplier-box');
+
+            var boxType = "";
+            var modal = document.getElementsByClassName('modal');
+            var supplier = document.getElementsByClassName('supplier-insert');
+            var url = "../../supplier/insert?supplierName=" + supplier[0].value;
+            if (supplier[1].value != null) {
+                url += "&dob=" + supplier[1].value;
+            }
+            if (supplier[2].checked) {
+                url += "&gender=" + 1;
+            }
+            if (supplier[3].checked) {
+                url += "&gender=" + 0;
+            }
+
+            if (modal[0].style.transform == "scale(1)") {
+                boxType = "insert";
+            }
+            if (modal[1].style.transform == "scale(1)") {
+                boxType = "edit";
+            }
+
+
+            if (supplier[4] != null) {
+                url += "&phone=" + supplier[4].value;
+            }
+            if (supplier[5] != null) {
+                url += "&address=" + supplier[5].value;
+            }
+            if (supplier[6] != null) {
+                url += "&description=" + supplier[6].value;
+            }
+
+            url += "&boxType=" + boxType;
+
+            if (!checkInputSupplier(supplier)) {
+                return;
+            }
+            if (checkExistSupplier(supplier[0].value, supplier[4].value)) {
+                generateMessage("Nhà cung cấp đã tồn tại");
+                return;
+
+            }
+
+            fetch(url).then(function (response) {
+                return response.text();
+            }).then(function (result) {
+                box1.innerHTML = result;
+                box2.innerHTML = result;
+            });
+            closeModal('supplier-insert-modal');
+        }
+
+        function checkInputSupplier(supplier) {
+            if (supplier[0].value == "") {
+                generateMessage("Chưa nhập tên nhà cung cấp");
+                return false;
+            }
+
+            if (supplier[4].value != "") {
+                if (supplier[4].value.length > 10 || supplier[4].value.length < 10) {
+                    generateMessage("Số điện thoại phải gồm 10 số");
+                    return false;
+                }
+            }
+            return true;
+        }
+
+
+        function checkExistSupplier(name, phone) {
+            var supplierBox = document.getElementById('insert-supplier-box');
+            var tt = supplierBox.children;
+            var ta = tt[0].children;
+            var tr = ta[0].children;
+//            alert(tr.length);
+            for (var i = 0, max = tr.length; i < max; i++) {
+                var tds = tr[i].children;
+                var span = tds[0].children;
+                var content = span[0].innerHTML;
+//                content = content.replaceAll("\\s+", "");
+                var separatedContent = content.split(" - ");
+//                alert(content);
+                separatedContent[0] = separatedContent[0].trim();
+                if (separatedContent.length == 1) {
+                    separatedContent[1] = "";
+                }
+                separatedContent[1] = separatedContent[1].trim();
+//                alert("(" + separatedContent[0] + ")" + "(" + name + ")");
+//                alert("(" + separatedContent[1] + ")" + "(" + phone + ")");
+                if (separatedContent[0] === name && separatedContent[1] === phone) {
+                    return true;
+                }
+
+            }
+            return false;
+        }
+
+        function viewSupplier() {
+            var id = document.getElementById('view-supplier').value;
+            var url = "../../supplier/edit?id=" + id;
+            var edit = document.getElementsByClassName('supplier-view');
+            fetch(url).then(function (response) {
+                return response.text();
+            }).then(function (result) {
+                var arr = result.split('|');
+                for (var i = 1, max = arr.length; i < max; i++) {
+                    edit[i - 1].innerHTML = arr[i];
+                    if (arr[i] == 'true') {
+                        edit[i - 1].innerHTML = 'Nam';
+                    }
+                    if (arr[i] == 'false') {
+                        edit[i - 1].innerHTML = 'Nữ';
+                    }
+                }
+            });
+            openModal('supplier-view-modal');
         }
 
 
@@ -2235,6 +2367,22 @@
             if (input === "import-invoice-insert") {
                 clearData(input);
             }
+//            alert(input);
+            if (input === "supplier-insert") {
+                clearInputSupplier(input);
+            }
+        }
+
+        function clearInputSupplier(id) {
+            var input = document.getElementsByClassName(id);
+//            alert(input.length);
+
+            for (var i = 0, max = input.length; i < max; i++) {
+                input[i].value = "";
+            }
+
+            input[2].checked = "";
+            input[3].checked = "";
         }
 
         function resetSupplierBoxData(type) {
@@ -2312,7 +2460,7 @@
                 }
                 edit[0].innerHTML = formatInvoiceId(arr[0]);
 
-                edit[4].innerHTML = arr[4];
+                edit[4].value = arr[4];
                 var productList = document.getElementById('view-product-list');
                 productList.innerHTML = arr[12];
             });

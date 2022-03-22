@@ -53,10 +53,7 @@ public class EditSupplierController extends HttpServlet {
         result += supplier.getPhone() + "|";
         result += supplier.getAddress() + "|";
         result += supplier.getDescription();
-        
-        String[] arr = result.split("|");
-        System.out.println(arr.length);
-
+       
         PrintWriter writer = response.getWriter();
         writer.println(result);
     }
@@ -86,7 +83,7 @@ public class EditSupplierController extends HttpServlet {
         if (rawPhone == null) {
             rawPhone = "";
         }
-        if (rawDob == null) {
+        if (rawDob == null || rawDob.equals("")) {
             rawDob = "0001-01-01";
         }
 

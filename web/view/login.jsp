@@ -31,7 +31,7 @@
         .container {
             background-color: #fff;
             width: 450px;
-            height: 320px;
+            height: 300px;
             margin-top: 25vh;
             margin-left: auto;
             margin-right: auto;
@@ -64,7 +64,7 @@
         .form_horizontal .input_field::placeholder {
             color: #9EC2EC;
             font-size: 15px;
-            text-transform:  capitalize;
+            /*text-transform:  capitalize;*/
         }
 
 
@@ -134,9 +134,9 @@
                 <div class ="form_note" >
                     <span>${message}</span>
                 </div>
-                <ul class ="form_options" >
+<!--                <ul class ="form_options" >
                     <li><a href ="#" >Quên tài khoản/mật khẩu?</li>
-                </ul>
+                </ul>-->
             </form>
         </div>
     </body>

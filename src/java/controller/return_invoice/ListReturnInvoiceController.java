@@ -41,6 +41,28 @@ public class ListReturnInvoiceController extends HttpServlet {
         String searchKey = request.getParameter("searchKey");
         ArrayList<ReturnInvoice> returnInvoices = null;
 
+        String sortBy = request.getParameter("sortBy");
+        String sortType = request.getParameter("sortType");
+
+        String orderBy = "ORDER BY ";
+
+        if (sortBy != null && sortType != null && sortBy != "" && sortType != "") {
+            orderBy += sortBy + " ";
+            if (!sortType.equals("0")) {
+                if (sortType.equals("1")) {
+                    orderBy += "ASC";
+                }
+
+                if (sortType.equals("2")) {
+                    orderBy += "DESC";
+                }
+            }
+        }
+
+        if (orderBy.trim().equals("ORDER BY")) {
+            orderBy += "[Return_Invoice_ID] ASC";
+        }
+
         String rawFrom = request.getParameter("from");
         String rawTo = request.getParameter("to");
 
@@ -59,9 +81,8 @@ public class ListReturnInvoiceController extends HttpServlet {
             statuses = "12";
         }
 
-        System.out.println(from + "->" + to);
-        System.out.println(statuses);
-
+//        System.out.println(from + "->" + to);
+//        System.out.println(statuses);
         int[] status = new int[statuses.length()];
 
         for (int i = 0; i < statuses.length(); i++) {
@@ -92,7 +113,6 @@ public class ListReturnInvoiceController extends HttpServlet {
         }
 
         String track = "Hiển thị ";
-
         int begin = ((pageIndex - 1) * pageSize) + 1;
         int end = 0;
 
@@ -132,7 +152,7 @@ public class ListReturnInvoiceController extends HttpServlet {
             }
         } else {
             returnInvoices = idb.getReturnInvoices(separatedFrom, separatedTo,
-                    status, pageIndex, pageSize);
+                    status, pageIndex, pageSize, orderBy);
         }
         ArrayList<Supplier> suppliers = sdb.getSuppliers();
         ArrayList<Integer> pageSizeOptions = new ArrayList<>();
@@ -150,6 +170,8 @@ public class ListReturnInvoiceController extends HttpServlet {
         request.setAttribute("pageIndex", pageIndex);
         request.setAttribute("totalPage", totalPage);
         request.setAttribute("statuses", statuses);
+        request.setAttribute("sortBy", sortBy);
+        request.setAttribute("sortType", sortType);
 
         request.setAttribute("today", today);
         request.setAttribute("track", track);

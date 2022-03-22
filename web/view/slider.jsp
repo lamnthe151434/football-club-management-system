@@ -27,7 +27,7 @@
                     <li class="links-group-title">Hàng hóa</li>
                     <li onclick="changePage('http://localhost:8080/IEPM/product/list')" class="slider-item"><i class="fa fa fa-cube"></i>Danh mục</li>
                     <li onclick="changePage('http://localhost:8080/IEPM/product/change/price')" class="slider-item"><i class="fa fa-money"></i>Thay đổi giá</li>
-                    <li onclick="" class="slider-item"><i class="fa fa fa-cubes"></i>Kiểm kho</li>
+                    <!--<li onclick="" class="slider-item"><i class="fa fa fa-cubes"></i>Kiểm kho</li>-->
                 </section>
                 <section>
                     <li class="links-group-title">Giao dịch</li>
@@ -40,14 +40,14 @@
                     <li onclick="changePage('http://localhost:8080/IEPM/customer/list')" class="slider-item"><i class="fa fa-user"></i>Khách hàng</li>
                     <li onclick="changePage('http://localhost:8080/IEPM/supplier/list')" class="slider-item"><i class="fa fa-group"></i>Nhà cung cấp</li>
                 </section>
-                <section>
+<!--                <section>
                     <li class="links-group-title">Báo cáo</li>
                     <li onclick="" class="slider-item"><i class="fa fa-pie-chart"></i>Hàng hóa</li>
                     <li onclick="" class="slider-item"><i class="fa fa-dashboard"></i>Bán hàng</li>
                     <li onclick="" class="slider-item"><i class="fa fa-dashboard"></i>Khách hàng</li>
                     <li onclick="" class="slider-item"><i class="fa fa-group"></i>Nhà cung cấp</li>
                     <li onclick="" class="slider-item"><i class="fa fa-dashboard"></i>Tài chính</li>
-                </section>
+                </section>-->
                 <section>
                     <li class="links-group-title">Bán hàng</li>
                     <li onclick="changePage('http://localhost:8080/IEPM/sell')" class="slider-item"><i class="fa fa-pie-chart"></i>Bán hàng</li>

@@ -53,13 +53,16 @@ public class InsertProductController extends BaseAuthenticationController {
         String unit = request.getParameter("unit");
         String rawCategoryID = request.getParameter("category");
         String rawBrandID = request.getParameter("brand");
-        String rawQuantity = request.getParameter("price");
-        String rawCost = request.getParameter("cost");
-        String rawPrice = request.getParameter("price");
+        System.out.println(rawBrandID);
+        String rawQuantity = request.getParameter("quantity");
+        String rawCost = request.getParameter("cost").replace("Â VND", "");
+        rawCost = rawCost.replace(".", "");
+        String rawPrice = request.getParameter("price").replace("Â VND", "");
+        rawPrice = rawPrice.replace(".", "");
         String rawDescription = request.getParameter("description");
 
-        int categoryID = Integer.parseInt(rawCategoryID);
         int brandID = Integer.parseInt(rawBrandID);
+        int categoryID = Integer.parseInt(rawCategoryID);
         int quantity = Integer.parseInt(rawQuantity);
         float cost = Float.parseFloat(rawCost);
         float price = Float.parseFloat(rawPrice);

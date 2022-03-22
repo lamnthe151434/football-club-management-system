@@ -35,17 +35,15 @@
             z-index: 99;
             top: 50vh;
             left: 38.5vh;
-            width: 45vw;
-            height: 20vh;
+            width: 45vh;
+            height: 25vh;
+            border: 1px solid blue;
+            box-shadow: 0px 0px 2px 2px #ccc;
         }
 
         .modal .change-price-modal .modal-content  {
-            margin-top: 25px;
+            margin-top: 20px;
         }
-
-        /*        .header {
-                    margin-bottom: 27px;
-                }*/
 
 
         .container .main-content .top .group-search:nth-of-type(2)  {
@@ -70,8 +68,8 @@
 
 
 
-        .container .main-content .top .group-search .brand .brand-container #brand-name,
-        .container .main-content .top .group-search .category .category-container #category-name{
+        .container .main-content .top .group-search .brand .brand-container #brand-search-name,
+        .container .main-content .top .group-search .category .category-container #category-search-name{
             display: inline-block;
             width: 170px;
             height: 30px;
@@ -202,13 +200,11 @@
         .container .main-content .middle table td:nth-child(4) {
             width: 70px;
         }
-        
+
         .container .main-content .middle table td:nth-child(5) {
-             width: 50px;
+            width: 50px;
         }
-        button {
-            background: #fff;
-        }
+
         .container .main-content .middle table td input {
             padding: 4px;
         }
@@ -253,6 +249,48 @@
             background: red;
         }
 
+        .first, 
+        .second,
+        .third, 
+        .fourth{
+            margin-bottom: 10px;
+        }
+        button {
+            text-align: center;
+
+            padding: 5px;
+            background: #fff;
+            border-radius: 5px;
+        }
+        button:hover {
+            box-sizing: 0px 0px 2px 2px #ccc;;
+        }
+
+        .fourth{
+            text-align: right;
+
+        }
+
+        .fourth button {
+            margin-left: 10px;
+        }
+
+        .expression-sign {
+            background: #fff;
+        }
+        input {
+            padding: 5px;
+        }
+
+        .btn:hover {
+            background: #ccc;
+        }
+
+        .sort-by {
+            cursor: pointer;
+        }
+
+
     </style>
     <body ondblclick="fadeOutMessage()" >
         <div class="header" >
@@ -270,6 +308,8 @@
                 <input type="hidden" value="${brand.brandName}" name="brandName" />
                 <input type="hidden" id="page-index" value="${requestScope.pageIndex}"  name="pageIndex" />
                 <input type="hidden" id="page-size" value="${requestScope.selectedPageSize}"  name="pageSize"  />
+                <input type="hidden" id="sort-by" name="sortBy" value="${requestScope.sortBy}" />
+                <input type="hidden" id="sort-type" name="sortType"  value="${requestScope.sortType}"/>
             </form>
         </div>
         <div id ="container" class ="container" onmousedown="cursorPosition(event)" onmouseup="cursorPosition(event)">
@@ -286,22 +326,20 @@
                             <div class ="category" >
                                 <div class ="category-container">
                                     <span>Nhóm hàng: </span>
-                                    <span id="category-name" onclick="openBox('category-search-box')" >${requestScope.category.categoryName}</span>
-                                    <input id ="category-id" name ="categoryID" type ="hidden"  
+                                    <span id="category-search-name" onclick="openBox('category-search-box')" >${requestScope.category.categoryName}</span>
+                                    <input id ="category-search-id" name ="categoryID" type ="hidden"  
                                            value ="${requestScope.category.categoryID}" />
                                     <div id = "category-search-box">
-                                        <input type ="text" onkeyup="search(this.value, 'category')"  placeholder="Tìm kiếm nhóm hàng"/>
+                                        <input type ="text" onkeyup="search(this.value, 'category-search')"  placeholder="Tìm kiếm nhóm hàng"/>
                                         <div id="category-box" >
                                             <table>
                                                 <tr>
-                                                    <td><span onclick="setValue('-1', 'Tất cả', 'category')" 
+                                                    <td><span onclick="setValue('-1', 'Tất cả', 'category-search')" 
                                                               class ="category-value">Tất cả</span></td>
                                                 </tr>
                                                 <c:forEach var="c" begin="0" end="${categories.size()}" items="${categories}" >
                                                     <tr>
-                                                        <td><span onclick="setValue('${c.categoryID}', '${c.categoryName}', 'category')" class ="category-value">${c.categoryName}</span></td>
-                                                        <td><button class="action" type="button" onclick="edit(${c.categoryID}, 'category')" ><i class="fa fa-pencil" ></i></button></td>
-                                                        <td><button class="action" type ="button" onclick="deleteEntity(${c.categoryID}, 'category')"><i class ="fa fa-trash" ></i> </button></td>
+                                                        <td><span onclick="setValue('${c.categoryID}', '${c.categoryName}', 'category-search')" class ="category-value">${c.categoryName}</span></td>
                                                     </tr>
                                                 </c:forEach>
                                             </table>
@@ -312,22 +350,20 @@
                             <div class ="brand" >
                                 <div class ="brand-container"  >
                                     <span>Thương hiệu: </span>
-                                    <span id="brand-name" onclick="openBox('brand-search-box')" >${requestScope.brand.brandName}</span>
-                                    <input id ="brand-id" name ="brandID" type ="hidden"
+                                    <span id="brand-search-name" onclick="openBox('brand-search-box')" >${requestScope.brand.brandName}</span>
+                                    <input id ="brand-search-id" name ="brandID" type ="hidden"
                                            value ="${requestScope.brand.brandID}" />
                                     <div id ="brand-search-box" >
-                                        <input type ="text" onkeyup="search(this.value, 'brand')" placeholder="Tìm kiếm thương hiệu" />
+                                        <input type ="text" onkeyup="search(this.value, 'brand-search')" placeholder="Tìm kiếm thương hiệu" />
                                         <div id = "brand-box" >
                                             <table >
                                                 <tr>
-                                                    <td><span onclick="setValue('-1', 'Tất cả', 'brand')" 
+                                                    <td><span onclick="setValue('-1', 'Tất cả', 'brand-search')" 
                                                               class ="brand-value">Tất cả</span></td>
                                                 </tr>
                                                 <c:forEach var="b" begin="0" end="${brands.size()}" items="${brands}" >
                                                     <tr>
-                                                        <td class="first-td" ><span onclick="setValue('${b.brandID}', '${b.brandName}', 'brand')" class ="brand-value">${b.brandName}</span></td>
-                                                        <td><button class="action" type="button"  onclick="edit(${b.brandID}, 'brand')" ><i class="fa fa-pencil" ></i></button></td>
-                                                        <td><button class="action" type="button"  onclick="deleteEntity(${b.brandID}, 'brand')"><i class ="fa fa-trash" ></i></button></td>
+                                                        <td class="first-td" ><span onclick="setValue('${b.brandID}', '${b.brandName}', 'brand-search')" class ="brand-value">${b.brandName}</span></td>
                                                     </tr>
                                                 </c:forEach>
                                             </table>
@@ -345,11 +381,67 @@
 
                             <thead>
                                 <tr>
-                                    <td>Mã hàng</td>
-                                    <td>Tên hàng</td>
-                                    <td>Nhóm hàng</td>
-                                    <td>Thương hiệu</td>
-                                    <td>Số lượng</td>
+                                    <td class="sort-by" onclick="sortBy('Product_ID', 0)">
+                                        <span>Mã hàng</span>
+                                        <c:if  test="${requestScope.sortBy == 'Product_ID' 
+                                                       && requestScope.sortType != '0'}">
+                                            <c:if test="${requestScope.sortType == '1'}">
+                                                <i class="fa fa-arrow-up"></i>
+                                            </c:if>
+                                            <c:if test="${requestScope.sortType == '2'}">
+                                                <i class="fa fa-arrow-down"></i>
+                                            </c:if>
+                                        </c:if> 
+                                    </td>
+                                    <td class="sort-by" onclick="sortBy('Product_Name', 1)">
+                                        <span> Tên hàng hóa</span>
+                                        <c:if  test="${requestScope.sortBy == 'Product_Name' 
+                                                       && requestScope.sortType != '0'}">
+                                            <c:if test="${requestScope.sortType == '1'}">
+                                                <i class="fa fa-arrow-up"></i>
+                                            </c:if>
+                                            <c:if test="${requestScope.sortType == '2'}">
+                                                <i class="fa fa-arrow-down"></i>
+                                            </c:if>
+                                        </c:if> 
+                                    </td>
+                                    <td class="sort-by" onclick="sortBy('Category_ID', 2)"> 
+                                        <span>Nhóm hàng</span>
+                                        <c:if  test="${requestScope.sortBy == 'Category_ID' 
+                                                       && requestScope.sortType != '0'}">
+                                            <c:if test="${requestScope.sortType == '1'}">
+                                                <i class="fa fa-arrow-up"></i>
+                                            </c:if>
+                                            <c:if test="${requestScope.sortType == '2'}">
+                                                <i class="fa fa-arrow-down"></i>
+                                            </c:if>
+                                        </c:if> 
+                                    </td>
+                                    <td class="sort-by" onclick="sortBy('Brand_ID', 3)">
+                                        <span>Thương hiệu</span> 
+                                        <c:if  test="${requestScope.sortBy == 'Brand_ID' 
+                                                       && requestScope.sortType != '0'}">
+                                            <c:if test="${requestScope.sortType == '1'}">
+                                                <i class="fa fa-arrow-up"></i>
+                                            </c:if>
+                                            <c:if test="${requestScope.sortType == '2'}">
+                                                <i class="fa fa-arrow-down"></i>
+                                            </c:if>
+                                        </c:if> 
+                                    </td>
+                                    <td class="sort-by" onclick="sortBy('Quantity', 4)">
+                                        <span>Số lượng</span>
+                                        <c:if  test="${requestScope.sortBy == 'Quantity' 
+                                                       && requestScope.sortType != '0'}">
+                                            <c:if test="${requestScope.sortType == '1'}">
+                                                <i class="fa fa-arrow-up"></i>
+                                            </c:if>
+                                            <c:if test="${requestScope.sortType == '2'}">
+                                                <i class="fa fa-arrow-down"></i>
+                                            </c:if>
+                                        </c:if> 
+
+                                    </td>
                                     <td>Giá nhập</td>
                                     <td>Giá bán</td>
                                 </tr>
@@ -363,8 +455,8 @@
                                         <td>${p.category.categoryName}</td>
                                         <td>${p.brand.brandName}</td>
                                         <td>${p.quantity}</td>
-                                        <td><input onblur="editPrice(${p.productID}, this.value, 'cost')" ondblclick="openModal('change-price-modal', ${p.productID}, 'Giá nhập')" type="text" value="${p.cost}"  /></td>
-                                        <td><input onblur="editPrice(${p.productID}, this.value, 'price')" ondblclick="openModal('change-price-modal', ${p.productID}, 'Giá bán')" type="text" value="${p.price}" /> </td>
+                                        <td><input onblur="editPrice(${p.productID}, this.value, 'cost')" ondblclick="openModal('change-price-modal', ${p.productID}, 'cost')" type="number" value="${p.cost}"  /></td>
+                                        <td><input onblur="editPrice(${p.productID}, this.value, 'price')" ondblclick="openModal('change-price-modal', ${p.productID}, 'price')" type="number" value="${p.price}" /> </td>
                                     </tr>
                                 </c:forEach>
                             </tbody>
@@ -411,22 +503,24 @@
                             </div>
                             <div class="second">
                                 <input id="expression-sign" type="hidden" name="expressionSign" value="+" />
-                                <button class="expression-sign" type="button" onclick="setExpressionSign('expression-sign', '+')" >+</button>
-                                <button class="expression-sign" type="button" onclick="setExpressionSign('expression-sign', '-')" >-</button>
-                                <input type="number" name="setPrice" />
+                                <button style="background: rgb(0, 255, 0); color: rgb(255, 255, 255);" class="expression-sign" type="button" onclick="setExpressionSign('expression-sign', '+', 0)" >+</button>
+                                <button style="background: rgb(255, 255, 255);" class="expression-sign" type="button" onclick="setExpressionSign('expression-sign', '-', 1)" >-</button>
+                                <input id="input-price" onkeyup="checkInput('input-price')" type="number" min="0" value="0" name="setPrice" />
+                                <input id="expression-unit" type="hidden" name="expressionUnit" value="VND" />
+                                <button style="background: rgb(0, 255, 0); color: rgb(255, 255, 255);" class ="expression-unit" onclick="setExpressionUnit('expression-unit', 'VND', 0)" type="button"  >VND</button>
+                                <button style="background: rgb(255, 255, 255);" class="expression-unit"  onclick="setExpressionUnit('expression-unit', '%', 1)"type="button" >%</button>
+
                             </div>
                             <div class="third">
-                                <input id="expression-unit" type="hidden" name="expressionUnit" value="%" />
-                                <button class ="expression-unit" onclick="setExpressionUnit('expression-unit', 'VND')" type="button"  >VND</button>
-                                <button class="expression-unit"  onclick="setExpressionUnit('expression-unit', '%')"type="button" >%</button>
+                                <input type="checkbox" name="applyAll" value="1" /> <label>Áp dụng công thức này cho ${requestScope.totalProduct} hàng hóa trong cửa hàng?</label>
+                            </div>
+                            <div class="fourth" >
+                                <button class="btn" style="background: #fff;" type="submit" onclick="submitForm(edit)" >Chấp nhận</button>
+                                <button class="btn" style="background: #fff;" type="button" onclick="closeModal('change-price-modal')" >Bỏ qua</button>
                             </div>
                         </div>
 
-                        <div class="commit-action" >
-                            <input type="checkbox" /> <label>Áp dụng công thức này cho ${products.size()} hàng hóa trong cửa hàng?</label>
-                            <button type="button" onclick="submitForm()" >Chấp nhận</button>
-                            <button type="button" onclick="closeModal('change-price-modal')" >Bỏ qua</button>
-                        </div>
+
                     </form>
                 </div>
             </div>
@@ -438,11 +532,40 @@
     </body>
     <script>
 
-        <c:if test="${requestScope.products.size() >= 10 || requestScope.pageIndex >= 2}" >
-        pagger('pagger',${requestScope.pageIndex},
-            ${requestScope.selectedPageSize},
-            ${requestScope.totalPage}, 2);
+        <c:if test="${status == true}" >
+        generateWarning("Thay đổi giá thành công!");
         </c:if>
+
+         <c:if test="${(requestScope.products.size() >= 10 
+                      || requestScope.pageIndex >= 2) 
+                      && requestScope.totalPage > 1}" >
+        pagger('pagger',${requestScope.pageIndex},
+              ${requestScope.selectedPageSize},
+              ${requestScope.totalPage}, 2);
+        </c:if>
+
+        function sortBy(by, position) {
+            var groupTitle = document.getElementsByClassName("sort-by");
+            var title = groupTitle[position].children;
+            var sortByTitle = document.getElementById("sort-by");
+            var sortType = document.getElementById("sort-type");
+            if (title.length > 1) {
+                var icon = title[1];
+//                alert(icon.className);
+                if (icon.className === "fa fa-arrow-up") {
+                    sortType.value = "2";
+                }
+                if (icon.className === "fa fa-arrow-down") {
+                    sortType.value = "1";
+                }
+                sortByTitle.value = by;
+            } else {
+                sortByTitle.value = by;
+                sortType.value = "1";
+            }
+            submitForm("search-form");
+        }
+
 
         function generateWarning(message) {
             var warningBox = document.getElementById("warning");
@@ -477,39 +600,63 @@
             var y = event.clientY;
             var box = document.getElementById('change-price-modal');
             var top;
-            if (y > 520) {
-                top = (y - 190) + "px";
+            if (x > 1200) {
+                x -= 150;
+            }
+            if (y > 460) {
+                top = (y - 250) + "px";
             } else {
                 top = (y + 20) + "px"
             }
+
+
             var left = (x - 200) + "px";
             box.style.top = top;
             box.style.left = left;
-            //            alert(x + ", " + y);
+//            alert("x = " + x + ",y = " + y);
         }
 
-        function setExpressionSign(id, value) {
+        function setExpressionSign(id, value, position) {
             var type = document.getElementById(id);
             type.value = value;
             var button = document.getElementsByClassName('expression-sign');
-            if (button[0].style.background !== '#ccc') {
-                button[0].style.background = "#ccc";
-                button[1].style.background = "#fff";
-            }
-            if (button[1].style.background !== '#ccc') {
-                button[1].style.background = "#ccc";
-                button[0].style.background = "#fff";
+            var white = "rgb(255, 255, 255)";
+            var green = "rgb(0, 255, 0)";
+            var black = "rgb(0, 0, 0)";
+
+            var other = 0;
+            if (position == 1)
+                other = 0;
+            else
+                other = 1;
+
+            if (button[position].style.background === white) {
+                button[position].style.background = green;
+                button[position].style.color = white;
+                button[other].style.background = white;
+                button[other].style.color = black;
             }
         }
 
-        function setExpressionUnit(id, value) {
+        function setExpressionUnit(id, value, position) {
             var type = document.getElementById(id);
             type.value = value;
-            type.value = value;
             var button = document.getElementsByClassName('expression-unit');
-            if (button[0].style.background !== '#ccc') {
-                button[0].style.background = "#ccc";
-                button[1].style.background = "#fff";
+            var white = "rgb(255, 255, 255)";
+            var green = "rgb(0, 255, 0)";
+            var black = "rgb(0, 0, 0)";
+
+            var other = 0;
+            if (position == 1)
+                other = 0;
+            else
+                other = 1;
+
+            if (button[position].style.background === white) {
+                button[position].style.background = green;
+                button[position].style.color = white;
+                button[other].style.background = white;
+                button[other].style.color = black;
             }
         }
 
@@ -537,6 +684,11 @@
 
             document.getElementById('product-id').value = productId;
             document.getElementById('price-type').value = type;
+
+            if (type === "cost")
+                type = "Giá nhập";
+            else
+                type = "Giá bán";
             document.getElementById('type').innerHTML = type + " mới = ";
         }
 
@@ -561,8 +713,8 @@
         }
 
         function searchProduct() {
-            var category = document.getElementById('category-id');
-            var brand = document.getElementById('brand-id');
+            var category = document.getElementById('category-search-id');
+            var brand = document.getElementById('brand-search-id');
             var categorySearch = document.getElementById('category-search');
             var brandSearch = document.getElementById('brand-search');
             categorySearch.value = category.value;
@@ -576,12 +728,31 @@
             var inputName = document.getElementById(id + '-name');
             inputId.value = idValue;
             inputName.innerHTML = nameValue;
-            if (id === 'brand' || id === 'category') {
-                searchProduct();
-            }
-            closeBox(id + "-search-box");
+            searchProduct();
         }
 
+        function search(value, type) {
+            var boxType = type;
+            type = type.split("-")[0];
+            var url = "../../" + type + "/search?keyword=" + value;
+            url += "&boxType=" + boxType;
+            fetch(url).then(function (response) {
+                return response.text();
+            }).then(function (result) {
+                var box = document.getElementById(type + '-box');
+                box.innerHTML = result;
+            });
+        }
+
+        function checkInput(id) {
+            var input = document.getElementById(id);
+            if (input.value === "") {
+                input.value = "0";
+            }
+            if (input.value.length > 1 && (input.value).charAt(0) === '0') {
+                input.value = (input.value).replace('0', '');
+            }
+        }
 
 
 

@@ -67,15 +67,19 @@ public class SearchProductController extends HttpServlet {
         String result = "";
 
         if (product != null) {
-            result += product.getProductID() + "|";
-            result += product.getProductName() + "|";
-            result += product.getCategory().getCategoryName() + "|";
-            result += product.getBrand().getBrandName() + "|";
-            result += product.getUnit() + "|";
-            result += product.getCost() + "|";
-            result += product.getPrice() + "|";
-            result += product.getDescription() + "|";
-            result += product.getStatus();
+            if (product.getStatus() == 0) {
+
+            } else {
+                result += product.getProductID() + "|";
+                result += product.getProductName() + "|";
+                result += product.getCategory().getCategoryName() + "|";
+                result += product.getBrand().getBrandName() + "|";
+                result += product.getUnit() + "|";
+                result += product.getCost() + "|";
+                result += product.getPrice() + "|";
+                result += product.getDescription() + "|";
+                result += product.getStatus();
+            }
         }
         writer.println(result);
 

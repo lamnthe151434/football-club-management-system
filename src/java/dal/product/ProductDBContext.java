@@ -108,7 +108,8 @@ public class ProductDBContext extends DBContext {
         return products;
     }
 
-    public ArrayList<Product> getProductsByCategory(String searchKey, int categoryID, int pageIndex, int pageSize) {
+    public ArrayList<Product> getProductsByCategory(String searchKey, int categoryID, 
+            int pageIndex, int pageSize, String orderBy) {
         CategoryDBContext cdb = new CategoryDBContext();
         BrandDBContext bdb = new BrandDBContext();
         ArrayList<Product> products = new ArrayList<>();
@@ -123,7 +124,7 @@ public class ProductDBContext extends DBContext {
                     + "      ,[Quantity]\n"
                     + "      ,[Status]\n"
                     + "      ,[Description] FROM \n"
-                    + "(SELECT *, ROW_NUMBER() OVER (ORDER BY [Product_ID] ASC) as row_index FROM [Product] "
+                    + "(SELECT *, ROW_NUMBER() OVER (" + orderBy + ") as row_index FROM [Product] "
                     + " WHERE [Category_ID] = ? AND (product_name like '%" + searchKey
                     + "%' or Cast(product_id as NVARCHAR(50)) like '%" + searchKey
                     + "%') AND [Status] = 1) tb\n"
@@ -158,7 +159,8 @@ public class ProductDBContext extends DBContext {
         return products;
     }
 
-    public ArrayList<Product> getProductsByCategory(int categoryID, int pageIndex, int pageSize) {
+    public ArrayList<Product> getProductsByCategory(int categoryID, int pageIndex, 
+            int pageSize, String orderBy) {
         CategoryDBContext cdb = new CategoryDBContext();
         BrandDBContext bdb = new BrandDBContext();
         ArrayList<Product> products = new ArrayList<>();
@@ -173,7 +175,7 @@ public class ProductDBContext extends DBContext {
                     + "      ,[Quantity]\n"
                     + "      ,[Status]\n"
                     + "      ,[Description] FROM \n"
-                    + "(SELECT *, ROW_NUMBER() OVER (ORDER BY [Product_ID] ASC) as row_index FROM [Product] "
+                    + "(SELECT *, ROW_NUMBER() OVER (" + orderBy + ") as row_index FROM [Product] "
                     + " WHERE [Category_ID] = ? AND [Status] = 1) tb\n"
                     + "WHERE row_index >=(?-1)*?+1 AND row_index <= ?*?";
             PreparedStatement stm = connection.prepareStatement(sql);
@@ -206,7 +208,8 @@ public class ProductDBContext extends DBContext {
         return products;
     }
 
-    public ArrayList<Product> getProductsByBrand(String searchKey, int brandID, int pageIndex, int pageSize) {
+    public ArrayList<Product> getProductsByBrand(String searchKey, int brandID,
+            int pageIndex, int pageSize, String orderBy) {
         CategoryDBContext cdb = new CategoryDBContext();
         BrandDBContext bdb = new BrandDBContext();
         ArrayList<Product> products = new ArrayList<>();
@@ -221,7 +224,7 @@ public class ProductDBContext extends DBContext {
                     + "      ,[Quantity]\n"
                     + "      ,[Status] \n"
                     + "      ,[Description] FROM \n"
-                    + "(SELECT *, ROW_NUMBER() OVER (ORDER BY [Product_ID] ASC) as row_index FROM [Product]"
+                    + "(SELECT *, ROW_NUMBER() OVER (" + orderBy + ") as row_index FROM [Product]"
                     + "WHERE  [Brand_ID] = ? AND (product_name like '%" + searchKey
                     + "%' or Cast(product_id as NVARCHAR(50)) like '%" + searchKey
                     + "%') AND [Status] = 1) tb\n"
@@ -256,7 +259,8 @@ public class ProductDBContext extends DBContext {
         return products;
     }
 
-    public ArrayList<Product> getProductsByBrand(int brandID, int pageIndex, int pageSize) {
+    public ArrayList<Product> getProductsByBrand(int brandID, int pageIndex, 
+            int pageSize, String orderBy) {
         CategoryDBContext cdb = new CategoryDBContext();
         BrandDBContext bdb = new BrandDBContext();
         ArrayList<Product> products = new ArrayList<>();
@@ -271,7 +275,7 @@ public class ProductDBContext extends DBContext {
                     + "      ,[Quantity]\n"
                     + "      ,[Status] \n"
                     + "      ,[Description] FROM \n"
-                    + "(SELECT *, ROW_NUMBER() OVER (ORDER BY [Product_ID] ASC) as row_index FROM [Product]"
+                    + "(SELECT *, ROW_NUMBER() OVER (" + orderBy + ") as row_index FROM [Product]"
                     + "WHERE  [Brand_ID] = ? AND [Status] = 1) tb\n"
                     + "WHERE row_index >=(?-1)*?+1 AND row_index <= ?*? ";
             PreparedStatement stm = connection.prepareStatement(sql);
@@ -304,7 +308,8 @@ public class ProductDBContext extends DBContext {
         return products;
     }
 
-    public ArrayList<Product> getProducts(String searchKey, int pageIndex, int pageSize) {
+    public ArrayList<Product> getProducts(String searchKey, int pageIndex, 
+            int pageSize, String orderBy) {
         ArrayList<Product> products = new ArrayList<>();
         CategoryDBContext cdb = new CategoryDBContext();
         BrandDBContext bdb = new BrandDBContext();
@@ -319,7 +324,7 @@ public class ProductDBContext extends DBContext {
                     + "      ,[Quantity]\n"
                     + "      ,[Status]\n"
                     + "      ,[Description] FROM \n"
-                    + "(SELECT *, ROW_NUMBER() OVER (ORDER BY [Product_ID] ASC) as row_index FROM [Product]"
+                    + "(SELECT *, ROW_NUMBER() OVER (" + orderBy + ") as row_index FROM [Product]"
                     + "WHERE (product_name like '%" + searchKey + "%' or Cast(product_id as NVARCHAR(50)) like '%" + searchKey + "%')\n"
                     + "AND [Status] = 1) tb\n"
                     + "WHERE row_index >=(?-1)*?+1 AND row_index <= ?*?";
@@ -397,6 +402,47 @@ public class ProductDBContext extends DBContext {
         return products;
     }
 
+    public ArrayList<Product> getProducts() {
+        ArrayList<Product> products = new ArrayList<>();
+        CategoryDBContext cdb = new CategoryDBContext();
+        BrandDBContext bdb = new BrandDBContext();
+        try {
+            String sql = "SELECT [Product_ID]\n"
+                    + "      ,[Product_Name]\n"
+                    + "      ,[Brand_ID]\n"
+                    + "      ,[Category_ID]\n"
+                    + "      ,[Cost]\n"
+                    + "      ,[Price]\n"
+                    + "      ,[Unit]\n"
+                    + "      ,[Quantity]\n"
+                    + "      ,[Status]\n"
+                    + "      ,[Description] FROM [Product]\n";
+            PreparedStatement stm = connection.prepareStatement(sql);
+            ResultSet rs = stm.executeQuery();
+            while (rs.next()) {
+                int productID = Integer.parseInt(rs.getString("Product_ID"));
+                String unit = rs.getString("Unit");
+                String productName = rs.getString("Product_Name");
+                int categoryID = Integer.parseInt(rs.getString("Category_ID"));
+                int brandID = Integer.parseInt(rs.getString("Brand_ID"));
+                Category category = cdb.getCategory(categoryID);
+                Brand brand = bdb.getBrand(brandID);
+                float cost = rs.getFloat("Cost");
+                float price = rs.getFloat("Price");
+                int quantity = Integer.parseInt(rs.getString("Quantity"));
+                int status = rs.getInt("Status");
+                String description = rs.getString("Description");
+                Product p = new Product(productID, productName,
+                        category, brand, unit, cost, price, quantity,
+                        status, description);
+                products.add(p);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ProductDBContext.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return products;
+    }
+
     public ArrayList<Product> getProducts(int pageIndex, int pageSize) {
         ArrayList<Product> products = new ArrayList<>();
         CategoryDBContext cdb = new CategoryDBContext();
@@ -444,7 +490,8 @@ public class ProductDBContext extends DBContext {
         return products;
     }
 
-    public ArrayList<Product> getProducts(String searchKey, ArrayList<Integer> criterias, int pageIndex, int pageSize) {
+    public ArrayList<Product> getProducts(String searchKey, ArrayList<Integer> criterias,
+            int pageIndex, int pageSize, String orderBy) {
         ArrayList<Product> products = new ArrayList<>();
         CategoryDBContext cdb = new CategoryDBContext();
         BrandDBContext bdb = new BrandDBContext();
@@ -460,7 +507,7 @@ public class ProductDBContext extends DBContext {
                     + "      ,[Status]\n"
                     + "      ,[Description]\n"
                     + "  FROM \n"
-                    + "  (SELECT *, ROW_NUMBER() OVER (ORDER BY [Product_ID] ASC) as row_index FROM [Product]\n"
+                    + "  (SELECT *, ROW_NUMBER() OVER (" + orderBy + ") as row_index FROM [Product]\n"
                     + " WHERE [Category_ID] = ? AND [Brand_ID] = ? AND (product_name like '%"
                     + searchKey + "%' or Cast(product_id as NVARCHAR(50)) like '%"
                     + searchKey + "%') AND [Status] = 1 ) tb\n"
@@ -604,7 +651,7 @@ public class ProductDBContext extends DBContext {
                     + "      ,[Quantity]\n"
                     + "      ,[Status]\n"
                     + "      ,[Description]\n"
-                    + "FROM [dbo].[Product] WHERE [Product_ID] = ? AND [Status] = 1";
+                    + "FROM [dbo].[Product] WHERE [Product_ID] = ?";
             PreparedStatement stm = connection.prepareStatement(sql);
             stm.setString(1, String.valueOf(productID));
             ResultSet rs = stm.executeQuery();

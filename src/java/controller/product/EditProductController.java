@@ -71,8 +71,10 @@ public class EditProductController extends BaseAuthenticationController {
         String rawCategoryID = request.getParameter("category");
         String rawBrandID = request.getParameter("brand");
         String rawQuantity = request.getParameter("quantity");
-        String rawCost = request.getParameter("cost");
-        String rawPrice = request.getParameter("price");
+        String rawCost = request.getParameter("cost").replace("Â VND", "");
+        rawCost = rawCost.replace(".", "");
+        String rawPrice = request.getParameter("price").replace("Â VND", "");
+        rawPrice = rawPrice.replace(".", "");
         String rawDescription = request.getParameter("description");
 
         int categoryID = Integer.parseInt(rawCategoryID);

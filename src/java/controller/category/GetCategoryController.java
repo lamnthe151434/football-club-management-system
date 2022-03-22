@@ -3,9 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package controller.brand;
+package controller.category;
 
-import dal.product.BrandDBContext;
+import dal.product.CategoryDBContext;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -13,13 +13,13 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import model.product.Brand;
+import model.product.Category;
 
 /**
  *
  * @author ADMIN
  */
-public class InsertBrandController extends HttpServlet {
+public class GetCategoryController extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -33,35 +33,19 @@ public class InsertBrandController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        BrandDBContext db = new BrandDBContext();
-        String rawBrandName = request.getParameter("brandName");
+        CategoryDBContext db = new CategoryDBContext();
+        ArrayList<Category> categories = db.getCategories();
+        String result = "";
         String boxType = request.getParameter("boxType");
 
-        String brandName = rawBrandName;
-        db.insertBrand(brandName);
-
-        ArrayList<Brand> brands = db.getBrands();
         PrintWriter writer = response.getWriter();
-
-        String result = "";
-
         result += "<table>";
-        result += "<tr>";
-        result += "<td><span onclick=\"setValue('-1', 'Tất cả', 'brand')\" \n"
-                + " class =\"brand-value\">Tất cả</span></td>";
-        result += "</tr>";
-        for (int i = brands.size() - 1; i >= 0; i--) {
-            Brand brand = brands.get(i);
+        for (int i = categories.size() - 1; i >= 0; i--) {
+            Category category = categories.get(i);
             result += "<tr>";
             result += "<td>";
-            result += "<span onclick=\"setValue('" + brand.getBrandID() + "','" + brand.getBrandName() + "', '" + boxType + "')\" class =\"product-insert\" >"
-                    + brand.getBrandName() + "</span> <br/>";
-            result += "</td>";
-            result += "<td>";
-            result += "<button type=\"button\" onclick=\"edit('" + brand.getBrandID() + "', '" + boxType + "')\" ><i class=\"fa fa-pencil\" ></i></button>";
-            result += "</td>";
-            result += "<td>";
-            result += "<button type=\"button\" onclick=\"deleteEntity('" + brand.getBrandID() + "', '" + boxType + "')\"><i class=\"fa fa-trash\"></i></button>";
+            result += "<span onclick=\"setValue('" + category.getCategoryID() + "','" + category.getCategoryName() + "', '" + boxType + "')\"  >"
+                    + category.getCategoryName() + "</span>";
             result += "</td>";
             result += "</tr>";
         }

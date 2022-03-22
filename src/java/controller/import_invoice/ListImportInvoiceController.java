@@ -45,27 +45,21 @@ public class ListImportInvoiceController extends HttpServlet {
         String sortType = request.getParameter("sortType");
 
         String orderBy = "ORDER BY ";
-        if (sortBy != null && sortType != null) {
-            if (sortBy != "totalAmount") {
-                if(sortBy != "Date") {
-                    orderBy += sortBy + " ";
-                } else {
-                    orderBy += "(CAST(Date AS VARCHAR(100))) ";
+
+        if (sortBy != null && sortType != null && sortBy != "" && sortType != "") {
+            orderBy += sortBy + " ";
+            if (!sortType.equals("0")) {
+                if (sortType.equals("1")) {
+                    orderBy += "ASC";
                 }
-                if (!sortType.equals("0")) {
-                    if (sortType.equals("1")) {
-                        orderBy += "ASC";
-                    } 
-                    
-                    if(sortType.equals("2")){
-                        orderBy += "DESC";
-                    }
+
+                if (sortType.equals("2")) {
+                    orderBy += "DESC";
                 }
             }
         }
-        System.out.println("(" + sortBy + "),(" + sortType + ")");
-        if (sortBy == null || sortType == null || sortBy == "" || sortType == ""){
-//            System.out.println("IM HERE");
+
+        if (orderBy.trim().equals("ORDER BY")) {
             orderBy += "[Import_Invoice_ID] ASC";
         }
 
@@ -87,9 +81,8 @@ public class ListImportInvoiceController extends HttpServlet {
             statuses = "12";
         }
 
-        System.out.println(from + "->" + to);
-        System.out.println(statuses);
-
+//        System.out.println(from + "->" + to);
+//        System.out.println(statuses);
         int[] status = new int[statuses.length()];
 
         for (int i = 0; i < statuses.length(); i++) {

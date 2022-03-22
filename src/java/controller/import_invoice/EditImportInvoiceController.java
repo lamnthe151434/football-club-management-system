@@ -109,19 +109,29 @@ public class EditImportInvoiceController extends HttpServlet {
             result += "<td><button type =\"button\" onclick=\"deleteFrom('edit'," + (i + 1)
                     + ")\"><i class =\"fa fa-trash\" ></i></button></td>";
             result += "<td>" + (i + 1) + "</td>";
-            result += "<td>" + formatProductId(product.getProductID()) + "</td>";
+            if (product.getStatus() == 0) {
+                result += "<td>" + formatProductId(product.getProductID()) + "(Đã xóa)</td>";
+            } else {
+                result += "<td>" + formatProductId(product.getProductID()) + "</td>";
+            }
             result += "<td>" + product.getProductName() + "<input type=\"hidden\" name =\"id\" value =\""
                     + product.getProductID() + "\"" + "</td>";
             result += "<td>" + product.getUnit() + "</td>";
             result += "<td>" + in.getUnitPrice() + "</td>";
-            result += "<td>";
-            result += "<button type=\"button\" onclick=\"increaseQuantity('edit'," + (i + 1)
-                    + ")\"><i class=\"fa fa-arrow-up\"></i></button>";
-            result += "<input maxlength =\"12\" onkeyup =\"setAmount('edit',this.value," + (i + 1)
-                    + ")\"type=\"text\" name =\"quantity\" value=\"" + in.getQuantity() + "\" />";
-            result += "<button type=\"button\" onclick=\"decreaseQuantity('edit'," + (i + 1)
-                    + ")\"><i class=\"fa fa-arrow-down\"></i></button>";
-            result += "</td>";
+            if (product.getStatus() == 0) {
+                result += "<td>" + product.getQuantity();
+                result += "<input type=\"hidden\" value=\"" +product.getQuantity()  + "\" name =\"quantity\" />";
+                result += "</td>";
+            } else {
+                result += "<td>";
+                result += "<button type=\"button\" onclick=\"increaseQuantity('edit'," + (i + 1)
+                        + ")\"><i class=\"fa fa-arrow-up\"></i></button>";
+                result += "<input maxlength =\"12\" onkeyup =\"setAmount('edit',this.value," + (i + 1)
+                        + ")\"type=\"text\" name =\"quantity\" value=\"" + in.getQuantity() + "\" />";
+                result += "<button type=\"button\" onclick=\"decreaseQuantity('edit'," + (i + 1)
+                        + ")\"><i class=\"fa fa-arrow-down\"></i></button>";
+                result += "</td>";
+            }
             result += "<td>" + in.getTotal() + "</td>";
             result += "</tr>" + "@";
         }
@@ -168,11 +178,13 @@ public class EditImportInvoiceController extends HttpServlet {
         String rawDiscount = request.getParameter("discount");
         String rawMustPay = request.getParameter("mustPay");
         String rawPaid = request.getParameter("paid");
+        String rawTotalAmount = request.getParameter("totalAmount");
         String rawDiscountType = request.getParameter("discountType");
         String rawDescription = request.getParameter("desciption");
         String rawStatus = request.getParameter("status");
 
         float mustPay = Float.parseFloat(rawMustPay);
+        float totalAmount = Float.parseFloat(rawTotalAmount);
         float discount = Float.parseFloat(rawDiscount);
         float paid = Float.parseFloat(rawPaid);
 
@@ -226,7 +238,6 @@ public class EditImportInvoiceController extends HttpServlet {
             }
         }
 
-
         iidb.deleteImportInvoiceDetail(importInvoiceID);
 
         ArrayList<ImportInvoiceDetail> importInvoiceDetails = new ArrayList<>();
@@ -235,7 +246,7 @@ public class EditImportInvoiceController extends HttpServlet {
             int productID = Integer.parseInt(String.valueOf(productIDs[i]));
             int quantity = Integer.parseInt(String.valueOf(quantities[i]));
             Product p = pdb.getProduct(productID);
-            if ((newStatus == (oldStatus + 1)) || (oldStatus == 2 && newStatus ==2)) {
+            if ((newStatus == (oldStatus + 1)) || (oldStatus == 2 && newStatus == 2)) {
                 pdb.increaseQuantity(p, quantity);
             }
             ImportInvoiceDetail ii = new ImportInvoiceDetail(importInvoiceID, p, p.getCost(), quantity);
@@ -243,8 +254,8 @@ public class EditImportInvoiceController extends HttpServlet {
         }
 
         ImportInvoice invoice = new ImportInvoice(importInvoiceID, date, supplier,
-                discount, discountType, paid, importInvoiceDetails, newStatus, description);
-        System.out.println("Size: " + invoice.getInvoices().size());
+                discount, discountType, paid, totalAmount,
+                importInvoiceDetails, newStatus, description);
         iidb.updateImportInvoice(invoice);
 
         response.sendRedirect("list");

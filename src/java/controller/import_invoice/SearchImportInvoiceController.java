@@ -91,7 +91,11 @@ public class SearchImportInvoiceController extends HttpServlet {
             Product product = in.getProduct();
             result += "<tr>";
             result += "<td>" + (i + 1) + "</td>";
-            result += "<td>" + formatProductId(product.getProductID()) + "</td>";
+            if (product.getStatus() == 0) {
+                result += "<td>" + formatProductId(product.getProductID()) + "(Đã xóa)</td>";
+            } else {
+                result += "<td>" + formatProductId(product.getProductID()) + "</td>";
+            }
             result += "<td>" + product.getProductName() + "</td>";
             result += "<td>" + product.getUnit() + "</td>";
             result += "<td>" + in.getUnitPrice() + "</td>";

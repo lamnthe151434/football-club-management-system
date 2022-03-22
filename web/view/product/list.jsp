@@ -139,7 +139,7 @@
 
         {
             top: 23vh;
-            left: 90vh;
+            left: 99vh;
             width: 17vw;
             height: 25vh;
 
@@ -448,19 +448,19 @@
             margin-bottom: 30px;
         }
 
-        .container .main-content .top .group-search .brand .brand-container #brand-search-box #brand-box,
-        .container .main-content .top .group-search .category .category-container #category-search-box #category-box {
+        .container .main-content .top .group-search .brand .brand-container #brand-search-box #brand-list,
+        .container .main-content .top .group-search .category .category-container #category-search-box #category-list {
             overflow: auto;
             height: 165px;
             width: 255px;
 
         }
-        .container .main-content .top .group-search .brand .brand-container #brand-search-box #brand-box{
+        .container .main-content .top .group-search .brand .brand-container #brand-search-box #brand-list{
             width: 260px;
         }
 
-        .container .main-content .top .group-search .brand .brand-container #brand-search-box #brand-box span,
-        .container .main-content .top .group-search .category .category-container #category-search-box #category-box span {
+        .container .main-content .top .group-search .brand .brand-container #brand-search-box #brand-list span,
+        .container .main-content .top .group-search .category .category-container #category-search-box #category-list span {
             cursor: pointer;
             display: inline-block;
             width: 245px;
@@ -469,8 +469,8 @@
             margin: 0px;
         }
 
-        .container .main-content .top .group-search .brand .brand-container #brand-search-box #brand-box span:hover,
-        .container .main-content .top .group-search .category .category-container #category-search-box #category-box span:hover {
+        .container .main-content .top .group-search .brand .brand-container #brand-search-box #brand-list span:hover,
+        .container .main-content .top .group-search .category .category-container #category-search-box #category-list span:hover {
             background: #FFCD1F;
             color: #000;
         }
@@ -532,6 +532,106 @@
             color: #ccc;
         }
 
+        .sort-by {
+            cursor: pointer;
+        }
+
+        .warning {
+            position: absolute;
+            right: 15px;
+            bottom: 15px;
+            z-index: 99;
+        }
+
+        .warning div {
+            width: 250px;
+            background: #C75B56;
+            padding: 15px;
+            /*padding-top: 10px;*/
+            /*padding-bottom: 10px;*/
+            color: #fff;
+            border-radius: 7px;
+            margin-top: 5px;
+            /*animation-name: fadeIn;*/
+            animation-duration: 0.3s;
+            cursor: pointer;
+        }
+        @keyframes fadeIn{
+            from{
+                opacity: 0;
+            } 
+            to {
+                opacity: 1;
+            }
+        }
+        @keyframes fadeOut{
+            from{
+                opacity: 1;
+            } 
+            to {
+                opacity: 0;
+            }
+        }
+        .warning div:hover {
+            box-shadow: 0px 0px 2px 2px grey;
+            background: red;
+        }
+
+        .modal .insert-confirm-modal,
+        .modal .delete-confirm-modal{
+            position: absolute;
+            padding: 15px 35px 15px 35px;
+            border-radius: 5px;
+            background: #fff;
+            transform: scale(0);
+            transition-duration: 0.2s;
+            z-index: 99;
+            top: 0vh;
+            left: 75vh;
+            width: 25vw;
+            height: 12vh;
+            font-size: 17px;
+            box-shadow: 0px 2px 2px #000;
+            padding: 10px 20px 10px 20px;
+            /*border: 0.5px solid blue;*/
+        }
+        .modal .insert-confirm-modal .btn-group,
+        .modal .delete-confirm-modal .btn-group
+
+        {
+            width: 100%;
+            margin-top: 10px;
+            text-align: right;
+        }
+
+        .modal .insert-confirm-modal .btn-group button ,
+        .modal .delete-confirm-modal .btn-group button 
+        {
+            padding: 5px;
+            margin-left: 10px;
+            width: 70px;
+            border: 5px;
+            color: #fff;
+        }
+        .modal .insert-confirm-modal .btn-group button:hover ,
+        .modal .delete-confirm-modal .btn-group button:hover 
+        {
+            box-shadow: 0px 0px 2px 2px #ccc;
+        }
+        .modal .insert-confirm-modal .btn-group button:nth-of-type(1) ,
+        .modal .delete-confirm-modal .btn-group button:nth-of-type(1) 
+        {
+            background: rgb(200, 0, 0);
+        }
+        .modal .insert-confirm-modal .btn-group button:nth-of-type(2),
+        .modal .delete-confirm-modal .btn-group button:nth-of-type(2) {
+
+            background: rgb(0, 200, 0);
+            /*margin-right: 10px;*/
+        }
+
+
+
 
     </style>
     <body>
@@ -551,6 +651,8 @@
                 <input type="hidden" value="${brand.brandName}" name="brandName" />
                 <input type="hidden" id="page-index" value="${requestScope.pageIndex}"  name="pageIndex" />
                 <input type="hidden" id="page-size" value="${requestScope.selectedPageSize}"  name="pageSize"  />
+                <input type="hidden" id="sort-by" name="sortBy" value="${requestScope.sortBy}" />
+                <input type="hidden" id="sort-type" name="sortType"  value="${requestScope.sortType}"/>
             </form>
         </div>
         <div id ="container" class ="container">
@@ -575,7 +677,7 @@
                                            value ="${requestScope.category.categoryID}" />
                                     <div id = "category-search-box">
                                         <input type ="text" onkeyup="search(this.value, 'category')"  placeholder="Tìm kiếm nhóm hàng"/>
-                                        <div id="category-box" >
+                                        <div id="category-list" >
                                             <table>
                                                 <tr>
                                                     <td><span onclick="setValue('-1', 'Tất cả', 'category')" 
@@ -602,7 +704,7 @@
                                            value ="${requestScope.brand.brandID}" />
                                     <div id ="brand-search-box" >
                                         <input type ="text" onkeyup="search(this.value, 'brand')" placeholder="Tìm kiếm thương hiệu" />
-                                        <div id = "brand-box" >
+                                        <div id = "brand-list" >
                                             <table >
                                                 <tr>
                                                     <td><span onclick="setValue('-1', 'Tất cả', 'brand')" 
@@ -629,22 +731,113 @@
                         <table>
                             <thead>
                                 <tr>
-                                    <td>Mã hàng</td>
-                                    <td>Tên hàng hóa</td>
-                                    <td>Nhóm hàng</td>
-                                    <td>Thương hiệu</td>
-                                    <td>Đơn vị</td>
-                                    <td>Giá vốn</td>
-                                    <td>Giá bán</td>
-                                    <td>Số lượng</td>
-                                    <td>Hành động</td>
+                                    <td class="sort-by" onclick="sortBy('Product_ID', 0)">
+                                        <span>Mã hàng</span>
+                                        <c:if  test="${requestScope.sortBy == 'Product_ID' 
+                                                       && requestScope.sortType != '0'}">
+                                            <c:if test="${requestScope.sortType == '1'}">
+                                                <i class="fa fa-arrow-up"></i>
+                                            </c:if>
+                                            <c:if test="${requestScope.sortType == '2'}">
+                                                <i class="fa fa-arrow-down"></i>
+                                            </c:if>
+                                        </c:if> 
+                                    </td>
+                                    <td class="sort-by" onclick="sortBy('Product_Name', 1)">
+                                        <span> Tên hàng hóa</span>
+                                        <c:if  test="${requestScope.sortBy == 'Product_Name' 
+                                                       && requestScope.sortType != '0'}">
+                                            <c:if test="${requestScope.sortType == '1'}">
+                                                <i class="fa fa-arrow-up"></i>
+                                            </c:if>
+                                            <c:if test="${requestScope.sortType == '2'}">
+                                                <i class="fa fa-arrow-down"></i>
+                                            </c:if>
+                                        </c:if> 
+                                    </td>
+                                    <td class="sort-by" onclick="sortBy('Category_ID', 2)"> 
+                                        <span>Nhóm hàng</span>
+                                        <c:if  test="${requestScope.sortBy == 'Category_ID' 
+                                                       && requestScope.sortType != '0'}">
+                                            <c:if test="${requestScope.sortType == '1'}">
+                                                <i class="fa fa-arrow-up"></i>
+                                            </c:if>
+                                            <c:if test="${requestScope.sortType == '2'}">
+                                                <i class="fa fa-arrow-down"></i>
+                                            </c:if>
+                                        </c:if> 
+                                    </td>
+                                    <td class="sort-by" onclick="sortBy('Brand_ID', 3)">
+                                        <span>Thương hiệu</span> 
+                                        <c:if  test="${requestScope.sortBy == 'Brand_ID' 
+                                                       && requestScope.sortType != '0'}">
+                                            <c:if test="${requestScope.sortType == '1'}">
+                                                <i class="fa fa-arrow-up"></i>
+                                            </c:if>
+                                            <c:if test="${requestScope.sortType == '2'}">
+                                                <i class="fa fa-arrow-down"></i>
+                                            </c:if>
+                                        </c:if> 
+                                    </td>
+                                    <td class="sort-by" onclick="sortBy('Unit', 4)">
+                                        <span>Đơn vị</span>  
+                                        <c:if  test="${requestScope.sortBy == 'Unit' 
+                                                       && requestScope.sortType != '0'}">
+                                            <c:if test="${requestScope.sortType == '1'}">
+                                                <i class="fa fa-arrow-up"></i>
+                                            </c:if>
+                                            <c:if test="${requestScope.sortType == '2'}">
+                                                <i class="fa fa-arrow-down"></i>
+                                            </c:if>
+                                        </c:if> 
+                                    </td>
+                                    <td class="sort-by" onclick="sortBy('Cost', 5)">
+                                        <span>Giá vốn</span>
+                                        <c:if  test="${requestScope.sortBy == 'Cost' 
+                                                       && requestScope.sortType != '0'}">
+                                            <c:if test="${requestScope.sortType == '1'}">
+                                                <i class="fa fa-arrow-up"></i>
+                                            </c:if>
+                                            <c:if test="${requestScope.sortType == '2'}">
+                                                <i class="fa fa-arrow-down"></i>
+                                            </c:if>
+                                        </c:if> 
+
+                                    </td>
+                                    <td class="sort-by" onclick="sortBy('Price', 6)">
+                                        <span>Giá bán</span>
+                                        <c:if  test="${requestScope.sortBy == 'Price' 
+                                                       && requestScope.sortType != '0'}">
+                                            <c:if test="${requestScope.sortType == '1'}">
+                                                <i class="fa fa-arrow-up"></i>
+                                            </c:if>
+                                            <c:if test="${requestScope.sortType == '2'}">
+                                                <i class="fa fa-arrow-down"></i>
+                                            </c:if>
+                                        </c:if> 
+                                    </td>
+                                    <td class="sort-by" onclick="sortBy('Quantity', 7)">
+                                        <span>Số lượng</span>
+                                        <c:if  test="${requestScope.sortBy == 'Quantity' 
+                                                       && requestScope.sortType != '0'}">
+                                            <c:if test="${requestScope.sortType == '1'}">
+                                                <i class="fa fa-arrow-up"></i>
+                                            </c:if>
+                                            <c:if test="${requestScope.sortType == '2'}">
+                                                <i class="fa fa-arrow-down"></i>
+                                            </c:if>
+                                        </c:if> 
+
+                                    </td>
+                                    <td class="sort-by">
+                                        <span>Hành động</span>
+                                    </td>
                                 </tr>
                             </thead>
                             <tbody id="product-list">
                                 <c:set var="products" value="${requestScope.products}"  ></c:set>
                                 <c:forEach var="p" begin="0" end="${products.size()}" items="${products}" >
                                     <tr>
-                                        <!--<td><input type ="checkbox" /></td>-->
                                         <td>${p.productID}</td>
                                         <td>${p.productName}</td>
                                         <td>${p.category.categoryName}</td>
@@ -696,7 +889,7 @@
                     <h2 class ="title" >Thêm hàng hóa</h2>
                     <button class ="btn-close" onclick="closeModal('product-insert-modal')" >x</button>
                 </div>
-                <form action="insert" method="POST" >
+                <form id="product-insert-form" action="insert" method="POST" >
                     <div class ="modal-content" >
                         <table>
                             <tr>
@@ -710,7 +903,7 @@
                             <tr>
                                 <td class="table-title">Nhóm hàng</td>
                                 <td>
-                                    <input id ="category-insert-id" class ="product-insert" type ="hidden" name ="category" >
+                                    <input id ="category-insert-id" class ="product-insert" type ="hidden" name="category" >
                                     <span id ="category-insert-name"  onclick="openBox('category-insert-container')" >---Chọn nhóm hàng---</span>
                                 </td>
                                 <td>
@@ -720,7 +913,7 @@
                             <tr>
                                 <td class="table-title">Thương hiệu</td>
                                 <td>
-                                    <input id ="brand-insert-id" class ="product-insert" type ="hidden" name ="brand"  >
+                                    <input id ="brand-insert-id" class ="product-insert" type ="hidden" name="brand" >
                                     <span  onclick="openBox('brand-insert-container')"  id ="brand-insert-name" >---Chọn thương hiệu---</span>
                                 </td>
                                 <td>
@@ -731,12 +924,17 @@
                             <tr>
                                 <td class="table-title">Giá vốn</td>
                                 <td colspan="2"> 
-                                    <input type ="text" name ="cost" class ="product-insert"  />
+                                    <input onfocus="enableEnterNumber('insert-cost')"  
+                                           onkeyup="validateInputNumber(this.value, 'insert-cost')" 
+                                           onblur="convertToVND('insert-cost')"
+                                           id="insert-cost" type ="number" name ="cost" class ="product-insert" value="0" />
                                 </td>
                             </tr>
                             <tr>
                                 <td class="table-title">Giá bán</td>
-                                <td colspan="2">  <input type ="text" name ="price" class ="product-insert" /></td>
+                                <td colspan="2">  <input onfocus="enableEnterNumber('insert-price')"  
+                                                         onkeyup="validateInputNumber(this.value, 'insert-price')" 
+                                                         onblur="convertToVND('insert-price')" id="insert-price" type ="number" name ="price" class ="product-insert" value="0" /></td>
                             </tr>
                             <tr>
                                 <td class="table-title">Đơn vị</td>
@@ -744,7 +942,7 @@
                             </tr>
                             <tr>
                                 <td class="table-title">Tồn kho</td>
-                                <td colspan="2"> <input type ="text" name ="quantity" class ="product-insert"  /></td>
+                                <td colspan="2"> <input onkeyup="validateInputNumber(this.value, 'insert-quantity')" id="insert-quantity" value="0" type ="number" name ="quantity" class ="product-insert"  /></td>
                             </tr>
                             <tr>
                                 <td class="table-title">Mô tả</td>
@@ -752,9 +950,9 @@
                             </tr>
                             <tr>
                                 <td colspan="3">
-                                    <button type="button" onclick="setSubmitType('0')"  >Đóng</button>
-                                    <button type="submit" onclick="setSubmitType('0')" >Lưu</button>
-                                    <button type="submit" onclick="setSubmitType('1')" >Lưu và thêm mới</button>
+                                    <button type="button" onclick="setSubmitType('0', true, 'product-insert')"  >Đóng</button>
+                                    <button type="button" onclick="setSubmitType('0', false, 'product-insert')" >Lưu</button>
+                                    <button type="button" onclick="setSubmitType('1', false, 'product-insert')" >Lưu và thêm mới</button>
                                     <input type="hidden" name="submitType" id="submit-type" value="${requestScope.submitType}" />
                                 </td>
 
@@ -800,7 +998,7 @@
                     <h2 class ="title" >Chỉnh sửa thông tin hàng hóa</h2>
                     <button class ="btn-close" onclick="closeModal('product-edit-modal')" >x</button>
                 </div>
-                <form action="edit" method="POST" >
+                <form id="product-edit-form" action="edit" method="POST" >
                     <div class ="modal-content" >
                         <table>
                             <tr>
@@ -812,12 +1010,16 @@
                             </tr>
                             <tr>
                                 <td class="table-title">Tên hàng</td>
-                                <td colspan="2"><input type ="text" name ="productName" class ="product-edit"  /></td>
+                                <td colspan="2">
+                                    <input type ="text" name ="productName" class ="product-edit"  />
+                                    <input type ="hidden" class ="check-exist"  />
+                                </td>
                             </tr>
                             <tr>
                                 <td class="table-title">Nhóm hàng</td>
                                 <td>
-                                    <input id ="category-edit-id" class ="product-edit" type ="hidden" name ="category" >
+                                    <input id ="category-edit-id" class ="product-edit" type ="hidden" name="category" >
+                                    <input type ="hidden" class ="check-exist"  />
                                     <span id ="category-edit-name"  class ="product-edit" onclick="openBox('category-edit-container')" >---Chọn nhóm hàng---</span>
                                 </td>
                                 <td>
@@ -828,6 +1030,7 @@
                                 <td class="table-title">Thương hiệu</td>
                                 <td>
                                     <input id ="brand-edit-id" class ="product-edit" type ="hidden" name ="brand"  >
+                                    <input type ="hidden" class ="check-exist"  />
                                     <span  onclick="openBox('brand-edit-container')"  class ="product-edit" id ="brand-edit-name" >---Chọn thương hiệu---</span>
                                 </td>
                                 <td>
@@ -838,12 +1041,17 @@
                             <tr>
                                 <td class="table-title">Giá vốn</td>
                                 <td colspan="2"> 
-                                    <input type ="text" name ="cost" class ="product-edit"  />
+                                    <input onfocus="enableEnterNumber('edit-cost')"  
+                                           onkeyup="validateInputNumber(this.value, 'edit-cost')" 
+                                           onblur="convertToVND('edit-cost')"
+                                           id="edit-cost" type ="number" name ="cost" class ="product-edit"  />
                                 </td>
                             </tr>
                             <tr>
                                 <td class="table-title">Giá bán</td>
-                                <td colspan="2">  <input type ="text" name ="price" class ="product-edit" /></td>
+                                <td colspan="2">  <input onfocus="enableEnterNumber('edit-price')"  
+                                                         onkeyup="validateInputNumber(this.value, 'edit-price')" 
+                                                         onblur="convertToVND('edit-price')" id="edit-price" type ="number" name ="price"  class ="product-edit" /></td>
                             </tr>
                             <tr>
                                 <td class="table-title">Đơn vị</td>
@@ -851,7 +1059,7 @@
                             </tr>
                             <tr>
                                 <td class="table-title">Tồn kho</td>
-                                <td colspan="2"> <input type ="text" name ="quantity" class ="product-edit"  /></td>
+                                <td colspan="2"> <input onkeyup="validateInputNumber(this.value, 'edit-quantity')"  id="edit-quantity" type ="text" name ="quantity" class ="product-edit"  /></td>
                             </tr>
                             <tr>
                                 <td class="table-title">Mô tả</td>
@@ -860,13 +1068,17 @@
                             <tr>
                                 <td colspan="3">
                                     <button type="button" onclick="closeModal('product-edit-modal')"  >Đóng</button>
-                                    <button type="submit" >Lưu</button>
+                                    <button type="button" onclick="
+                                            checkInputProduct('product-edit');
+                                            var status = document.getElementById('status').value;
+                                            if (status === 'true') {
+                                                submitForm('product-edit-form');
+                                            }
+                                            " >Lưu</button>
                                 </td>
                             </tr>
                         </table>
-                        <div class ="btn-group" 
-                             <input type="submit" value ="Save" class ="product-input" />
-                        </div>
+
                         <div id ="category-edit-container" >
                             <input class ="product-edit" type ="text" onkeyup="search(this.value, 'category-edit')" placeholder="Tìm kiếm nhóm hàng" />
                             <div id = "category-edit-list" >
@@ -911,22 +1123,19 @@
                         <input type ="text" placeholder="Tên nhóm hàng" name ="categoryName" id ="category-insert-input" class ="category-insert" /> 
                     </form>
                 </div>
-                <div onclick="insert('category-insert')" class ="btn-save"> <span>Save</span></div>
+                <div onclick="checkInputBraCate('category-insert')" class ="btn-save"> <span>Lưu</span></div>
             </div>
         </div>
         <div class ="modal" > 
-            <div class ="brand-insert-modal" id ="brand-insert-modal" >
+            <div  class ="brand-insert-modal" id ="brand-insert-modal" >
                 <div class ="modal-header" >
                     <h2 class ="title" >Thêm thương hiệu</h2>
                     <button class ="btn-close" onclick="closeModal('brand-insert-modal')" >x</button>
                 </div>
                 <div class ="modal-content" > 
-                    <form action="" >
-                        <!--<span>Brand Name</span>-->
-                        <input type ="text" placeholder="Tên thương hiệu" name ="brandName" id ="brand-insert-input"  class ="brand-insert" /> 
-                    </form>
+                    <input type ="text" placeholder="Tên thương hiệu" name ="brandName" id ="brand-insert-input"  class ="brand-insert" /> 
                 </div>
-                <div onclick="insert('brand-insert')" class ="btn-save"> <span>Save</span></div>
+                <div onclick="checkInputBraCate('brand-insert')" class ="btn-save"> <span>Lưu</span></div>
             </div>
         </div>
         <div class ="modal"  > 
@@ -936,44 +1145,163 @@
                     <button class ="btn-close" onclick="closeModal('category-edit-modal')" >x</button>
                 </div>
                 <div class ="modal-content" >  
-                    <form action="../category/edit" method="POST" >
+                    <form id="category-edit-form" action="../category/edit" method="POST" >
                         <!--<span>Category Name</span>-->
                         <input type ="hidden" name ="categoryID"  class ="category-edit" /> 
-                        <input type ="text" placeholder="Tên nhóm hàng" name ="categoryName" class ="category-edit" /> 
-                        <button>Save</button>
+                        <input type ="hidden" id ="current-category" /> 
+                        <input type ="text" placeholder="Tên nhóm hàng" name ="categoryName" id ="category-edit-input" class ="category-edit" /> 
+                        <!--<button>Lưu</button>-->
+                        <button class="btn-save" type="button" onclick="checkInputBraCate('category-edit')" >Lưu</button>
                     </form>
+
                 </div>
             </div>
         </div>
         <div class ="modal" > 
-            <div class ="brand-edit-modal" id ="brand-edit-modal" >
+            <div  class ="brand-edit-modal" id ="brand-edit-modal" >
                 <div class ="modal-header" >
                     <h2 class ="title" >Sửa thương hiệu</h2>
                     <button class ="btn-close" onclick="closeModal('brand-edit-modal')" >x</button>
                 </div>
                 <div class ="modal-content" > 
-                    <form action="../brand/edit" method="POST" >
+                    <form id="brand-edit-form" action="../brand/edit" method="POST" >
                         <!--<span>Brand Name</span>-->
                         <input type ="hidden"  name ="brandID" class ="brand-edit" /> 
-                        <input type ="text" placeholder="Tên thương hiệu" name ="brandName"  class ="brand-edit" /> 
-                        <button>Save</button>
+                        <input type ="hidden" id ="current-brand" /> 
+                        <input type ="text" placeholder="Tên thương hiệu" name ="brandName"  class ="brand-edit" id ="brand-edit-input" /> 
+                        <button class="btn-save" type="button" onclick="checkInputBraCate('brand-edit')" >Lưu</button>
                     </form>
+
                 </div>
             </div>
         </div>
+        <div class ="modal" style="background: rgba(0, 0, 0, 0)">
+            <div class ="delete-confirm-modal" id ="delete-confirm-modal" >
+                <div class ="modal-content" >
+                    <p id="message-title"></p>
+                    <div class="btn-group" >
+                        <button type="button" onclick="closeModal('delete-confirm-modal')" >Đóng</button>
+                        <button id="button-delete" type="button"  >Tiếp tục</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="warning" id="warning" onclick="fadeOutMessage()" >
+
+        </div>
+        <div>
+            <input type="hidden" id="status" />
+        </div>
         <script>
-            <c:if test="${requestScope.products.size() >= 10 || requestScope.pageIndex >= 2}" >
+            <c:if test="${(requestScope.products.size() >= 10 
+                          || requestScope.pageIndex >= 2) 
+                          && requestScope.totalPage > 1}" >
             pagger('pagger',${requestScope.pageIndex},
-                ${requestScope.selectedPageSize},
-                ${requestScope.totalPage}, 2);
+                  ${requestScope.selectedPageSize},
+                  ${requestScope.totalPage}, 2);
             </c:if>
 
             <c:if test="${requestScope.submitType.equals('1')}">
             openModal('product-insert-modal');
             </c:if>
 
+            var productList = document.getElementById('product-list');
+            var trs = productList.children;
+            for (var i = 0, max = trs.length; i < max; i++) {
+                tds = trs[i].children;
+                tds[0].innerHTML = formatProductId(tds[0].innerHTML);
+            }
 
-            function setSubmitType(newType) {
+
+
+            function sortBy(by, position) {
+                var groupTitle = document.getElementsByClassName("sort-by");
+                var title = groupTitle[position].children;
+                var sortByTitle = document.getElementById("sort-by");
+                var sortType = document.getElementById("sort-type");
+                if (title.length > 1) {
+                    var icon = title[1];
+//                alert(icon.className);
+                    if (icon.className === "fa fa-arrow-up") {
+                        sortType.value = "2";
+                    }
+                    if (icon.className === "fa fa-arrow-down") {
+                        sortType.value = "1";
+                    }
+                    sortByTitle.value = by;
+                } else {
+                    sortByTitle.value = by;
+                    sortType.value = "1";
+                }
+                submitForm("search-form");
+            }
+
+            function generateWarning(message) {
+                var warningBox = document.getElementById("warning");
+                var number = warningBox.length;
+
+                var messageBox = "<div onclick=\"fadeOutSpecificMessage('message" + number + "')\" id=\"message" + number + "\" >" + message + "</div>"
+
+                warningBox.innerHTML += messageBox;
+
+                var box = document.getElementById("message" + number);
+                box.style.animationName = "fadeIn";
+            }
+
+            function fadeOutSpecificMessage(id) {
+                var mesage = document.getElementById(id);
+                mesage.style.animationName = "fadeOut";
+            }
+
+            function fadeOutMessage() {
+                var warningBox = document.getElementById("warning");
+                var messageBox = warningBox.children;
+                for (var i = messageBox.length - 1, max = 0; i >= max; i--) {
+                    warningBox.removeChild(messageBox[i]);
+                }
+
+            }
+
+
+            function checkInputBraCate(id) {
+                var type = id.split("-")[0];
+                var action = id.split("-")[1];
+                var url = "";
+                var title = "";
+                if (type === 'category') {
+                    var category = document.getElementById(type + "-" + action + "-input");
+                    var currentCategory = document.getElementById('current-category');
+                    url += "../category/check/input?categoryName=" + category.value;
+                    url += "&currentCategoryName=" + currentCategory.value;
+                    title = "Nhóm hàng";
+//                    alert(url);
+                }
+
+                if (type === 'brand') {
+                    var brand = document.getElementById(type + "-" + action + "-input");
+                    var currentBrand = document.getElementById('current-brand');
+                    url += "../brand/check/input?brandName=" + brand.value;
+                    url += "&currentBrandName=" + currentBrand.value;
+                    title = "Thương hiệu";
+                }
+
+                fetch(url).then(function (response) {
+                    return response.text();
+                }).then(function (result) {
+                    if (result === "false") {
+                        generateWarning(title + " đã tồn tại");
+                    } else {
+                        if (id === 'category-edit' || id === 'brand-edit') {
+                            submitForm(id + "-form");
+                        } else {
+                            insert(id);
+                        }
+                    }
+//                    alert(result);
+                });
+            }
+
+            function setSubmitType(newType, close, inputType) {
                 var submitType = document.getElementById('submit-type');
                 var currentType = submitType.value;
                 if (currentType === "1" && newType === "0") {
@@ -981,11 +1309,82 @@
                     fetch(url);
                 }
 
-                if (newType === "0") {
-                    closeModal('product-insert-modal');
+                if (newType === "0" && close) {
+                    closeModal(inputType + '-modal');
+                } else {
+                    checkInputProduct(inputType);
+                    var status = document.getElementById('status').value;
+                    if (status === "true") {
+                        submitType.value = newType;
+                        submitForm(inputType + '-form');
+                    }
                 }
-                submitType.value = newType;
             }
+
+
+
+            function checkInputProduct(id) {
+                var input = document.getElementsByClassName(id);
+//                alert(input[0]);
+                var url = "";
+                if (id == "product-insert") {
+                    if (input[0].value == "") {
+                        generateWarning("Chưa nhập tên hàng");
+                        return;
+                    }
+                    if (input[1].value == "") {
+                        generateWarning("Chưa chọn nhóm hàng");
+                        return;
+                    }
+                    if (input[2].value == "") {
+                        generateWarning("Chưa chọn thương hiệu");
+                        return;
+                    }
+                    url += "check/input?productName=" + input[0].value;
+                    url += "&categoryID=" + input[1].value;
+                    url += "&brandID=" + input[2].value;
+                } else {
+                    var checkExist = document.getElementsByClassName('check-exist');
+                    var currentProductName = checkExist[0].value;
+                    var currentCategory = checkExist[1].value;
+                    var currentBrand = checkExist[2].value;
+
+                    if (input[2].value == "") {
+                        generateWarning("Chưa nhập tên hàng hóa");
+                        return;
+                    }
+                    if (input[3].value == "") {
+                        generateWarning("Chưa chọn nhóm hàng");
+                        return;
+                    }
+                    if (input[5].value == "") {
+                        generateWarning("Chưa chọn thương hiệu");
+                        return;
+                    }
+                    url += "check/input?productName=" + input[2].value;
+                    url += "&categoryID=" + input[3].value;
+                    url += "&brandID=" + input[5].value;
+                    url += "&currentProductName=" + currentProductName;
+                    url += "&currentCategoryID=" + currentCategory;
+                    url += "&currentBrandID=" + currentBrand;
+
+                }
+
+                fetch(url).then(function (response) {
+                    return response.text();
+                }).then(function (result) {
+                    var status = document.getElementById('status');
+                    if (result === "false") {
+                        generateWarning("Sản phẩm đã tồn tại");
+                        status.value = false;
+                    } else {
+                        status.value = true;
+                    }
+                });
+            }
+
+
+
             function openModal(id) {
                 var box = document.getElementById(id);
                 var modal = document.getElementsByClassName('modal');
@@ -1001,6 +1400,8 @@
                     modal[4].style.transform = "scale(1)";
                 } else if (id === 'brand-edit-modal') {
                     modal[5].style.transform = "scale(1)";
+                } else if (id === 'delete-confirm-modal') {
+                    modal[6].style.transform = "scale(1)";
                 }
                 box.style.transform = "scale(1)";
 
@@ -1025,6 +1426,8 @@
                     modal[4].style.transform = "scale(0)";
                 } else if (id === 'brand-edit-modal') {
                     modal[5].style.transform = "scale(0)";
+                } else if (id === 'delete-confirm-modal') {
+                    modal[6].style.transform = "scale(0)";
                 }
 
                 box.style.transform = "scale(0)";
@@ -1053,10 +1456,10 @@
                 var entity = type.split('-')[0];
                 var url = "../" + entity + "/search?keyword=" + value;
                 url += "&boxType=";
-                if (type === (entity + "-insert")) {
-                    url += entity + "-insert";
-                } else {
+                if (type === entity) {
                     url += entity;
+                } else {
+                    url += type;
                 }
                 fetch(url).then(function (response) {
                     return response.text();
@@ -1064,6 +1467,31 @@
                     var box = document.getElementById(type + '-list');
                     box.innerHTML = result;
                 });
+            }
+
+            function enableEnterNumber(id) {
+                var inp = document.getElementById(id);
+                inp.type = "number";
+            }
+
+            function convertToVND(id) {
+                var inp = document.getElementById(id);
+                inp.type = "text";
+                var x = parseInt(inp.value);
+                x = x.toLocaleString('it-IT', {style: 'currency', currency: 'VND'});
+                inp.value = x;
+            }
+
+            function validateInputNumber(inValue, id) {
+                var inp = document.getElementById(id);
+                if (inValue === "" || inValue == null) {
+                    inp.value = "0";
+                }
+
+                if (inValue.length > 1 && inValue.charAt(0) == '0') {
+                    inp.value = inValue.replace('0', '');
+                }
+
             }
 
             function searchProduct() {
@@ -1081,39 +1509,61 @@
 
             // insert category or brand
             function insert(type) {
-                alert(insertType);
+                var boxType = "";
                 var inputType = type + "-input";
                 var inputBar = document.getElementById(inputType);
                 var input = inputBar.value;
-                //            inputBar.value = "";
+
+                var modal = document.getElementsByClassName("modal");
                 type = type.split('-')[0];
+                if (modal[0].style.transform == "scale(1)") {
+                    boxType = type + "-insert";
+                } else if (modal[1].style.transform == "scale(1)") {
+                    boxType = type + "-edit";
+                } else {
+                    boxType = type;
+                }
+
+
                 if (input === "") {
                     return;
                 }
                 var url = "../" + type + "/insert?" + type + "Name=" + input;
-                url += "&boxType=";
-                if (insertType === ("product")) {
-                    url += type + "-insert";
-                } else {
-                    url += type;
-                }
-                alert(url);
+                url += "&boxType=" + boxType;
+
                 fetch(url)
                         .then(function (response) {
                             return response.text();
                         })
                         .then(function (result) {
-
-                            document.getElementById(type + '-box').innerHTML = result;
-                            document.getElementById(type + '-insert-box').innerHTML = result;
-                            document.getElementById(type + '-edit-box').innerHTML = result;
-                            document.getElementById(type + '-box').innerHTML = result;
+                            document.getElementById(type + '-list').innerHTML = result;
+                            geCatBraValue(type);
                         });
 
 
                 var id = type + "-insert-modal";
                 closeModal(id);
             }
+
+            function geCatBraValue(type) {
+                var url1 = "../" + type + "/get?boxType=" + type + "-edit";
+                fetch(url1)
+                        .then(function (response) {
+                            return response.text();
+                        })
+                        .then(function (result) {
+                            document.getElementById(type + '-edit-list').innerHTML = result;
+                        });
+                var url2 = "../" + type + "/get?boxType=" + type + "-insert";
+                fetch(url2)
+                        .then(function (response) {
+                            return response.text();
+                        })
+                        .then(function (result) {
+                            document.getElementById(type + '-insert-list').innerHTML = result;
+                        });
+            }
+
 
             // edit product
             function edit(id, type) {
@@ -1129,12 +1579,13 @@
                     url = "../brand/edit?id=" + id;
                 }
                 var edit = document.getElementsByClassName(type + "-edit");
+                var checkExist = document.getElementsByClassName('check-exist');
                 fetch(url).then(function (response) {
                     return response.text();
                 }).then(function (result) {
                     var arr = result.split('|');
                     if (type === 'product') {
-                        edit[0].innerHTML = arr[0];
+                        edit[0].innerHTML = formatProductId(arr[0]);
                         edit[1].value = arr[1];
                         edit[2].value = arr[2];
                         edit[3].value = arr[3];
@@ -1146,10 +1597,23 @@
                         edit[9].value = arr[9];
                         edit[10].value = arr[10];
                         edit[11].value = arr[11];
+
+                        checkExist[0].value = arr[2];
+                        checkExist[1].value = arr[3];
+                        checkExist[2].value = arr[5];
                     } else {
                         edit[0].value = arr[0];
                         for (var i = 1, max = arr.length; i < max; i++) {
                             edit[i].value = arr[i];
+                        }
+
+                        if (type === 'brand') {
+                            var currentBrand = document.getElementById('current-brand');
+                            currentBrand.value = arr[1];
+                        }
+                        if (type === 'category') {
+                            var currentCategory = document.getElementById('current-category');
+                            currentCategory.value = arr[1];
                         }
                     }
 
@@ -1157,23 +1621,49 @@
                 openModal(type + '-edit-modal');
             }
 
-            function deleteEntity(id, type) {
-                var anwser = confirm("Do you want to delete " + type + " with id =" + id);
-                var url;
-                if (anwser) {
-                    if (type === 'product') {
-                        url = "delete?id=" + id;
-                    }
-                    if (type === 'category') {
-                        url = "../category/delete?id=" + id;
-                    }
-                    if (type === 'brand') {
-                        url = "../brand/delete?id=" + id;
-                    }
+            function formatProductId(id) {
 
-                    window.location.href = url;
+                var len = (id + "").length;
+                switch (len) {
+                    case 1:
+                        return "P0000" + id;
+                    case 2:
+                        return "P000" + id;
+                    case 3:
+                        return "P00" + id;
+                    case 4:
+                        return "P0" + id;
+                    default:
+                        return "P" + id;
                 }
+
             }
+
+            function deleteEntity(id, type) {
+                var messageTitle = document.getElementById('message-title');
+                var buttonDelete = document.getElementById('button-delete');
+                var url;
+                if (type === 'product') {
+                    messageTitle.innerHTML = "Tất cả thông tin liên quan đến mặt hàng sẽ bị xóa, bạn có muốn tiếp tục?";
+                    url = "delete?id=" + id;
+                }
+                if (type === 'category') {
+                    messageTitle.innerHTML = "Tất cả thông tin liên quan đến nhóm hàng sẽ bị xóa, bạn có muốn tiếp tục?";
+                    url = "../category/delete?id=" + id;
+                }
+                if (type === 'brand') {
+                    messageTitle.innerHTML = "Tất cả thông tin liên quan đến thương hiệu sẽ bị xóa, bạn có muốn tiếp tục?";
+                    url = "../brand/delete?id=" + id;
+                }
+                buttonDelete.onclick = function () {
+                    window.location.href = url;
+                };
+                openModal("delete-confirm-modal");
+            }
+
+//            function commitedDelete(url) {
+//                window.location.href = url;
+//            }
             function setSearchKey(searchKey, searchBar) {
 //                alert(value);
                 var key = document.getElementById(searchKey);
@@ -1204,6 +1694,7 @@
                 var inputName = document.getElementById(id + '-name');
                 inputId.value = idValue;
                 inputName.innerHTML = nameValue;
+
                 if (id === 'brand' || id === 'category') {
                     searchProduct();
                 }

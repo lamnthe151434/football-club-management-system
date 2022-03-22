@@ -19,7 +19,7 @@ import model.product.Brand;
  *
  * @author ADMIN
  */
-public class InsertBrandController extends HttpServlet {
+public class CheckInputBrand extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -32,42 +32,27 @@ public class InsertBrandController extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        BrandDBContext db = new BrandDBContext();
-        String rawBrandName = request.getParameter("brandName");
-        String boxType = request.getParameter("boxType");
+         response.setContentType("text/html;charset=UTF-8");
+        BrandDBContext cdb = new BrandDBContext();
+        ArrayList<Brand> brands = cdb.getBrands();
 
-        String brandName = rawBrandName;
-        db.insertBrand(brandName);
-
-        ArrayList<Brand> brands = db.getBrands();
+        String brandName = request.getParameter("brandName");
+        String currentBrandName = request.getParameter("currentBrandName");
+        boolean status = true;
+        for (int i = 0; i < brands.size(); i++) {
+            Brand c = brands.get(i);
+            if (c.getBrandName().equals(brandName)) {
+                if(c.getBrandName().equals(currentBrandName)) {
+                    continue;
+                } else {
+                    status = false;
+                    break;
+                }
+            }
+        }
         PrintWriter writer = response.getWriter();
 
-        String result = "";
-
-        result += "<table>";
-        result += "<tr>";
-        result += "<td><span onclick=\"setValue('-1', 'Tất cả', 'brand')\" \n"
-                + " class =\"brand-value\">Tất cả</span></td>";
-        result += "</tr>";
-        for (int i = brands.size() - 1; i >= 0; i--) {
-            Brand brand = brands.get(i);
-            result += "<tr>";
-            result += "<td>";
-            result += "<span onclick=\"setValue('" + brand.getBrandID() + "','" + brand.getBrandName() + "', '" + boxType + "')\" class =\"product-insert\" >"
-                    + brand.getBrandName() + "</span> <br/>";
-            result += "</td>";
-            result += "<td>";
-            result += "<button type=\"button\" onclick=\"edit('" + brand.getBrandID() + "', '" + boxType + "')\" ><i class=\"fa fa-pencil\" ></i></button>";
-            result += "</td>";
-            result += "<td>";
-            result += "<button type=\"button\" onclick=\"deleteEntity('" + brand.getBrandID() + "', '" + boxType + "')\"><i class=\"fa fa-trash\"></i></button>";
-            result += "</td>";
-            result += "</tr>";
-        }
-        result += "<table>";
-
-        writer.println(result);
+        writer.print(status);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

@@ -46,24 +46,22 @@ public class InsertCategoryController extends BaseAuthenticationController {
 
         PrintWriter writer = response.getWriter();
         result += "<table>";
-        if (boxType.equals("category")) {
-            result += "<tr>";
-            result += "<td><span onclick=\"setValue('-1', 'Tất cả', 'category')\" \n"
-                    + " class =\"category-value\">Tất cả</span></td>";
-            result += "</tr>";
-        }
+        result += "<tr>";
+        result += "<td><span onclick=\"setValue('-1', 'Tất cả', 'category')\" \n"
+                + " class =\"category-value\">Tất cả</span></td>";
+        result += "</tr>";
         for (int i = categories.size() - 1; i >= 0; i--) {
             Category category = categories.get(i);
             result += "<tr>";
             result += "<td>";
-            result += "<span onclick=\"setValue('" + category.getCategoryID() + "','" + category.getCategoryName() + "', '" + boxType + "')\" class =\"product-insert\" >"
-                    + category.getCategoryName() + "</span> <br/>";
+            result += "<span onclick=\"setValue('" + category.getCategoryID() + "','" + category.getCategoryName() + "', '" + boxType + "')\"  >"
+                    + category.getCategoryName() + "</span>";
             result += "</td>";
             result += "<td>";
-            result += "<button onclick=\"edit(" + category.getCategoryID() + ", '" + boxType + "')\" >Edit</button>";
+            result += "<button type=\"button\" onclick=\"edit('" + category.getCategoryID() + "', '" + boxType + "')\" ><i class=\"fa fa-pencil\" ></i></button>";
             result += "</td>";
             result += "<td>";
-            result += "<button onclick=\"deleteEntity(" + category.getCategoryID() + ", '" + boxType + "')\">Delete</button>";
+            result += "<button type=\"button\" onclick=\"deleteEntity('" + category.getCategoryID() + "', '" + boxType + "')\"><i class=\"fa fa-trash\" ></i></button>";
             result += "</td>";
             result += "</tr>";
         }

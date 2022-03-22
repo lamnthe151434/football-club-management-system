@@ -64,8 +64,17 @@ public class SearchBrandController extends HttpServlet {
                 result += "<span onclick=\"setValue('" + brand.getBrandID() + "','" + brand.getBrandName() + "', '" + boxType + "')\" class =\"product-insert\" >"
                         + brand.getBrandName() + "</span> <br/>";
                 result += "</td>";
+                if (boxType.equals("brand")) {
+                result += "<td>";
+                result += "<button type=\"button\" onclick=\"edit(" + brand.getBrandID() + ", '" + boxType + "')\" ><i class=\"fa fa-pencil\" ></i></button>";
+                result += "</td>";
+                result += "<td>";
+                result += "<button type=\"button\" onclick=\"deleteEntity(" + brand.getBrandID() + ", '" + boxType + "')\"><i class=\"fa fa-trash\"></i></button>";
+                result += "</td>";
+            }
                 result += "</tr>";
             }
+            
         }
         if (status == false) {
             result += "<tr><td><span class=\"no-result\" >Không tìm thấy thương hiệu!</span></td></tr>";

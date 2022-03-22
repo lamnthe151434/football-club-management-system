@@ -3,9 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package controller.supplier;
+package controller.customer;
 
-import dal.partner.SupplierDBContext;
+import dal.partner.CustomerDBContext;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -13,13 +13,13 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import model.partner.Supplier;
+import model.partner.Customer;
 
 /**
  *
  * @author ADMIN
  */
-public class SearchSupplierController extends HttpServlet {
+public class SearchCustomerController extends HttpServlet {
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
@@ -38,24 +38,24 @@ public class SearchSupplierController extends HttpServlet {
         String searchKeyword = request.getParameter("keyword");
         String type = request.getParameter("type");
 
-        SupplierDBContext sdb = new SupplierDBContext();
-        ArrayList<Supplier> suppliers = sdb.getSuppliers();
+        CustomerDBContext sdb = new CustomerDBContext();
+        ArrayList<Customer> customers = sdb.getCustomers();
         boolean status = false;
         PrintWriter writer = response.getWriter();
         String result = "";
         result += "<table>";
-        for (int i = suppliers.size() - 1; i >= 0; i--) {
-            Supplier supplier = suppliers.get(i);
-            if (supplier.getSupplierName().contains(searchKeyword)) {
+        for (int i = customers.size() - 1; i >= 0; i--) {
+            Customer customer = customers.get(i);
+            if (customer.getCustomerName().contains(searchKeyword)) {
                 String hyperSign = "";
-                if (supplier.getPhone().length() > 0) {
+                if (customer.getPhone().length() > 0) {
                     hyperSign = "-";
                 }
                 status = true;
                 result += "<tr>";
                 result += "<td>";
-                result += "<span onclick=\"setValue('" + supplier.getSupplierID() + "','" + supplier.getSupplierName() + "','" + type + "')\"  >"
-                        + supplier.getSupplierName() + " " + hyperSign + " " + supplier.getPhone() + "</span> <br/>";
+                result += "<span onclick=\"setValue('" + customer.getCustomerID() + "','" + customer.getCustomerName() + "','" + type + "')\"  >"
+                        + customer.getCustomerName() + " " + hyperSign + " " + customer.getPhone() + "</span> <br/>";
                 result += "</td>";
                 result += "</tr>";
             }

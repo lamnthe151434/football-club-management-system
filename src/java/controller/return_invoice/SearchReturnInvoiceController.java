@@ -26,32 +26,6 @@ import model.transaction.ReturnInvoiceDetail;
  */
 public class SearchReturnInvoiceController extends HttpServlet {
 
-    /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet SearchReturnInvoiceController</title>");
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet SearchReturnInvoiceController at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
-        }
-    }
-
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
@@ -64,17 +38,16 @@ public class SearchReturnInvoiceController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
         response.setContentType("text/html;charset=UTF-8");
-        ReturnInvoiceDBContext rdb = new ReturnInvoiceDBContext();
+        ReturnInvoiceDBContext iidb = new ReturnInvoiceDBContext();
         int id = Integer.parseInt(request.getParameter("id"));
 
-        ReturnInvoice importInvoice = rdb.getReturnInvoice(id);
-        String description = importInvoice.getDescription();
+        ReturnInvoice returnInvoice = iidb.getReturnInvoice(id);
+        String description = returnInvoice.getDescription();
         if (description == null) {
             description = "";
         }
-        int statusNumber = importInvoice.getStatus();
+        int statusNumber = returnInvoice.getStatus();
 
         String status = "";
         if (statusNumber == 0) {
@@ -86,21 +59,43 @@ public class SearchReturnInvoiceController extends HttpServlet {
         if (statusNumber == 2) {
             status = "Đã trả hàng nhập";
         }
-        String result = "";
         PrintWriter writer = response.getWriter();
-        result += importInvoice.getReturnInvoiceID() + "|";
-        result += importInvoice.getDate() + "|";
-        result += importInvoice.getSupplier().getSupplierName() + "|";
-        result += importInvoice.getTotal() + "|";
+
+        int discountType = 1;
+        String discountUnit = "";
+        if (returnInvoice.isDiscountType()) {
+            discountType = 1;
+            discountUnit = "VND";
+        } else {
+            discountType = 0;
+            discountUnit = "%";
+        }
+
+        String result = "";
+        result += returnInvoice.getReturnInvoiceID() + "|";
         result += status + "|";
+        result += returnInvoice.getDate() + "|";
+        result += returnInvoice.getSupplier().getSupplierName() + "|";
+        result += returnInvoice.getSupplier().getSupplierID() + "|";
+        result += returnInvoice.getTotal() + "|";
+        result += returnInvoice.getDiscount() + " " + discountUnit + "|";
+        result += returnInvoice.getMustPay() + "|";
+        result += returnInvoice.getPaid() + "|";
+        result += returnInvoice.getReturnMoney() + "|";
         result += description + "|";
-        ArrayList<ReturnInvoiceDetail> invoices = importInvoice.getInvoices();
+        result += discountType + "|";
+
+        ArrayList<ReturnInvoiceDetail> invoices = returnInvoice.getInvoices();
         for (int i = 0; i < invoices.size(); i++) {
             ReturnInvoiceDetail in = invoices.get(i);
             Product product = in.getProduct();
             result += "<tr>";
             result += "<td>" + (i + 1) + "</td>";
-            result += "<td>" + product.getProductID() + "</td>";
+            if (product.getStatus() == 0) {
+                result += "<td>" + formatProductId(product.getProductID()) + "(Đã xóa)</td>";
+            } else {
+                result += "<td>" + formatProductId(product.getProductID()) + "</td>";
+            }
             result += "<td>" + product.getProductName() + "</td>";
             result += "<td>" + product.getUnit() + "</td>";
             result += "<td>" + in.getUnitPrice() + "</td>";
@@ -108,10 +103,26 @@ public class SearchReturnInvoiceController extends HttpServlet {
             result += "<td>" + in.getTotal() + "</td>";
             result += "</tr>";
         }
-        result += "|";
 
-        String[] separeated = result.split("|");
         writer.println(result);
+
+    }
+
+    public String formatProductId(int id) {
+        String idStr = String.valueOf(id);
+        int len = idStr.length();
+        switch (len) {
+            case 1:
+                return "P0000" + id;
+            case 2:
+                return "P000" + id;
+            case 3:
+                return "P00" + id;
+            case 4:
+                return "P0" + id;
+            default:
+                return "P0000" + id;
+        }
 
     }
 
@@ -131,12 +142,12 @@ public class SearchReturnInvoiceController extends HttpServlet {
         ArrayList<ReturnInvoice> invoices = new ArrayList<>();
 
         if (searchKey != null || !searchKey.equals("")) {
-            int importInvoiceID = Integer.parseInt(searchKey);
+            int returnInvoiceID = Integer.parseInt(searchKey);
 
             ReturnInvoiceDBContext idb = new ReturnInvoiceDBContext();
 
-            ReturnInvoice importInvoice = idb.getReturnInvoice(importInvoiceID);
-            invoices.add(importInvoice);
+            ReturnInvoice returnInvoice = idb.getReturnInvoice(returnInvoiceID);
+            invoices.add(returnInvoice);
         }
         SupplierDBContext sdb = new SupplierDBContext();
         ArrayList<Supplier> suppliers = sdb.getSuppliers();

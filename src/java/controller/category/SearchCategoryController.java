@@ -62,8 +62,16 @@ public class SearchCategoryController extends HttpServlet {
                 result += "<tr>";
                 result += "<td>";
                 result += "<span onclick=\"setValue('" + category.getCategoryID() + "','" + category.getCategoryName() + "', '" + boxType + "')\" class =\"product-insert\" >"
-                        + category.getCategoryName() + "</span> <br/>";
+                        + category.getCategoryName() + "</span>";
                 result += "</td>";
+                if (boxType.equals("category")) {
+                    result += "<td>";
+                    result += "<button type=\"button\" onclick=\"edit("+ category.getCategoryID() +  ",'" + boxType + "')\"><i class=\"fa fa-pencil\" ></i></button>";
+                    result += "</td>";
+                    result += "<td>";
+                    result += "<button type=\"button\" onclick=\"deleteEntity(" + category.getCategoryID() + ", '" + boxType + "')\"><i class=\"fa fa-trash\" ></i></button>";
+                    result += "</td>";
+                }
                 result += "</tr>";
             }
         }

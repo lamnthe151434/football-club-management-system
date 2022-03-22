@@ -3,9 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package controller.brand;
+package controller.product;
 
-import dal.product.BrandDBContext;
+import dal.product.ProductDBContext;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -13,13 +13,13 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import model.product.Brand;
+import model.product.Product;
 
 /**
  *
  * @author ADMIN
  */
-public class InsertBrandController extends HttpServlet {
+public class CheckInputProduct extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -33,41 +33,45 @@ public class InsertBrandController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        BrandDBContext db = new BrandDBContext();
-        String rawBrandName = request.getParameter("brandName");
-        String boxType = request.getParameter("boxType");
+        String productName = request.getParameter("productName");
+        int categoryID = Integer.parseInt(request.getParameter("categoryID"));
+        int brandID = Integer.parseInt(request.getParameter("brandID"));
 
-        String brandName = rawBrandName;
-        db.insertBrand(brandName);
+        String currentProductName = request.getParameter("currentProductName");
+        String rawCurCategoryID = request.getParameter("currentCategoryID");
+        String rawCurBrandID = request.getParameter("currentBrandID");
 
-        ArrayList<Brand> brands = db.getBrands();
+        boolean flag = true;
+        int currentCategoryID = 0, currentBrandID = 0;
+        if (rawCurCategoryID != null && rawCurBrandID != null) {
+            currentCategoryID = Integer.parseInt(rawCurCategoryID);
+            currentBrandID = Integer.parseInt(rawCurBrandID);
+            flag = false;
+        }
+
+        ProductDBContext pdb = new ProductDBContext();
+        ArrayList<Product> products = pdb.getProducts();
+
         PrintWriter writer = response.getWriter();
 
-        String result = "";
-
-        result += "<table>";
-        result += "<tr>";
-        result += "<td><span onclick=\"setValue('-1', 'Tất cả', 'brand')\" \n"
-                + " class =\"brand-value\">Tất cả</span></td>";
-        result += "</tr>";
-        for (int i = brands.size() - 1; i >= 0; i--) {
-            Brand brand = brands.get(i);
-            result += "<tr>";
-            result += "<td>";
-            result += "<span onclick=\"setValue('" + brand.getBrandID() + "','" + brand.getBrandName() + "', '" + boxType + "')\" class =\"product-insert\" >"
-                    + brand.getBrandName() + "</span> <br/>";
-            result += "</td>";
-            result += "<td>";
-            result += "<button type=\"button\" onclick=\"edit('" + brand.getBrandID() + "', '" + boxType + "')\" ><i class=\"fa fa-pencil\" ></i></button>";
-            result += "</td>";
-            result += "<td>";
-            result += "<button type=\"button\" onclick=\"deleteEntity('" + brand.getBrandID() + "', '" + boxType + "')\"><i class=\"fa fa-trash\"></i></button>";
-            result += "</td>";
-            result += "</tr>";
+        boolean status = true;
+        for (int i = 0; i < products.size(); i++) {
+            Product p = products.get(i);
+            if (p.getProductName().equals(productName)
+                    && p.getCategory().getCategoryID() == categoryID
+                    && p.getBrand().getBrandID() == brandID) {
+                if (p.getProductName().equals(currentProductName)
+                        && p.getCategory().getCategoryID() == currentCategoryID
+                        && p.getBrand().getBrandID() == currentBrandID) {
+                    continue;
+                } else {
+                    status = false;
+                    break;
+                }
+            }
         }
-        result += "<table>";
 
-        writer.println(result);
+        writer.print(status);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

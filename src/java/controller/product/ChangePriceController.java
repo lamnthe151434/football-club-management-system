@@ -39,7 +39,26 @@ public class ChangePriceController extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         BrandDBContext bdb = new BrandDBContext();
         CategoryDBContext cdb = new CategoryDBContext();
+        String sortBy = request.getParameter("sortBy");
+        String sortType = request.getParameter("sortType");
 
+        String orderBy = "ORDER BY ";
+
+        if (sortBy != null && sortType != null && sortBy != "" && sortType != "") {
+            orderBy += sortBy + " ";
+            if (!sortType.equals("0")) {
+                if (sortType.equals("1")) {
+                    orderBy += "ASC";
+                }
+                if (sortType.equals("2")) {
+                    orderBy += "DESC";
+                }
+            }
+        }
+
+        if (orderBy.trim().equals("ORDER BY")) {
+            orderBy += "[Product_ID] ASC";
+        }
         String rawBrandID = request.getParameter("brandID");
         String rawCategoryID = request.getParameter("categoryID");
         String searchKey = request.getParameter("searchKey");
@@ -61,7 +80,7 @@ public class ChangePriceController extends HttpServlet {
 
         Brand b = bdb.getBrand(brandID);
         Category c = cdb.getCategory(categoryID);
-
+        System.out.println(sortBy);
         if (categoryID == -1) {
             categoryName = "Tất cả";
         } else {
@@ -141,18 +160,20 @@ public class ChangePriceController extends HttpServlet {
         ArrayList<Product> products = new ArrayList<>();
 
         if (brandID == -1 && categoryID == -1) {
-            products = pdb.getProducts(searchKey, pageIndex, pageSize);
+            products = pdb.getProducts(searchKey, pageIndex, pageSize, orderBy);
         } else {
             if (brandID == -1) {
-                products = pdb.getProductsByCategory(searchKey, categoryID, pageIndex, pageSize);
+                products = pdb.getProductsByCategory(searchKey, categoryID, pageIndex, pageSize, orderBy);
             }
             if (categoryID == -1) {
-                products = pdb.getProductsByBrand(searchKey, brandID, pageIndex, pageSize);
+                products = pdb.getProductsByBrand(searchKey, brandID, pageIndex, pageSize, orderBy);
             }
             if (categoryID != -1 && brandID != -1) {
-                products = pdb.getProducts(searchKey, criterias, pageIndex, pageSize);
+                products = pdb.getProducts(searchKey, criterias, pageIndex, pageSize, orderBy);
             }
         }
+
+        int totalProduct = pdb.getTotalRecord();
 
         ArrayList<Integer> pageSizeOptions = new ArrayList<>();
         pageSizeOptions.add(10);
@@ -169,6 +190,9 @@ public class ChangePriceController extends HttpServlet {
         request.setAttribute("pageIndex", pageIndex);
         request.setAttribute("totalPage", totalPage);
         request.setAttribute("track", track);
+        request.setAttribute("totalProduct", totalProduct);
+        request.setAttribute("sortBy", sortBy);
+        request.setAttribute("sortType", sortType);
 
         request.setAttribute("category", category);
         request.setAttribute("brand", brand);
@@ -204,6 +228,7 @@ public class ChangePriceController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        response.setContentType("text/html;charset=UTF-8");
         ProductDBContext pdb = new ProductDBContext();
         String priceType = request.getParameter("priceType");
         String baseType = request.getParameter("baseType");
@@ -211,46 +236,58 @@ public class ChangePriceController extends HttpServlet {
         String expressionUnit = request.getParameter("expressionUnit");
         String rawSetPrice = request.getParameter("setPrice");
 
+        String applyAll = request.getParameter("applyAll");
+        ArrayList<Product> products = new ArrayList<>();
         if (priceType != null) {
-            float setPrice = Float.parseFloat(rawSetPrice);
-            int productID = Integer.parseInt(request.getParameter("productID"));
-            Product product = pdb.getProduct(productID);
-            System.out.println(setPrice);
-
-            float basePrice = 0;
-            float newPrice = 0;
-
-            if ("cost".equals(baseType)) {
-                basePrice = product.getCost();
-
-            }
-            if ("price".equals(baseType)) {
-                basePrice = product.getPrice();
-            }
-
-            if ("+".equals(expressionSign)) {
-                if ("VND".equals(expressionUnit)) {
-                    newPrice = basePrice + setPrice;
-                } else {
-                    newPrice = basePrice + (basePrice * (setPrice / 100));
-                }
+            if (applyAll == null) {
+                int productID = Integer.parseInt(request.getParameter("productID"));
+                Product product = pdb.getProduct(productID);
+                products.add(product);
             } else {
-                if ("VND".equals(expressionUnit)) {
-                    newPrice = basePrice - setPrice;
-                } else {
-                    newPrice = basePrice - (basePrice * (setPrice / 100));
+                products = pdb.getProducts();
+            }
+
+            for (Product product : products) {
+                float setPrice = Float.parseFloat(rawSetPrice);
+
+                System.out.println(setPrice);
+
+                float basePrice = 0;
+                float newPrice = 0;
+
+                if ("cost".equals(baseType)) {
+                    basePrice = product.getCost();
+
                 }
-            }
+                if ("price".equals(baseType)) {
+                    basePrice = product.getPrice();
+                }
 
-            if ("cost".equals(priceType)) {
-                product.setCost(newPrice);
-            }
+                if ("+".equals(expressionSign)) {
+                    if ("VND".equals(expressionUnit)) {
+                        newPrice = basePrice + setPrice;
+                    } else {
+                        newPrice = basePrice + (basePrice * (setPrice / 100));
+                    }
+                } else {
+                    if ("VND".equals(expressionUnit)) {
+                        newPrice = basePrice - setPrice;
+                    } else {
+                        newPrice = basePrice - (basePrice * (setPrice / 100));
+                    }
+                }
 
-            if ("price".equals(priceType)) {
-                product.setPrice(newPrice);
-            }
+                if ("cost".equals(priceType)) {
+                    product.setCost(newPrice);
+                }
 
-            pdb.updateProduct(product);
+                if ("price".equals(priceType)) {
+                    product.setPrice(newPrice);
+                }
+
+                pdb.updateProduct(product);
+            }
+            request.setAttribute("status", true);
 
         }
         processRequest(request, response);

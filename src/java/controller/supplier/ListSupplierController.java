@@ -38,6 +38,30 @@ public class ListSupplierController extends HttpServlet {
 
         HttpSession session = request.getSession();
         String submitType = String.valueOf(session.getAttribute("submitType"));
+        String searchKey = request.getParameter("searchKey");
+        if (searchKey == null) {
+            searchKey = "";
+        }
+        String sortBy = request.getParameter("sortBy");
+        String sortType = request.getParameter("sortType");
+
+        String orderBy = "ORDER BY ";
+
+        if (sortBy != null && sortType != null && sortBy != "" && sortType != "") {
+            orderBy += sortBy + " ";
+            if (!sortType.equals("0")) {
+                if (sortType.equals("1")) {
+                    orderBy += "ASC";
+                }
+                if (sortType.equals("2")) {
+                    orderBy += "DESC";
+                }
+            }
+        }
+
+        if (orderBy.trim().equals("ORDER BY")) {
+            orderBy += "[Supplier_ID] ASC";
+        }
 
         String rawPageIndex = request.getParameter("pageIndex");
         if (rawPageIndex == null) {
@@ -50,7 +74,7 @@ public class ListSupplierController extends HttpServlet {
 
         int pageIndex = Integer.parseInt(rawPageIndex);
         int pageSize = Integer.parseInt(rawPageSize);
-        ArrayList<Supplier> suppliers = sdb.getSuppliers(pageIndex, pageSize);
+        ArrayList<Supplier> suppliers = sdb.getSuppliers(pageIndex, pageSize, searchKey, orderBy);
 
         int totalRecord = sdb.getTotalRecord();
 //        System.out.println(totalRecord);
@@ -97,6 +121,9 @@ public class ListSupplierController extends HttpServlet {
         request.setAttribute("suppliers", suppliers);
         request.setAttribute("track", track);
         request.setAttribute("submitType", submitType);
+        request.setAttribute("sortBy", sortBy);
+        request.setAttribute("sortType", sortType);
+        request.setAttribute("searchKey", searchKey);
 
         request.getRequestDispatcher("../view/supplier/list.jsp").forward(request, response);
     }

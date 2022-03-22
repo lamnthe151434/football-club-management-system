@@ -52,7 +52,7 @@ public class CustomerDBContext extends DBContext {
         return customers;
     }
 
-    public ArrayList<Customer> getCustomers(int pageIndex, int pageSize) {
+    public ArrayList<Customer> getCustomers(int pageIndex, int pageSize, String searchKey, String orderBy) {
         ArrayList<Customer> customers = new ArrayList<>();
         try {
             String sql = "SELECT [Customer_ID]\n"
@@ -62,8 +62,12 @@ public class CustomerDBContext extends DBContext {
                     + "      ,[DOB]\n"
                     + "      ,[Gender]\n"
                     + "      ,[Description] FROM\n"
-                    + " (SELECT *, ROW_NUMBER() OVER (ORDER BY [Customer_ID] ASC) as row_index FROM [Customer]) tb\n"
+                    + " (SELECT *, ROW_NUMBER() OVER (" + orderBy+ ") as row_index FROM [Customer]\n"
+                    + " WHERE [Customer_Name] like '%" + searchKey
+                    + "%' OR Cast(Customer_ID as NVARCHAR(50)) like '%" + searchKey
+                    + "%') tb\n"
                     + "  WHERE row_index >=(?-1)*?+1 AND row_index <= ?*?";
+            System.out.println(sql);
             PreparedStatement stm = connection.prepareStatement(sql);
             stm.setInt(1, pageIndex);
             stm.setInt(2, pageSize);
@@ -131,7 +135,7 @@ public class CustomerDBContext extends DBContext {
                     + "           ,[Description])\n"
                     + "     VALUES\n"
                     + "           (?,?,?,?,?,?)";
-            connection.setAutoCommit(false);
+//            connection.setAutoCommit(false);
             stm = connection.prepareStatement(sql);
             stm.setString(1, customer.getCustomerName());
             stm.setString(2, customer.getAddress());
@@ -143,17 +147,17 @@ public class CustomerDBContext extends DBContext {
         } catch (SQLException ex) {
             Logger.getLogger(CustomerDBContext.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
-            try {
-                if (stm != null) {
-                    stm.close();
-                }
-                connection.setAutoCommit(true);
-                if (connection != null) {
-                    connection.close();
-                }
-            } catch (SQLException ex) {
-                Logger.getLogger(CustomerDBContext.class.getName()).log(Level.SEVERE, null, ex);
-            }
+//            try {
+//                if (stm != null) {
+//                    stm.close();
+//                }
+//                connection.setAutoCommit(true);
+//                if (connection != null) {
+//                    connection.close();
+//                }
+//            } catch (SQLException ex) {
+//                Logger.getLogger(CustomerDBContext.class.getName()).log(Level.SEVERE, null, ex);
+//            }
 
         }
     }

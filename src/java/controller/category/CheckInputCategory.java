@@ -3,9 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package controller.brand;
+package controller.category;
 
-import dal.product.BrandDBContext;
+import dal.product.CategoryDBContext;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -13,13 +13,13 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import model.product.Brand;
+import model.product.Category;
 
 /**
  *
  * @author ADMIN
  */
-public class InsertBrandController extends HttpServlet {
+public class CheckInputCategory extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -33,41 +33,27 @@ public class InsertBrandController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        BrandDBContext db = new BrandDBContext();
-        String rawBrandName = request.getParameter("brandName");
-        String boxType = request.getParameter("boxType");
+        CategoryDBContext cdb = new CategoryDBContext();
+        ArrayList<Category> categories = cdb.getCategories();
 
-        String brandName = rawBrandName;
-        db.insertBrand(brandName);
-
-        ArrayList<Brand> brands = db.getBrands();
+        String categoryName = request.getParameter("categoryName");
+        String currentCategoryName = request.getParameter("currentCategoryName");
+        System.out.println(categoryName + ", " + currentCategoryName);
+        boolean status = true;
+        for (int i = 0; i < categories.size(); i++) {
+            Category c = categories.get(i);
+            if (c.getCategoryName().equals(categoryName)) {
+                if(c.getCategoryName().equals(currentCategoryName)) {
+                    continue;
+                } else {
+                    status = false;
+                    break;
+                }
+            }
+        }
         PrintWriter writer = response.getWriter();
 
-        String result = "";
-
-        result += "<table>";
-        result += "<tr>";
-        result += "<td><span onclick=\"setValue('-1', 'Tất cả', 'brand')\" \n"
-                + " class =\"brand-value\">Tất cả</span></td>";
-        result += "</tr>";
-        for (int i = brands.size() - 1; i >= 0; i--) {
-            Brand brand = brands.get(i);
-            result += "<tr>";
-            result += "<td>";
-            result += "<span onclick=\"setValue('" + brand.getBrandID() + "','" + brand.getBrandName() + "', '" + boxType + "')\" class =\"product-insert\" >"
-                    + brand.getBrandName() + "</span> <br/>";
-            result += "</td>";
-            result += "<td>";
-            result += "<button type=\"button\" onclick=\"edit('" + brand.getBrandID() + "', '" + boxType + "')\" ><i class=\"fa fa-pencil\" ></i></button>";
-            result += "</td>";
-            result += "<td>";
-            result += "<button type=\"button\" onclick=\"deleteEntity('" + brand.getBrandID() + "', '" + boxType + "')\"><i class=\"fa fa-trash\"></i></button>";
-            result += "</td>";
-            result += "</tr>";
-        }
-        result += "<table>";
-
-        writer.println(result);
+        writer.print(status);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

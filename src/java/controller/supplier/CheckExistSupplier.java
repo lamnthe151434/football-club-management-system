@@ -3,9 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package controller.brand;
+package controller.supplier;
 
-import dal.product.BrandDBContext;
+import dal.partner.SupplierDBContext;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -13,13 +13,13 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import model.product.Brand;
+import model.partner.Supplier;
 
 /**
  *
  * @author ADMIN
  */
-public class InsertBrandController extends HttpServlet {
+public class CheckExistSupplier extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -33,41 +33,29 @@ public class InsertBrandController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        BrandDBContext db = new BrandDBContext();
-        String rawBrandName = request.getParameter("brandName");
-        String boxType = request.getParameter("boxType");
+        SupplierDBContext cdb = new SupplierDBContext();
+        ArrayList<Supplier> suppliers = cdb.getSuppliers();
 
-        String brandName = rawBrandName;
-        db.insertBrand(brandName);
-
-        ArrayList<Brand> brands = db.getBrands();
+        String supplierName = request.getParameter("supplierName");
+        String currentSupplierName = request.getParameter("currentSupplierName");
+        String phone = request.getParameter("phone");
+        String currentPhone = request.getParameter("currentPhone");
+        System.out.println(supplierName + ", " + currentSupplierName);
+        boolean status = true;
+        for (int i = 0; i < suppliers.size(); i++) {
+            Supplier c = suppliers.get(i);
+            if (c.getSupplierName().equals(supplierName) && c.getPhone().equals(phone) ) {
+                if (c.getSupplierName().equals(currentSupplierName) && c.getPhone().equals(currentPhone)) {
+                    continue;
+                } else {
+                    status = false;
+                    break;
+                }
+            }
+        }
         PrintWriter writer = response.getWriter();
 
-        String result = "";
-
-        result += "<table>";
-        result += "<tr>";
-        result += "<td><span onclick=\"setValue('-1', 'Tất cả', 'brand')\" \n"
-                + " class =\"brand-value\">Tất cả</span></td>";
-        result += "</tr>";
-        for (int i = brands.size() - 1; i >= 0; i--) {
-            Brand brand = brands.get(i);
-            result += "<tr>";
-            result += "<td>";
-            result += "<span onclick=\"setValue('" + brand.getBrandID() + "','" + brand.getBrandName() + "', '" + boxType + "')\" class =\"product-insert\" >"
-                    + brand.getBrandName() + "</span> <br/>";
-            result += "</td>";
-            result += "<td>";
-            result += "<button type=\"button\" onclick=\"edit('" + brand.getBrandID() + "', '" + boxType + "')\" ><i class=\"fa fa-pencil\" ></i></button>";
-            result += "</td>";
-            result += "<td>";
-            result += "<button type=\"button\" onclick=\"deleteEntity('" + brand.getBrandID() + "', '" + boxType + "')\"><i class=\"fa fa-trash\"></i></button>";
-            result += "</td>";
-            result += "</tr>";
-        }
-        result += "<table>";
-
-        writer.println(result);
+        writer.print(status);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
